@@ -1,0 +1,9 @@
+body {
+    font-family: "Manrope", sans-serif;
+    -ms-overflow-style: none; /* IE aur Edge */
+    scrollbar-width: none;
+  }
+  
+  body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+  }

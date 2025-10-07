@@ -1,0 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap");
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "Manrope", sans-serif;
+  -ms-overflow-style: none; /* IE aur Edge */
+  scrollbar-width: none;
+}
+
+/* Hide all scrollbars globally */
+* {
+  scrollbar-width: none;   /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+*::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+/* App.css or global CSS */
+body, input, textarea {
+  user-select: none; /* Text selection disable */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+body {
+  -webkit-touch-callout: none; /* iOS long press menu disable */
+}
+
+input, textarea {
+  pointer-events: auto; /* inputs ko editable rakhne ke liye */
+}
