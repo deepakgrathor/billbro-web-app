@@ -195,7 +195,7 @@ const HomeContent = () => {
                     >
                       <img
                         width={35}
-                        src={item.icon}
+                        src={`${ImageBaseURL}${item.icon}`}
                         alt={item.name}
                         className=" mx-auto"
                       />
