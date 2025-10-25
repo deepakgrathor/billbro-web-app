@@ -7,6 +7,7 @@ const SelectBBPSOperator = ({ data, setStep, setData }) => {
   const [search, setSearch] = useState(null);
 
   const handleClick = async ({ item }) => {
+    console.log("item", item)
     setData(item);
     setStep(2);
     // setLoad(true);

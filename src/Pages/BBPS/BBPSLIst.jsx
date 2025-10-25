@@ -3,7 +3,7 @@ import { primaryColor, secondaryColor } from "../../Utils/Style";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchServiceList } from "../../Redux/Slices/ServiceSlice/ServiceSlice";
 import Loader from "../../Components/Loader";
-import { BILL, SERVICE } from "../../Utils/Constant";
+import { BILL, ImageBaseURL, SERVICE } from "../../Utils/Constant";
 import CommonHeader from "../../Components/CommonHeader";
 import { useNavigate } from "react-router-dom";
 import { setPaymentType } from "../../Redux/Slices/PaymentSlice";
@@ -158,7 +158,7 @@ const BBPSLIst = () => {
                 className="bg-white  rounded-2xl p-4 flex flex-col items-center cursor-pointer hover:shadow-lg transition"
               >
                 <img
-                  src={item.icon}
+                  src={`${ImageBaseURL}${item.icon}`}
                   alt={item.name}
                   width={30}
                   className=" object-contain mb-2"

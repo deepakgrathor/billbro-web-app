@@ -24,10 +24,18 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
+    // 2. Notify the React Native app
+    if (window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage(
+        JSON.stringify({ action: "LOGOUT" })
+      );
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, loading, setIsAuthenticated }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, login, logout, loading, setIsAuthenticated }}
+    >
       {children}
     </AuthContext.Provider>
   );
