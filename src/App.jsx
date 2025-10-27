@@ -21,7 +21,9 @@ function App() {
     <>
       <DisableInteractionWrapper>
         <Toaster position="bottom-center" reverseOrder={false} />
-        {loading ? <SplashScreen /> : <AppNavigate />}
+        {loading ? <SplashScreen /> :
+         <AppNavigate />
+         }
       </DisableInteractionWrapper>
     </>
   );

@@ -46,7 +46,7 @@ const HomeContent = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchServiceList());
-    dispatch(getBannerList({type : "SERVICE"}));
+    dispatch(getBannerList({ type: "SERVICE" }));
     dispatch(getUserProfile());
     getSettingFunc();
   }, []);
@@ -211,7 +211,7 @@ const HomeContent = () => {
                 </div>
               ) : (
                 <div
-                  className="flex flex-col items-center space-y-2 justify-center cursor-pointer bg-gray-100 p-2 py-4 rounded-md"
+                  className="flex flex-col items-center space-y-2 justify-center cursor-pointer bg-gray-100/50 p-2 py-4 rounded-md"
                   onClick={() => navigate("/bbpslist")} // yaha apni state/logic lagao
                 >
                   <img
@@ -245,7 +245,12 @@ const HomeContent = () => {
                 </p>
               </div>
             </div>
-            <div onClick={() => {navigate("/refer")}} className="flex space-x-3 items-center mt-2 bg-blue-300/20 p-2 rounded-lg justify-center">
+            <div
+              onClick={() => {
+                navigate("/refer");
+              }}
+              className="flex space-x-3 items-center mt-2 bg-blue-300/20 p-2 rounded-lg justify-center"
+            >
               <MdOutlineShare size={20} />
               <p className="text-[10px] text-gray-600 font-semibold tracking-wider">
                 Invite a Friend

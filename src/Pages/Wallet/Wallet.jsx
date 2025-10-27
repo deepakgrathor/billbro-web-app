@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CommonHeader from "../../Components/CommonHeader";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ButtonComp from "../../Components/ButtonComp";
 import ToastComp from "../../Components/ToastComp";
-
 const Wallet = () => {
   const navigate = useNavigate();
   const [amount, setAmount] = useState(500);
   const { ProfileData } = useSelector((state) => state.LoginSlice.profile);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -28,9 +28,39 @@ const Wallet = () => {
     } else {
     }
   };
+  const mountRef = useRef(null);
+  const upiAppRef = useRef(null);
+
+  // useEffect(() => {
+  //   const cashfree = Cashfree({ mode: "sandbox" });
+    
+  //   upiAppRef.current = cashfree.create('upiApp', {
+  //     values: { upiApp: 'gpay', buttonText: 'GPAY', buttonIcon: true }
+  //   });
+
+  //   upiAppRef.current.on('loaderror', (data) => console.log(data.error));
+  //   upiAppRef.current.on('ready', (d) => console.log(d.value));
+    
+  //   upiAppRef.current.mount(mountRef.current);
+
+  //   return () => upiAppRef.current?.unmount();
+  // }, []);
+
+  const handlePayment = () => {
+  const cashfree = window.Cashfree({ mode: "sandbox" });
+    
+    upiAppRef.current = cashfree.create('upiApp', {
+      values: { upiApp: 'gpay', buttonText: 'GPAY', buttonIcon: true }
+    });
+
+    upiAppRef.current.on('loaderror', (data) => console.log(data.error));
+    upiAppRef.current.on('ready', (d) => console.log(d.value));
+    
+    upiAppRef.current.mount(mountRef.current);
+  };
 
   return (
-    <div className="bg-white min-h-screen flex flex-col">
+    <div ref={mountRef} className="bg-white min-h-screen flex flex-col">
       {/* Fixed Header */}
       <div className="fixed top-0 left-0 right-0 z-10 bg-white shadow">
         <CommonHeader
@@ -41,7 +71,9 @@ const Wallet = () => {
 
       {/* Content */}
       <div className="flex-1 mt-14 p-4 overflow-y-auto">
-        <p className="font-semibold text-sm tracking-wider">Available Balance</p>
+        <p className="font-semibold text-sm tracking-wider">
+          Available Balance
+        </p>
         <div className="flex items-center space-x-2">
           <p className="font-black text-lg">
             ₹
@@ -90,6 +122,7 @@ const Wallet = () => {
       {/* Bottom Button */}
       <div className="sticky bottom-0 left-0 right-0 bg-white p-4">
         <ButtonComp
+          handleClick={handlePayment}
           disabled={amount > 50000 || !amount}
           title={"Process to Add"}
         />

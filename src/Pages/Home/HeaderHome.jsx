@@ -6,7 +6,7 @@ const HeaderHome = ({ ProfileData }) => {
   const navigate = useNavigate();
   return (
     <>
-      <div className="bg-white/40  shadow h-16 p-2 flex justify-between items-center">
+      <div className="bg-white/90  shadow h-16 p-2 flex justify-between items-center">
         <div className="">
           <p className="text-[10px] tracking-wider">Welcome Back!</p>
           <p className="font-semibold text-sm tracking-wider">
