@@ -69,6 +69,21 @@ export const BBPS_PAY_BILL = createAsyncThunk(
     }
   }
 );
+export const GOOGLE_PLAY_PAYMENT = createAsyncThunk(
+  "GOOGLE_PLAY_PAYMENT",
+  async ({ valData }, thunkAPI) => {
+    try {
+      const res = await API.post(`cyrus/bbps/googleplay-payment`, valData);
+      return res.data;
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        return error.response.data;
+      } else {
+        throw error;
+      }
+    }
+  }
+);
 
 const ServiceSlice = createSlice({
   name: "ServiceSlice",
@@ -80,6 +95,7 @@ const ServiceSlice = createSlice({
     bbpsOperatorList: "",
     fetchBBPSBill: "",
     universalLoader: false,
+    googlePaymentLoader: false,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -112,6 +128,15 @@ const ServiceSlice = createSlice({
     });
     builder.addCase(Fetch_BPPS_BILL.rejected, (state, action) => {
       state.universalLoader = false;
+    });
+    builder.addCase(GOOGLE_PLAY_PAYMENT.pending, (state, action) => {
+      state.googlePaymentLoader = true;
+    });
+    builder.addCase(GOOGLE_PLAY_PAYMENT.fulfilled, (state, action) => {
+      state.googlePaymentLoader = false;
+    });
+    builder.addCase(GOOGLE_PLAY_PAYMENT.rejected, (state, action) => {
+      state.googlePaymentLoader = false;
     });
   },
 });

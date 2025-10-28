@@ -28,11 +28,11 @@ export const SERVICE = "SERVICE";
 
 // Company Details
 export const BRAND_NAME = "BillBro";
-export const CallNumber = "tel:9599299179";
+export const CallNumber = "tel:9893772449";
 export const EMAIL_ID = "officialbillbro@gmail.com";
 export const CRYPTO_SECRET = "billbro";
 // export const CRYPTO_SECRET = 'finpay';
-export const COMPANY_PHONE = "9893973713";
+export const COMPANY_PHONE = "9893772449";
 export const WEB_URL = "billbro.in";
 export const PACKAGE_NAME = "com.billbro.app";
 export const COMPANY_LOGO = "https://ik.imagekit.io/43tomntsa/BillBro_Logo.svg";

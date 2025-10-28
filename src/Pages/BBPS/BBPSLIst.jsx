@@ -147,13 +147,25 @@ const BBPSLIst = () => {
               <div
                 key={item._id}
                 onClick={() => {
-                  navigate("/mainbbps", { state: item });
-                  const data = {
-                    type: SERVICE,
-                    ids: item._id,
-                    serviceType: BILL,
-                  };
-                  dispatch(setPaymentType(data));
+                  if (item._id === "661061ecda6832bf278254e1") {
+                    console.log("Called")
+                    // Google
+                    navigate("/googleplay", { state: item });
+                    const data = {
+                      type: SERVICE,
+                      ids: '661061ecda6832bf278254e1',
+                      serviceType: BILL,
+                    };
+                    dispatch(setPaymentType(data));
+                  } else {
+                    navigate("/mainbbps", { state: item });
+                    const data = {
+                      type: SERVICE,
+                      ids: item._id,
+                      serviceType: BILL,
+                    };
+                    dispatch(setPaymentType(data));
+                  }
                 }}
                 className="bg-white  rounded-2xl p-4 flex flex-col items-center cursor-pointer hover:shadow-lg transition"
               >

@@ -29,6 +29,7 @@ import PaymentConfirm from "../Pages/Mobile/PaymentConfirm";
 import ReferScreen from "../Pages/Public/ReferScreen";
 import ReferList from "../Pages/Public/ReferList";
 import BBPSComplain from "../Pages/BBPS/BBPSComplain";
+import GooglePlay from "../Pages/BBPS/GooglePlay";
 // import { RechargeProvider } from "../Context/RechargeContext";
 
 const AppNavigate = () => {
@@ -52,6 +53,7 @@ const AppNavigate = () => {
                 <Route path="/notification" element={<NotificationList />} />
                 <Route path="/bbpslist" element={<BBPSLIst />} />
                 <Route path="/mainbbps" element={<MainBBPS />} />
+                <Route path="/googleplay" element={<GooglePlay />} />
                 <Route path="/mobile" element={<MobileHome />} />
                 <Route path="/paymentconfirm" element={<PaymentConfirm />} />
                 <Route path="/plans" element={<BrowsePlans />} />

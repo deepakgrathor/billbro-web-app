@@ -133,4 +133,5 @@ const Wallet = () => {
 
 const PriceArr = [500, 1000, 2000, 5000, 10000, 50000];
 
+
 export default Wallet;

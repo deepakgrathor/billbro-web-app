@@ -100,6 +100,9 @@ const CardDesign = ({ item, rechargeData, handleProcess }) => {
                   ))}
                 </div>
               )}
+              <div className="">
+                <p className="text-red-600 text-[10px]  font-semibold">Per Day Cost : ₹ {((item.recharge_amount || item.rs || item.amount)/(item.recharge_validity || item.validity)).toLocaleString()}</p>
+              </div>
               <p
                 onClick={() =>
                   setShowDesc({
@@ -167,6 +170,7 @@ const CardDesign = ({ item, rechargeData, handleProcess }) => {
 const BrowsePlans = () => {
   const dispatch = useDispatch();
   const [plans, setPlans] = useState();
+  console.log(plans, 'plans')
   const [selectedPlan, setSelectedPlan] = useState();
   const [types, setTypes] = useState();
   const [selectedType, setSelectedType] = useState(); //

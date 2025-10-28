@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 // import { useDispatch } from "react-redux";
 import AppNavigate from "./Navigation/AppNavigate";
 import SplashScreen from "./Components/SplashScreen";
