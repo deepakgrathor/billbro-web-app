@@ -70,12 +70,12 @@ const Wallet = () => {
       </div>
 
       {/* Content */}
-      <div className="flex-1 mt-14 p-4 overflow-y-auto">
+      <div className="flex-1 mt-18 p-4 overflow-y-auto">
         <p className="font-semibold text-sm tracking-wider">
           Available Balance
         </p>
         <div className="flex items-center space-x-2">
-          <p className="font-black text-lg">
+          <p className="font-black text-xl">
             ₹
             {new Intl.NumberFormat("en-IN", {
               minimumFractionDigits: 2,

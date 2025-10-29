@@ -500,12 +500,12 @@ export const ProfileArr = [
   {
     title: "Privacy Policy",
     icon: TbShieldLock,
-    route: "/policy",
+    route: "/privacy-policy",
   },
   {
     title: "Terms & Conditions",
     icon: TbClipboardList,
-    route: "/terms",
+    route: "/terms-condcitions",
   },
   {
     title: "Refund Policy",
@@ -514,7 +514,8 @@ export const ProfileArr = [
   },
   {
     title: "BBPS Complaint",
-    image: "https://app.billhub.in/assets/bbps-logo.png",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQT9Kk5ZklcaVdzaK9ORrixwIdDQ-ymuiDvxA&s",
     route: "/bbps-complaint-registration",
   },
   {
@@ -540,18 +541,55 @@ export const ProfileArr = [
 ];
 export const SocialArr = [
   {
-    name: 'Facebook',
+    name: "Facebook",
     icon: <FaFacebook />,
-    link: 'https://www.facebook.com/'
+    link: "https://www.facebook.com/",
   },
   {
-    name: 'Twitter',
+    name: "Twitter",
     icon: <FaTwitter />,
-    link: 'https://www.twitter.com/'
+    link: "https://www.twitter.com/",
   },
   {
-    name: 'Instagram',
+    name: "Instagram",
     icon: <FaInstagram />,
-    link: 'https://www.instagram.com/'
-  }
-]
+    link: "https://www.instagram.com/",
+  },
+];
+export const DTH_OPERATOR_ARR = [
+  {
+    id: "airtel_tv",
+    img: "https://ik.imagekit.io/43tomntsa/airtel.png",
+    title: "Airtel Digital TV",
+    placeholder: "Customer ID",
+    findContent: `Press the Menu button on your remote and select 'My Account' to get your Subscriber ID or SMS 'BAL' to 54325 or give a missed call to 81300-81300 from your registered mobile number.`,
+  },
+  {
+    id: "dish_tv",
+    img: "https://ik.imagekit.io/43tomntsa/dish_tv.webp",
+    title: "Dish TV",
+    placeholder: "Card Number",
+    findContent: `Go to the help menu on your TV and select My Account to find your Viewing Card Number.`,
+  },
+  {
+    id: "sun_tv",
+    img: "https://ik.imagekit.io/43tomntsa/SunDirect.webp",
+    title: "Sun Direct",
+    placeholder: "Customer ID",
+    findContent: `SMS 'ID' to 9212012299 from your registered mobile number or SMS 'CID' <Smart Card Number> from non-registered mobile number to 9212012299.`,
+  },
+  {
+    id: "tata_sky",
+    img: "https://ik.imagekit.io/43tomntsa/TataPlay.webp",
+    title: "Tata Play",
+    placeholder: "Subscriber No.",
+    findContent: `Press HOME button on your remote or give a missed call to 080-61-9999-11 from your registered mobile number.`,
+  },
+  {
+    id: "videocon",
+    img: "https://ik.imagekit.io/43tomntsa/VideoCon.webp",
+    title: "Videocon D2H",
+    placeholder: "Customer ID",
+    findContent: `SMS 'ID' to 566777 or call 97818-97818 (Toll Free) from your registered mobile number.`,
+  },
+];

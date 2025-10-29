@@ -321,9 +321,9 @@ const CommissionList = () => {
         >
           <div className="flex flex-row items-center space-x-5">
             <img
-              width={30}
+              width={24}
               height={35}
-              src={`uploads/services/1752856558685-APD_icon_GPRC._CB594689751_.png`}
+              src={`https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_Play_2022_icon.svg/1856px-Google_Play_2022_icon.svg.png`}
             />
             <p
               className="capitalize"

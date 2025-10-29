@@ -12,6 +12,10 @@ import ToastComp from "../../Components/ToastComp";
 import { generateUniqueTrxnRefId } from "../../Utils/CommonFunc";
 import ButtonComp from "../../Components/ButtonComp";
 import { getUserProfile } from "../../Redux/Slices/AuthSlice/LoginSlice";
+import { primaryColor } from "../../Utils/Style";
+import { setWalletSelect } from "../../Redux/Slices/PaymentSlice";
+import { MdOutlineAddCircleOutline } from "react-icons/md";
+import Loader from "../../Components/Loader";
 
 const GooglePlay = () => {
   const navigate = useNavigate();
@@ -19,6 +23,8 @@ const GooglePlay = () => {
   const { serviceList, serviceLoader } = useSelector(
     (state) => state.ServiceSlice.service
   );
+  const { walletSelect } = useSelector((state) => state.PaymentSlice);
+
   const { ids } = useSelector((state) => state.PaymentSlice.PaymentType);
 
   const { googlePaymentLoader } = useSelector((state) => state.ServiceSlice);
@@ -26,7 +32,7 @@ const GooglePlay = () => {
     (state) => state.LoginSlice.profile
   );
   const [amount, setAmount] = useState(100);
-
+  const [load, setLoad] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [content, setContent] = useState();
   const [title, setTitle] = useState();
@@ -86,31 +92,142 @@ const GooglePlay = () => {
       </div>
     );
   };
+  // const handlePayNow = async () => {
+  //   const transactionId = generateUniqueTrxnRefId();
+  //   const valData = {
+  //     number: ProfileData.Data.phone,
+  //     amount: Number(amount),
+  //     transactionId: transactionId,
+  //     serviceId: ids,
+  //   };
+  //   const res = await dispatch(GOOGLE_PLAY_PAYMENT({ valData }));
+  //   if (res.payload.ResponseStatus === 0) {
+  //     ToastComp({ message: res.payload.Remarks, type: "success" });
+  //   } else if (
+  //     (res.payload.ResponseStatus === 1 &&
+  //       res.payload.Data.status === "Success") ||
+  //     (res.payload.ResponseStatus === 1 &&
+  //       res.payload.Data.status === "Pending")
+  //   ) {
+  //     navigate("BBPSSuccess", res.payload.Data);
+  //   } else {
+  //     ToastComp({ message: res.payload.Remarks, type: "success" });
+  //   }
+  // };
+
   const handlePayNow = async () => {
-    const transactionId = generateUniqueTrxnRefId();
-    const valData = {
-      number: ProfileData.Data.phone,
-      amount: amount,
-      transactionId: transactionId,
-      serviceId: ids,
-    };
-    console.log(valData, "valData");
-    const res = await dispatch(GOOGLE_PLAY_PAYMENT({ valData }));
-    console.log(res.payload, "res.payload")
-    if (res.payload.ResponseStatus === 0) {
-      ToastComp({ message: res.payload.Remarks, type: "success" });
-    } else if (
-      (res.payload.ResponseStatus === 1 &&
-        res.payload.Data.status === "Success") ||
-      (res.payload.ResponseStatus === 1 &&
-        res.payload.Data.status === "Pending")
-    ) {
-      // navigate("BBPSSuccess", res.payload.Data);
-    } else {
-      ToastComp({ message: res.payload.Remarks, type: "success" });
+    try {
+      setLoad(true);
+
+      // Validation: Check minimum amount for FASTag
+      if (amount < 50) {
+        ToastComp({
+          message: "Minimum Recharge amount is ₹50",
+          type: "error",
+        });
+        return;
+      }
+
+      // Prepare payment data
+      const valData = preparePaymentData();
+
+      // Make API call
+      const res = await dispatch(GOOGLE_PLAY_PAYMENT({ valData }));
+
+      // Handle response
+      handlePaymentResponse(res?.payload);
+    } catch (error) {
+      handlePaymentError(error);
+    } finally {
+      setLoad(false);
     }
   };
-    useEffect(() => {
+
+  // Helper function to prepare payment data
+  const preparePaymentData = () => {
+    const valData = {
+      number: ProfileData.Data.phone,
+      amount: Number(amount),
+      serviceId: ids,
+    };
+
+    // Other services
+    return valData;
+  };
+
+  // Helper function to handle API response
+  const handlePaymentResponse = (payload) => {
+    if (!payload) {
+      throw new Error("No response received from server");
+    }
+    // Response status check
+    if (payload.ResponseStatus === 0) {
+      const errorMsg =
+        payload.Remarks ||
+        payload.message ||
+        "Transaction failed. Please try again.";
+      throw new Error(errorMsg);
+    }
+
+    if (payload.ResponseStatus === 1) {
+      const data = payload.Data || {};
+      const { status, transactionId, opRefNo, operator_ref_id } = data;
+
+      // Success or Pending status
+      if (["Success", "success", "Pending", "pending"].includes(status)) {
+        const responseData = {
+          MobileNumber: ProfileData.Data.phone,
+          Operator_Code: "GOOGLE PLAY",
+          amount,
+          transactionId,
+          status,
+          type: "GOOGLEPLAY",
+          OP_REF: opRefNo || operator_ref_id,
+        };
+
+        navigate("/bbpsstatus", { state: responseData });
+        return;
+      }
+
+      // Failed transaction
+      throw new Error(data.message || "Transaction failed");
+    }
+
+    // Unexpected response status
+    throw new Error(
+      payload.Remarks ||
+        payload.message ||
+        "Transaction failed. Please try again."
+    );
+  };
+
+  // Helper function to handle errors
+  const handlePaymentError = (error) => {
+    const errorMessages = {
+      "Network Error": "Network error. Please check your internet connection.",
+      timeout: "Request timeout. Please try again.",
+      insufficient: "Insufficient balance. Please recharge your wallet.",
+      invalid: "Invalid details provided. Please check and try again.",
+    };
+
+    let message = error?.message || "Something went wrong. Please try again.";
+
+    // Check for specific error patterns
+    const errorKey = Object.keys(errorMessages).find((key) =>
+      message.toLowerCase().includes(key.toLowerCase())
+    );
+
+    if (errorKey) {
+      message = errorMessages[errorKey];
+    }
+
+    ToastComp({
+      message,
+      type: "error",
+    });
+  };
+
+  useEffect(() => {
     dispatch(getUserProfile());
     // dispatch(fetchBBPSHistory({serviceId: ids}));
   }, []);
@@ -139,7 +256,6 @@ const GooglePlay = () => {
             <div className="flex  items-center  bg-gray-100 border border-gray-200 rounded-lg px-3 py-3 ">
               <span className="text-lg font-bold text-black mr-2">₹</span>
               <input
-
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 type="number"
@@ -163,6 +279,75 @@ const GooglePlay = () => {
                 ))}
               </div>
             </div>
+            <div className=" my-8 ">
+              <p className="m-1 font-bold mb-3 text-sm">
+                Select Payment Method
+              </p>
+              <div
+                onClick={() => dispatch(setWalletSelect(true))}
+                style={{
+                  borderColor: walletSelect ? primaryColor : "",
+                  borderWidth: walletSelect ? 1 : 0,
+                }}
+                className={`flex items-center justify-between py-2 pl-2  bg-gray-100   border-blue-700 border-r-4 rounded-xl`}
+              >
+                <div className="flex items-center space-x-4">
+                  <img
+                    width={25}
+                    src="https://ik.imagekit.io/43tomntsa/svgexport-3.png"
+                    alt=""
+                  />
+                  {/* <MdOutlineAccountBalanceWallet size={35} /> */}
+                  <div className="">
+                    <p className="text-[10px] tracking-wider">Wallet Balance</p>
+                    <div className="flex items-center space-x-2">
+                      <p className="font-black text-base">
+                        ₹
+                        {new Intl.NumberFormat("en-IN", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }).format(ProfileData?.Data?.wallet?.balance || 0)}
+                      </p>
+                      {ProfileData?.Data?.wallet?.balance < amount && (
+                        <p className="text-[8px] tracking-wider bg-red-500 text-white rounded-full px-2 py-0.5">
+                          Low Balance
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div
+                  onClick={() => navigate("/wallet")}
+                  className="flex  bg-[#1447e6] text-white pl-2 pr-1 py-2 rounded-l-full items-center space-x-2"
+                >
+                  <MdOutlineAddCircleOutline size={20} />
+                  <p className="text-[10px] tracking-wide">Add Money</p>
+                </div>
+              </div>
+              <div
+                onClick={() => dispatch(setWalletSelect(false))}
+                style={{
+                  borderColor: !walletSelect ? primaryColor : "",
+                  borderWidth: !walletSelect ? 1 : 0,
+                }}
+                className={`flex items-center justify-between py-3.5 pl-2 bg-gray-100 mt-2  rounded-xl`}
+              >
+                <div className="flex items-center space-x-4">
+                  <img
+                    width={25}
+                    src="https://images.icon-icons.com/2699/PNG/512/upi_logo_icon_170312.png"
+                    alt=""
+                  />
+                  {/* <MdOutlineAccountBalanceWallet size={35} /> */}
+                  <div className="">
+                    <div className="flex items-center space-x-2">
+                      <p className="font-black text-base">UPI</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="space-y-3 mt-6">
               <div
                 onClick={() => {
@@ -190,12 +375,21 @@ const GooglePlay = () => {
           </div>
           <div className="fixed bottom-4 space-y-2 left-0 w-full px-4">
             <ButtonComp
-              disabled={amount > 5000}
-              title={amount > 5000 ? "MAX Purchase Amount ₹5000" : "Proceed"}
+              disabled={
+                Number(amount) > ProfileData?.Data?.wallet?.balance &&
+                walletSelect
+              }
+              title={
+                Number(amount) > ProfileData?.Data?.wallet?.balance &&
+                walletSelect
+                  ? "Wallet Balance is Low!"
+                  : "Proceed to pay"
+              }
               handleClick={handlePayNow}
             />
           </div>
         </div>
+
         <BottomSheet
           setIsOpen={setIsOpen}
           isOpen={isOpen}
@@ -203,6 +397,7 @@ const GooglePlay = () => {
           title={title}
         />
       </div>
+      {load && <Loader />}
     </>
   );
 };

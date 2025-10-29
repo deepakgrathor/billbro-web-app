@@ -20,17 +20,9 @@ const MobileHome = () => {
   const [conSearch, setConSearch] = useState("");
   const rechargeData = useSelector((state) => state.RechargeSlice.rechargeData);
 
-  //   const [rechargeData, setRechargeData] = useState({
-  //     mobileNumber: "",
-  //     operator: "",
-  //     circle: "",
-  //     plans: "",
-  //     isPrepaid: true,
-  //   });
   const { serviceList, serviceLoader } = useSelector(
     (state) => state.ServiceSlice.service
   );
-  const { ids } = useSelector((state) => state.PaymentSlice.PaymentType);
 
   const { plans, loader } = useSelector(
     (state) => state.RechargeSlice.getPlans
@@ -39,47 +31,7 @@ const MobileHome = () => {
     (state) => state.RechargeSlice
   );
   const { bannerData } = useSelector((state) => state.PublicSlice.bannerList);
-  //   const handleProcess = ({ plans }) => {
-  //     if (
-  //       !rechargeData.mobileNumber ||
-  //       !rechargeData.operator ||
-  //       !(plans || rechargeData.plans)
-  //     ) {
-  //       ToastComp({ message: "Please Enter Details", type: "error" });
-  //     } else {
-  //       setRechargeData({ ...rechargeData, plans: plans || rechargeData.plans });
-  //       const data = {
-  //         type: SERVICE,
-  //         amount: plans || rechargeData.plans,
-  //         ids: ids,
-  //         serviceType: MOBILE_RECHARGE,
-  //       };
-  //       dispatch(setPaymentType(data));
-  //       navigate("PaymentConfirm", { state: rechargeData });
-  //     }
-  //   };
-  const handleClick = (item) => {
-    const rechargeData = {
-      circle: {
-        circlecode: item.circle,
-      },
-      mobileNumber: item.number,
-      operator: {
-        OperatorCode: item.operator,
-      },
-      plans: item.amount,
-      isPrepaid: item.isPrepaid,
-    };
 
-    const data = {
-      type: SERVICE,
-      amount: item.amount,
-      ids: ids,
-      serviceType: MOBILE_RECHARGE,
-    };
-    dispatch(setPaymentType(data));
-    navigate("PaymentConfirm", { state: rechargeData });
-  };
   useEffect(() => {
     if (
       operatorandCircle.ResponseStatus === 1 &&
@@ -130,7 +82,7 @@ const MobileHome = () => {
       <div className="fixed top-0 w-full">
         <CommonHeader
           title={"Mobile Recharges"}
-          handleclick={() => navigate('/')}
+          handleclick={() => navigate("/")}
         />
       </div>
       <div className="mt-16 p-4">

@@ -11,6 +11,7 @@ const PaymentSlice = createSlice({
       serviceType: "",
       SHOW_PREPAID: "",
     },
+    walletSelect: true,
   },
   reducers: {
     setPaymentType: (state, action) => {

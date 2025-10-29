@@ -30,6 +30,11 @@ import ReferScreen from "../Pages/Public/ReferScreen";
 import ReferList from "../Pages/Public/ReferList";
 import BBPSComplain from "../Pages/BBPS/BBPSComplain";
 import GooglePlay from "../Pages/BBPS/GooglePlay";
+import RechargeStatus from "../Pages/Mobile/RechargeStatus";
+import Contact from "../Pages/Public/Contact";
+import PrivacyPolicy from "../Pages/Public/PrivacyPolicy";
+import TermsConditions from "../Pages/Public/TermsConditions";
+import RefundPolicy from "../Pages/Public/RefundPolicy";
 // import { RechargeProvider } from "../Context/RechargeContext";
 
 const AppNavigate = () => {
@@ -63,6 +68,12 @@ const AppNavigate = () => {
                 <Route path="/bbps-complaint-registration" element={<BBPSComplain />} />
                 <Route path="/refer" element={<ReferScreen />} />
                 <Route path="/referlist" element={<ReferList />} />
+                <Route path="/rechargestatus" element={<RechargeStatus />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/terms-conditions" element={<TermsConditions />} />
+                <Route path="/refund-policy" element={<RefundPolicy />} />
+
                 {/* Add more private routes here */}
               </Route>
               <Route path="*" element={<FallbackRoute />} />

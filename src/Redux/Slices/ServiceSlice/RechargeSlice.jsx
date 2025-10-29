@@ -29,12 +29,12 @@ export const RechargeRequest = createAsyncThunk(
     Operator_Code,
     Circle_Code,
     amount,
-    transactionId,
+
     isPrepaid,
   }) => {
     try {
       const res = await API.get(
-        `cyrus/recharge_request?number=${MobileNumber}&operator=${Operator_Code}&circle=${Circle_Code}&amount=${amount}&transactionId=${transactionId}&isPrepaid=${isPrepaid}`
+        `cyrus/recharge_request?number=${MobileNumber}&operator=${Operator_Code}&circle=${Circle_Code}&amount=${amount}&isPrepaid=${isPrepaid}`
       );
       return {
         ...res.data,
@@ -53,10 +53,10 @@ export const RechargeRequest = createAsyncThunk(
 );
 export const DTHRechargeRequest = createAsyncThunk(
   "DTHRechargeRequest",
-  async ({ MobileNumber, Operator_Code, amount, transactionId }) => {
+  async ({ MobileNumber, Operator_Code, amount }) => {
     try {
       const res = await API.get(
-        `cyrus/dth_request?number=${MobileNumber}&operator=${Operator_Code}&amount=${amount}&transactionId=${transactionId}`
+        `cyrus/dth_request?number=${MobileNumber}&operator=${Operator_Code}&amount=${amount}`
       );
       return {
         ...res.data,

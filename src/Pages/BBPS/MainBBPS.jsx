@@ -153,7 +153,7 @@ const MainBBPS = () => {
                 );
               })}
 
-              <div className="fixed bottom-4 space-y-2 left-0 w-full px-2">
+              <div className="fixed bottom-4 text-center space-y-2 left-0 w-full px-2">
                 <ButtonComp title={"Fetch Bill"} handleClick={handlFetchBill} />
               </div>
             </div>
@@ -182,7 +182,7 @@ const MainBBPS = () => {
                   />
                 </div>
               </div>
-              <div className="fixed bottom-4 space-y-2 left-0 w-full px-2">
+              <div className="fixed text-center bottom-4 space-y-2 left-0 w-full px-2">
                 <ButtonComp
                   title={"Confirm"}
                   handleClick={handlFetchFastagBill}

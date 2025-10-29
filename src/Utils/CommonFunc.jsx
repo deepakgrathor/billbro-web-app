@@ -28,11 +28,13 @@ export const openExternalURL = async (url) => {
 };
 export const handleChatWhatsapp = ({ number, registered_phone }) => {
   const phoneNumber = number || COMPANY_PHONE; // Replace with the recipient's phone number
-  const message = `Hello ${BRAND_NAME}, Registered Number is ${registered_phone}`; // Replace with the predefined message
-  const url = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(
-    message
-  )}`;
-  openExternalURL(url);
+  console.log(phoneNumber, "phoneNumber")
+  // const message = `Hello ${BRAND_NAME}, Registered Number is ${registered_phone}`; // Replace with the predefined message
+  const URL = `https://wa.me/${phoneNumber}?text=Hello%20${BRAND_NAME},%20Phone%20Number%20is%20${registered_phone}`
+  // const url = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(
+  //   message
+  // )}`;
+  openExternalURL(URL);
 };
 export const getSettingFunc = async () => {
   try {

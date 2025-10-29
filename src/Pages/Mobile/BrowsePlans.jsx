@@ -23,14 +23,6 @@ const CardDesign = ({ item, rechargeData, handleProcess }) => {
   return (
     <div>
       <div className=" bg-gray-100/50 relative  mx-3 my-2 py-4 rounded-2xl px-5">
-        {/* {(item.recharge_amount || item.rs || item.amount) == 349 && (
-          <p
-            // style={{ backgroundColor: primaryColor, fontSize: Width * 0.03 }}
-            className="absolute text-white px-3 py-1 rounded-full tracking-wider left-3 -top-1.5"
-          >
-            Bestseller
-          </p>
-        )} */}
         <div className="flex  flex-row  justify-between ">
           <div className="flex-1 ">
             <div
@@ -100,9 +92,14 @@ const CardDesign = ({ item, rechargeData, handleProcess }) => {
                   ))}
                 </div>
               )}
-              <div className="">
-                <p className="text-red-600 text-[10px]  font-semibold">Per Day Cost : ₹ {((item.recharge_amount || item.rs || item.amount)/(item.recharge_validity || item.validity)).toLocaleString()}</p>
-              </div>
+              {item.perDayCost !== "N/A" && (
+                <div className="">
+                  <p className="text-red-600 text-[10px]  font-semibold">
+                    Per Day Cost : ₹{item.perDayCost}
+                  </p>
+                </div>
+              )}
+
               <p
                 onClick={() =>
                   setShowDesc({
@@ -221,7 +218,6 @@ const BrowsePlans = () => {
         ToastComp({ message: "Error in Plan Fetching", type: "error" });
       }
     } catch (error) {
-      console.error("Error fetching plans:", error);
       ToastComp({
         message: "Something went wrong while fetching plans.",
         type: "error",
@@ -264,57 +260,59 @@ const BrowsePlans = () => {
   //   setFilteredPlans(filteredHai);
   // }, [search]);
   useEffect(() => {
-  if (!search) {
-    setFilteredPlans(filteredPlans);
-    return;
-  }
+    if (!search) {
+      setFilteredPlans(filteredPlans);
+      return;
+    }
 
-  const lowerSearch = search.toString().toLowerCase().trim();
+    const lowerSearch = search.toString().toLowerCase().trim();
 
-  const parseDataValue = (dataStr) => {
-    if (!dataStr) return 0;
-    const match = dataStr.match(/([\d.]+)\s*(GB|MB)/i);
-    if (!match) return 0;
-    const value = parseFloat(match[1]);
-    const unit = match[2].toUpperCase();
-    return unit === "GB" ? value * 1024 : value; // convert GB to MB
-  };
+    const parseDataValue = (dataStr) => {
+      if (!dataStr) return 0;
+      const match = dataStr.match(/([\d.]+)\s*(GB|MB)/i);
+      if (!match) return 0;
+      const value = parseFloat(match[1]);
+      const unit = match[2].toUpperCase();
+      return unit === "GB" ? value * 1024 : value; // convert GB to MB
+    };
 
-  const searchDataValue = parseDataValue(lowerSearch);
+    const searchDataValue = parseDataValue(lowerSearch);
 
-  const rankedPlans = plans
-    .map(plan => {
-      let rank = 0;
+    const rankedPlans = plans
+      .map((plan) => {
+        let rank = 0;
 
-      // Exact match for amount
-      if (plan.amount && plan.amount.toString() === lowerSearch) rank += 10;
+        // Exact match for amount
+        if (plan.amount && plan.amount.toString() === lowerSearch) rank += 10;
 
-      // Exact match for validity
-      if (plan.validity && plan.validity.includes(lowerSearch)) rank += 5;
+        // Exact match for validity
+        if (plan.validity && plan.validity.includes(lowerSearch)) rank += 5;
 
-      // Exact match for data
-      if (plan.data) {
-        const planDataValue = parseDataValue(plan.data);
-        if (searchDataValue && planDataValue === searchDataValue) {
-          rank += 15; // data exact match highest priority
-        } else if (plan.data.toLowerCase().includes(lowerSearch)) {
-          rank += 8; // partial match
+        // Exact match for data
+        if (plan.data) {
+          const planDataValue = parseDataValue(plan.data);
+          if (searchDataValue && planDataValue === searchDataValue) {
+            rank += 15; // data exact match highest priority
+          } else if (plan.data.toLowerCase().includes(lowerSearch)) {
+            rank += 8; // partial match
+          }
         }
-      }
 
-      // Partial match in description or planName
-      if (plan.desc && plan.desc.toLowerCase().includes(lowerSearch)) rank += 2;
-      if (plan.planName && plan.planName.toLowerCase().includes(lowerSearch)) rank += 2;
+        // Partial match in description or planName
+        if (plan.desc && plan.desc.toLowerCase().includes(lowerSearch))
+          rank += 2;
+        if (plan.planName && plan.planName.toLowerCase().includes(lowerSearch))
+          rank += 2;
 
-      return { ...plan, rank };
-    })
-    // Include only plans with some match
-    .filter(plan => plan.rank > 0)
-    // Sort descending by rank
-    .sort((a, b) => b.rank - a.rank);
+        return { ...plan, rank };
+      })
+      // Include only plans with some match
+      .filter((plan) => plan.rank > 0)
+      // Sort descending by rank
+      .sort((a, b) => b.rank - a.rank);
 
-  setFilteredPlans(rankedPlans);
-}, [search, plans]);
+    setFilteredPlans(rankedPlans);
+  }, [search, plans]);
   return (
     <div className="flex flex-col h-screen ">
       {/* Fixed top bar */}

@@ -1,6 +1,6 @@
 import React from "react";
 
-const BottomSheet = ({ setIsOpen, isOpen, title, content }) => {
+const BottomSheet = ({ setIsOpen, isOpen, title, content, bottomButton=true  }) => {
   return (
     <>
       {/* Button */}
@@ -38,13 +38,14 @@ const BottomSheet = ({ setIsOpen, isOpen, title, content }) => {
 
           <h2 className="text-lg font-semibold mb-4 text-gray-800">{title}</h2>
           {content}
-
-          <button
-            onClick={() => setIsOpen(false)}
-            className="w-full py-2.5 mt-3 bg-blue-600 text-white rounded-xl shadow cursor-pointer hover:bg-blue-700 focus:ring-4 focus:ring-blue-300"
-          >
-            Got It
-          </button>
+          {bottomButton && (
+            <button
+              onClick={() => setIsOpen(false)}
+              className="w-full py-2.5 mt-3 bg-blue-600 text-white rounded-xl shadow cursor-pointer hover:bg-blue-700 focus:ring-4 focus:ring-blue-300"
+            >
+              Got It
+            </button>
+          )}
         </div>
       </div>
     </>

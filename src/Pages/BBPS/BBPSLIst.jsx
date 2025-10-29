@@ -148,7 +148,6 @@ const BBPSLIst = () => {
                 key={item._id}
                 onClick={() => {
                   if (item._id === "661061ecda6832bf278254e1") {
-                    console.log("Called")
                     // Google
                     navigate("/googleplay", { state: item });
                     const data = {

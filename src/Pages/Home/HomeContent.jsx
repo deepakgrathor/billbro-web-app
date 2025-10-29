@@ -42,11 +42,12 @@ const HomeContent = () => {
   const { bannerData, bannerLoader } = useSelector(
     (state) => state.PublicSlice.bannerList
   );
+  console.log(bannerData, 'bannerData')
   const { ProfileData } = useSelector((state) => state.LoginSlice.profile);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchServiceList());
-    dispatch(getBannerList({ type: "SERVICE" }));
+    dispatch(getBannerList({ type: "service" }));
     dispatch(getUserProfile());
     getSettingFunc();
   }, []);
@@ -80,10 +81,10 @@ const HomeContent = () => {
         <div className="overflow-y-auto pt-16">
           {serviceList.Data?.find((a) => a.name === "BANNER_SHOW")?.isShow && (
             <div className="h-52 ">
-              {serviceLoader ? (
+              {bannerLoader ? (
                 <div className=" m-2 h-full bg-gray-200 animate-pulse rounded-lg"></div>
               ) : (
-                <BannerSlider />
+                <BannerSlider data={bannerData.Data}/>
               )}
             </div>
           )}
@@ -126,11 +127,12 @@ const HomeContent = () => {
 
           {/* Support Section */}
           <div
-            onClick={() =>
-              handleChatWhatsapp({
-                number: `+91${localStorage.getItem("customerPhone")}`,
-                registered_phone: ProfileData?.Data?.phone,
-              })
+            onClick={
+              () => navigate("/contact")
+              // handleChatWhatsapp({
+              //   number: `+91${localStorage.getItem("customerPhone")}`,
+              //   registered_phone: ProfileData?.Data?.phone,
+              // })
             }
             className="flex active:scale-90 transition transform duration-200 items-center bg-gray-100 p-2 m-2 rounded-lg justify-center space-x-3"
           >

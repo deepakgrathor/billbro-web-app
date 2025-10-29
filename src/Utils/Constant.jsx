@@ -2,10 +2,7 @@ export const WebBaseURL = "https://billbro.in";
 export const NewBaseurl = "https://production-api.billbro.info/api/";
 // export const NewBaseurl = "http://localhost:5000/api/";
 // export const ImageBaseURL = "http://localhost:5000/";
-// export const NewBaseurl = 'https://api.finnpays.com/api/';
-// export const ImageBaseURL = 'https://development-api.payzo.in/';
 export const ImageBaseURL = "https://production-api.billbro.info/";
-// export const ImageBaseURL = 'https://api.finnpays.com/';
 
 export const PhonePeLogo = "https://img.icons8.com/fluent/512/bhim.png";
 export const DummyAddtoWalletAvatar =
