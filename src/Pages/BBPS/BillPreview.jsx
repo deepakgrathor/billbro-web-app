@@ -13,6 +13,7 @@ import { setWalletSelect } from "../../Redux/Slices/PaymentSlice";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import BottomSheet from "../../Components/BottomSheet";
 import PlayStoreRating from "../../Components/PlayStoreRating";
+import { getUserProfile } from "../../Redux/Slices/AuthSlice/LoginSlice";
 
 const BillPreview = ({ data, operatorData, number, ButtonName }) => {
   const [load, setLoad] = useState(false);
@@ -99,7 +100,6 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
     if (!payload) {
       throw new Error("No response received from server");
     }
-    console.log(payload, "payload");
     // Response status check
     if (payload.ResponseStatus === 0) {
       const errorMsg =
@@ -117,7 +117,7 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
       if (["Success", "success", "Pending", "pending"].includes(status)) {
         const responseData = {
           MobileNumber: number.cn || number,
-          Operator_Code: operatorData,
+          Operator_Code: operatorData.operator_name,
           amount,
           transactionId,
           status,
@@ -182,6 +182,10 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
     );
   };
 
+  useEffect(() => {
+    dispatch(getUserProfile());
+  }, []);
+
   return (
     <div>
       <div className="bg-white min-h-screen flex flex-col">
@@ -237,20 +241,22 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
               className="flex-1 font-black text-xl outline-none placeholder:font-light"
             />
           </div>
-
-          <div className="my-4">
-            <div className="flex space-x-3 overflow-x-auto items-center">
-              {PriceArr.map((item, idx) => (
-                <p
-                  key={idx}
-                  onClick={() => setAmount(item)}
-                  className="text-[12px] text-gray-700 tracking-wider rounded-full border border-gray-300 p-1.5 px-4"
-                >
-                  +{item}
-                </p>
-              ))}
+          {data.acceptPartPay && (
+            <div className="my-4">
+              <div className="flex space-x-3 overflow-x-auto items-center">
+                {PriceArr.map((item, idx) => (
+                  <p
+                    key={idx}
+                    onClick={() => setAmount(item)}
+                    className="text-[12px] text-gray-700 tracking-wider rounded-full border border-gray-300 p-1.5 px-4"
+                  >
+                    +{item}
+                  </p>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
+
           <div className=" mt-8 mb-4 ">
             <p className="m-1 font-bold mb-3 text-sm">Select Payment Method</p>
             <div

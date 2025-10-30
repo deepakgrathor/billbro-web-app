@@ -42,7 +42,6 @@ const HomeContent = () => {
   const { bannerData, bannerLoader } = useSelector(
     (state) => state.PublicSlice.bannerList
   );
-  console.log(bannerData, 'bannerData')
   const { ProfileData } = useSelector((state) => state.LoginSlice.profile);
   const dispatch = useDispatch();
   useEffect(() => {

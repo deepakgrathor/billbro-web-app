@@ -23,7 +23,6 @@ const BBPSStatus = () => {
   const [open, setOpen] = useState(false);
   const data = location.state;
   const [copied, setCopied] = useState(false);
-  console.log(data, "data");
   // Sample data - Replace with actual props/navigation state
   const responseData = {
     MobileNumber: data.MobileNumber,

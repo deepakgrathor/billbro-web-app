@@ -167,7 +167,6 @@ const CardDesign = ({ item, rechargeData, handleProcess }) => {
 const BrowsePlans = () => {
   const dispatch = useDispatch();
   const [plans, setPlans] = useState();
-  console.log(plans, 'plans')
   const [selectedPlan, setSelectedPlan] = useState();
   const [types, setTypes] = useState();
   const [selectedType, setSelectedType] = useState(); //

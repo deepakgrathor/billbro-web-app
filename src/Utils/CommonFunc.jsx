@@ -17,7 +17,6 @@ export const getToken = async () => {
 };
 
 export const decryptFunc = (data) => {
-
   const decryptData = CryptoJS.AES.decrypt(data, CRYPTO_SECRET);
 
   const parseDecryptData = JSON.parse(decryptData.toString(CryptoJS.enc.Utf8));
@@ -28,13 +27,21 @@ export const openExternalURL = async (url) => {
 };
 export const handleChatWhatsapp = ({ number, registered_phone }) => {
   const phoneNumber = number || COMPANY_PHONE; // Replace with the recipient's phone number
-  console.log(phoneNumber, "phoneNumber")
-  // const message = `Hello ${BRAND_NAME}, Registered Number is ${registered_phone}`; // Replace with the predefined message
-  const URL = `https://wa.me/${phoneNumber}?text=Hello%20${BRAND_NAME},%20Phone%20Number%20is%20${registered_phone}`
-  // const url = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(
-  //   message
-  // )}`;
-  openExternalURL(URL);
+  const message = `Hello ${BRAND_NAME}, Phone Number is ${registered_phone}`; // Replace with the predefined message
+  const url = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(
+    message
+  )}`;
+  // Or use postMessage to communicate with React Native
+  if (window.ReactNativeWebView) {
+    window.ReactNativeWebView.postMessage(
+      JSON.stringify({
+        action: "OPEN_WHATSAPP",
+        phoneNumber: phoneNumber,
+        message: message,
+      })
+    );
+  }
+  // openExternalURL(url);
 };
 export const getSettingFunc = async () => {
   try {

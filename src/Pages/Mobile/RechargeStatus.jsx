@@ -15,7 +15,6 @@ const RechargeStatus = (route) => {
   const [content, setContent] = useState();
   const [open, setOpen] = useState(false);
   const data = location.state;
-  console.log(data, "data")
   useEffect(() => {
     if (data.status === "SUCCESS") {
       const timer = setTimeout(() => {
