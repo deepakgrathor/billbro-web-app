@@ -23,6 +23,18 @@ export const decryptFunc = (data) => {
   return parseDecryptData;
 };
 export const openExternalURL = async (url) => {
+  if (window.ReactNativeWebView) {
+    // Send message to React Native
+    window.ReactNativeWebView.postMessage(
+      JSON.stringify({
+        action: "OPEN_EXTERNAL",
+        url: url,
+      })
+    );
+  } else {
+    // Regular browser
+    window.open(url, "_blank");
+  }
   window.open(url, "_blank");
 };
 export const handleChatWhatsapp = ({ number, registered_phone }) => {
