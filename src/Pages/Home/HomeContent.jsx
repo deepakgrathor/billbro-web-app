@@ -441,7 +441,7 @@ const HomeContent = () => {
                     Wallet Balance
                   </p>
                   <p className="text-white font-bold text-2xl tracking-wide">
-                    ₹{ProfileData.Data.wallet?.balance.toLocaleString() || "0"}
+                    ₹{ProfileData.Data?.wallet?.balance.toLocaleString() || "0"}
                   </p>
                 </div>
               </div>
