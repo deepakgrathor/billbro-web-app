@@ -19,7 +19,7 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
         <div className="flex items-center gap-2 bg-green-50 px-4 py-2 rounded-xl">
           <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
             <svg
-              className="w-6 h-6 text-green-600"
+              className="w-4 h-4 text-green-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -32,7 +32,7 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
               />
             </svg>
           </div>
-          <p className="text-green-700 capitalize font-medium">
+          <p className="text-green-700 text-sm capitalize font-medium">
             {type === "ledgerBook"
               ? "The amount was credited"
               : "This transaction was successful"}
@@ -193,27 +193,31 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                     ? transaction.type
                     : transaction.type}
                 </p>
-                {type !== "deposits" && type !== "ledgerBook" && (
-                  <p className="font-semibold text-sm text-gray-600">
-                    | {transaction.number}{" "}
-                    {type === "billPayments" &&
-                      transaction.status === "success" && (
-                        <span
-                          onClick={() => handleCopy(transaction.number)}
-                          className="text-[8px] border border-gray-200 text-gray-500 p-1 px-2 bg-gray-100 rounded-full"
-                        >
-                          Tap to Copy
-                        </span>
-                      )}
-                  </p>
-                )}
+                <div className="flex items-center space-x-2">
+                  {type !== "deposits" && type !== "ledgerBook" && (
+                    <p className="font-semibold text-sm text-gray-600">
+                      | {transaction.number}{" "}
+                    </p>
+                  )}
+                  {type === "billPayments" &&
+                    transaction.status === "success" && (
+                      <span
+                        onClick={() => handleCopy(transaction.number)}
+                        className="text-[8px] border border-gray-200 text-gray-500 p-1 px-2 bg-gray-100 rounded-full"
+                      >
+                        Tap to Copy
+                      </span>
+                    )}
+                </div>
               </div>
             </div>
 
             <div className="border-b pb-3 border-gray-100 ">
               <p className="text-sm text-gray-500 mb-1">Transaction ID</p>
-              <p className="text-sm font-semibold text-gray-900">
-                {transaction.transactionId || transaction.id}
+              <div className="flex items-center space-x-2">
+                <p className="text-sm font-semibold text-gray-900">
+                  {transaction.transactionId || transaction.id}
+                </p>
                 {transaction.status === "success" && (
                   <span
                     onClick={() =>
@@ -224,7 +228,7 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                     Tap to Copy
                   </span>
                 )}
-              </p>
+              </div>
             </div>
 
             <div className="border-b pb-3 border-gray-100 ">
