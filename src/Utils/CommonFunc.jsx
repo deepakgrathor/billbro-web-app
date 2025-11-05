@@ -6,6 +6,7 @@ import {
   PACKAGE_NAME,
 } from "./Constant";
 import API from "../Redux/API";
+import ToastComp from "../Components/ToastComp";
 
 export const getToken = async () => {
   try {
@@ -142,3 +143,13 @@ export function generateUniqueTrxnRefId() {
 //     checkToken();
 //   });
 // };
+export const handleCopy = (text) => {
+  navigator.clipboard
+    .writeText(text)
+    .then(() => {
+      ToastComp({ message: "Copied!", type: "success" });
+    })
+    .catch((err) => {
+      console.error("Failed to copy:", err);
+    });
+};

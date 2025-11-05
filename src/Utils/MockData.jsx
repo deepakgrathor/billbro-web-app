@@ -505,7 +505,7 @@ export const ProfileArr = [
   {
     title: "Terms & Conditions",
     icon: TbClipboardList,
-    route: "/terms-condcitions",
+    route: "/terms-conditions",
   },
   {
     title: "Refund Policy",
@@ -592,4 +592,25 @@ export const DTH_OPERATOR_ARR = [
     placeholder: "Customer ID",
     findContent: `SMS 'ID' to 566777 or call 97818-97818 (Toll Free) from your registered mobile number.`,
   },
+];
+export const AllBBPSServiceList = [
+  { name: "Electricity", serviceId: "64c9e6571efc768da459ef06" },
+  { name: "FASTag", serviceId: "64c9e66d1efc768da459ef09" },
+  { name: "LPG", serviceId: "64c9e69d1efc768da459ef0f" },
+  { name: "Postpaid", serviceId: "6823069f9844c98ade696621" },
+  { name: "Education Fee", serviceId: "64c9e6c51efc768da459ef12" },
+  { name: "EMI", serviceId: "64c9e8f81efc768da459ef21" },
+  { name: "Credit Card", serviceId: "64c9e9091efc768da459ef24" },
+  { name: "Housing", serviceId: "64c9e91b1efc768da459ef27" },
+  { name: "Hospital Bills", serviceId: "64c9e9351efc768da459ef2a" },
+  { name: "Subscription", serviceId: "64c9e9501efc768da459ef2d" },
+  { name: "Club Assoc", serviceId: "64c9e9611efc768da459ef30" },
+  { name: "Tax", serviceId: "64c9e9731efc768da459ef33" },
+  { name: "Municipality", serviceId: "64c9e9861efc768da459ef36" },
+  { name: "Google Play", serviceId: "661061ecda6832bf278254e1" },
+  { name: "Water", serviceId: "6785748f175067b3c0359594" },
+  { name: "Gas", serviceId: "678575d63fde9ce75e7eb2a6" },
+  { name: "Cable", serviceId: "6785784516e82b262d375c03" },
+  { name: "Broadband", serviceId: "679a35d0ffc97eb2baeb06f3" },
+  { name: "Landline", serviceId: "64c9e6861efc768da459ef0c" },
 ];

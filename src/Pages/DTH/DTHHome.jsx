@@ -39,7 +39,6 @@ const DTHHome = () => {
       </>
     );
   };
-  // console.log(data, "d")
 
   const minAmountMap = {
     tata_sky: 200,
@@ -111,7 +110,6 @@ const DTHHome = () => {
         throw new Error(Data.message || "Recharge failed");
       }
     } catch (error) {
-      console.error("DTH Recharge Error:", error);
 
       const errorMessage =
         error.response?.data?.Remarks ||

@@ -8,6 +8,7 @@ import { BRAND_NAME } from "../../Utils/Constant";
 import dayjs from "dayjs";
 import BottomSheet from "../../Components/BottomSheet";
 import PlayStoreRating from "../../Components/PlayStoreRating";
+import { FaHome } from "react-icons/fa";
 
 const RechargeStatus = (route) => {
   const location = useLocation();
@@ -88,11 +89,13 @@ const RechargeStatus = (route) => {
             </div>
           </div>
           <div className="fixed bottom-4 space-y-2 left-0 w-full px-4">
-            {/* <ButtonComp
-              disabled={amount > 5000}
-              title={amount > 5000 ? "MAX Purchase Amount ₹5000" : "Proceed"}
-              handleClick={handlePayNow}
-            /> */}
+            <button
+              onClick={() => navigate("/")}
+              className="w-full flex items-center justify-center gap-2 bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-colors mt-3"
+            >
+              <FaHome className="w-5 h-5" />
+              Back to Home
+            </button>
           </div>
         </div>
       </div>

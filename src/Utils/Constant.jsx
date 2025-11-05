@@ -1,12 +1,12 @@
 export const WebBaseURL = "https://billbro.in";
 export const NewBaseurl = "https://production-api.billbro.info/api/";
-// export const NewBaseurl = "http://localhost:5000/api/";
+// export const NewBaseurl = "httpr://localhost:5000/api/";
 // export const ImageBaseURL = "http://localhost:5000/";
 export const ImageBaseURL = "https://production-api.billbro.info/";
 
 export const PhonePeLogo = "https://img.icons8.com/fluent/512/bhim.png";
 export const DummyAddtoWalletAvatar =
-  'https://ik.imagekit.io/43tomntsa/AddWallet.png';
+  "https://ik.imagekit.io/43tomntsa/AddWallet.png";
 // export const KeyRazor = 'rzp_test_40AR4w7Qve3H9y';
 export const KeyRazor = "rzp_live_oZlkB00tvqxq3Q";
 // Service IDs

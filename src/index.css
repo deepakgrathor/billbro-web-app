@@ -12,17 +12,19 @@ body {
 
 /* Hide all scrollbars globally */
 * {
-  scrollbar-width: none;   /* Firefox */
+  scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
-   overscroll-behavior: none;
-    overscroll-behavior-y: none;
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
 }
 
 *::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
 }
 /* App.css or global CSS */
-body, input, textarea {
+body,
+input,
+textarea {
   user-select: none; /* Text selection disable */
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -33,6 +35,94 @@ body {
   -webkit-touch-callout: none; /* iOS long press menu disable */
 }
 
-input, textarea {
+input,
+textarea {
   pointer-events: auto; /* inputs ko editable rakhne ke liye */
+}
+
+/* Custom Scrollbar Styles for Tabs */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Sticky tab shadow on scroll */
+.sticky-shadow {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Custom scrollbar for transaction list */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Tab responsive text */
+@media (max-width: 640px) {
+  .tab-text {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+/* Prevent horizontal scroll on mobile */
+body {
+  overflow-x: hidden;
+}
+
+/* Smooth transitions */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Bottom Sheet Animation */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+/* Backdrop fade */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
 }

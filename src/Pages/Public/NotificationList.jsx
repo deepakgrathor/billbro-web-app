@@ -25,7 +25,7 @@ const NotificationList = () => {
       <div className="fixed top-0 w-full ">
         <CommonHeader
           title={"Notifications"}
-          handleclick={() => navigate('/HomeContent')}
+          handleclick={() => navigate("/HomeContent")}
         />
       </div>
       <div
@@ -33,11 +33,11 @@ const NotificationList = () => {
         style={{ backgroundColor: secondaryColor }}
       >
         {!notificationLoader && notificationList.Data ? (
-          <div className="p-2 space-y-1.5">
+          <div className="">
             {notificationList.Data.map((item, index) => (
               <div
                 key={index}
-                className="flex justify-between items-center bg-white rounded-xl border border-gray-300 px-4 py-4"
+                className="flex border-b border-gray-200 justify-between items-center bg-white  px-4 py-4"
                 // style={{ borderColor: primaryColor }}
               >
                 {/* Left section */}
@@ -56,11 +56,11 @@ const NotificationList = () => {
                   />
                   <div className="space-y-1">
                     <div className="flex items-center gap-1 flex-wrap">
-                      <p className="text-[12px] font-medium text-black">
+                      <p className="text-[12px] capitalize font-medium text-black">
                         {item?.title}
                       </p>
                     </div>
-                    <p className="text-[10px] text-gray-500">{item?.body}</p>
+                    <p className="text-[10px] capitalize text-gray-500">{item?.body}</p>
                   </div>
                 </div>
 

@@ -28,13 +28,15 @@ import OperatorAndCircle from "../Pages/Mobile/OperatorAndCircle";
 import PaymentConfirm from "../Pages/Mobile/PaymentConfirm";
 import ReferScreen from "../Pages/Public/ReferScreen";
 import ReferList from "../Pages/Public/ReferList";
-import BBPSComplain from "../Pages/BBPS/BBPSComplain";
+import BBPSComplain from "../Pages/BBPS/BBPSComplain/BBPSComplain";
 import GooglePlay from "../Pages/BBPS/GooglePlay";
 import RechargeStatus from "../Pages/Mobile/RechargeStatus";
 import Contact from "../Pages/Public/Contact";
 import PrivacyPolicy from "../Pages/Public/PrivacyPolicy";
 import TermsConditions from "../Pages/Public/TermsConditions";
 import RefundPolicy from "../Pages/Public/RefundPolicy";
+import RaiseComplaintPage from "../Pages/Reports/RaiseComplaintPage";
+import BBPSComplaintSuccess from "../Pages/BBPS/BBPSComplain/BBPSComplaintSuccess";
 // import { RechargeProvider } from "../Context/RechargeContext";
 
 const AppNavigate = () => {
@@ -66,6 +68,7 @@ const AppNavigate = () => {
                 <Route path="/dth" element={<DTHHome />} />
                 <Route path="/bbpsstatus" element={<BBPSStatus />} />
                 <Route path="/bbps-complaint-registration" element={<BBPSComplain />} />
+                <Route path="/bbps-complaint-success" element={<BBPSComplaintSuccess />} />
                 <Route path="/refer" element={<ReferScreen />} />
                 <Route path="/referlist" element={<ReferList />} />
                 <Route path="/rechargestatus" element={<RechargeStatus />} />
@@ -73,6 +76,7 @@ const AppNavigate = () => {
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms-conditions" element={<TermsConditions />} />
                 <Route path="/refund-policy" element={<RefundPolicy />} />
+                <Route path="/recharge-complain" element={<RaiseComplaintPage />} />
 
                 {/* Add more private routes here */}
               </Route>
