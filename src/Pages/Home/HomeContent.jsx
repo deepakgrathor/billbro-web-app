@@ -552,7 +552,7 @@ const HomeContent = () => {
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
 
               {/* Content */}
-              <div className="relative z-10 flex items-center space-x-4">
+              <div className="relative flex items-center space-x-4">
                 <img
                   src="https://ik.imagekit.io/43tomntsa/refer.png"
                   alt="Refer"
@@ -572,7 +572,7 @@ const HomeContent = () => {
               {/* Button */}
               <button
                 onClick={() => navigate("/refer")}
-                className="relative z-10 bg-white hover:bg-gray-50 text-purple-600 font-bold px-6 py-3 rounded-xl shadow-xl transition-all duration-300 active:scale-90 flex items-center space-x-2"
+                className="relative bg-white hover:bg-gray-50 text-purple-600 font-bold px-6 py-3 rounded-xl shadow-xl transition-all duration-300 active:scale-90 flex items-center space-x-2"
               >
                 <MdOutlineShare size={20} />
                 <span className="text-sm">Invite</span>

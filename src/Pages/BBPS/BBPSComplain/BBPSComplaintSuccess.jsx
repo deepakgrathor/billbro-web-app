@@ -45,10 +45,10 @@ const BBPSComplaintSuccess = () => {
   const handleCopyComplaintId = () => {
     if (complaintData?.complaintId) {
       navigator.clipboard.writeText(complaintData.complaintId);
-      ToastComp({
-        message: "Complaint ID copied to clipboard!",
-        type: "success",
-      });
+      // ToastComp({
+      //   message: "Complaint ID copied to clipboard!",
+      //   type: "success",
+      // });
     }
   };
 

@@ -32,33 +32,22 @@ export const fetchTransactionData = async ({
   try {
     switch (activeTab) {
       case "recharges": {
-        // Fetch both Mobile Recharge and DTH together
-        const [mobileResponse, dthResponse] = await Promise.all([
-          API.get(`/cyrus/recharge_history`, {
-            params: { page, limit, ...dateParams },
-          }),
-          API.get(`/cyrus/dth_history`, {
-            params: { page, limit, ...dateParams },
-          }),
-        ]);
-
-        const mobileData = formatRechargeData(
-          decryptFunc(mobileResponse.data.Data) || []
-        );
-        const dthData = formatDTHData(dthResponse.data.Data || []);
-
-        // Merge and sort by date (newest first)
-        const allRecharges = [...mobileData, ...dthData].sort((a, b) => {
-          return new Date(b.date) - new Date(a.date);
+        const mobileResponse = await API.get(`/cyrus/recharge_history`, {
+          params: { page, limit, ...dateParams },
         });
 
-        // Paginate manually
-        const startIndex = (page - 1) * limit;
-        const endIndex = startIndex + limit;
-        transactions = allRecharges.slice(startIndex, endIndex);
+        transactions = formatRechargeData(mobileResponse.data.Data || []);
+        totalPages = mobileResponse.data.totalPages || 1;
+        break;
+      }
+      case "dth": {
+        // Fetch both Mobile Recharge and DTH together
+        const dthResponse = await API.get(`/cyrus/dth_history`, {
+          params: { page, limit, ...dateParams },
+        });
 
-        // Calculate total pages based on combined data
-        totalPages = Math.ceil(allRecharges.length / limit);
+        transactions = formatDTHData(dthResponse.data.Data || []);
+        totalPages = dthResponse.data.totalPages || 1;
         break;
       }
 
@@ -130,7 +119,7 @@ export const fetchTransactionData = async ({
 
 /**
  * Format date for API - ISO format without timezone
- * 
+ *
  * @param {Date} date - JavaScript Date object
  * @returns {string} - ISO formatted date (e.g., "2025-10-31T00:00:00")
  */

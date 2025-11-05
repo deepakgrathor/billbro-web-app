@@ -1,6 +1,6 @@
 export const WebBaseURL = "https://billbro.in";
 export const NewBaseurl = "https://production-api.billbro.info/api/";
-// export const NewBaseurl = "httpr://localhost:5000/api/";
+// export const NewBaseurl = "http://localhost:5000/api/";
 // export const ImageBaseURL = "http://localhost:5000/";
 export const ImageBaseURL = "https://production-api.billbro.info/";
 

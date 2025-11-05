@@ -76,7 +76,7 @@ const BBPSStatus = () => {
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
     setCopied(true);
-    ToastComp({ message: "Copied to clipboard!", type: "success" });
+    // ToastComp({ message: "Copied to clipboard!", type: "success" });
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -91,7 +91,7 @@ const BBPSStatus = () => {
         text: `Transaction ID: ${responseData.transactionId}\nAmount: ₹${responseData.amount}\nStatus: ${responseData.status}`,
       });
     } else {
-      alert("Share functionality");
+      // alert("Share functionality");
     }
   };
 

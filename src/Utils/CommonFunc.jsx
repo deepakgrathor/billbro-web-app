@@ -147,7 +147,7 @@ export const handleCopy = (text) => {
   navigator.clipboard
     .writeText(text)
     .then(() => {
-      ToastComp({ message: "Copied!", type: "success" });
+      // ToastComp({ message: "Copied!", type: "success" });
     })
     .catch((err) => {
       console.error("Failed to copy:", err);

@@ -31,6 +31,7 @@ const Reports = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const tabs = [
     { id: "recharges", label: "Recharges" },
+    { id: "dth", label: "DTH" },
     { id: "billPayments", label: "Bill Payments" },
     { id: "deposits", label: "Deposits" },
     { id: "referrals", label: "Referrals" },
@@ -47,7 +48,6 @@ const Reports = () => {
   useEffect(() => {
     fetchData();
   }, [activeTab, currentPage, selectedService]);
-
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -58,7 +58,6 @@ const Reports = () => {
         selectedService,
         phone: ProfileData?.Data?.phone,
       });
-
       setTransactions(result.transactions);
       setTotalPages(result.totalPages || 1);
     } catch (error) {
@@ -99,7 +98,6 @@ const Reports = () => {
     setIsModalOpen(false);
     setSelectedTransaction(null);
   };
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
