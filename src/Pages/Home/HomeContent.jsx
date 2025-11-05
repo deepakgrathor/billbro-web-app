@@ -415,7 +415,7 @@ const HomeContent = () => {
       </div>
 
       {/* Scrollable Content */}c
-      <div className="overflow-y-auto pt-[100px] pb-20">
+      <div className="overflow-y-auto pt-[70px] pb-20">
         {/* Banner Section */}
         {serviceList.Data?.find((a) => a.name === "BANNER_SHOW")?.isShow && (
           <div className="px-4">
