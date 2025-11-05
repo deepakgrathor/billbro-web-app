@@ -435,7 +435,7 @@ const HomeContent = () => {
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
                   <MdAccountBalanceWallet size={24} className="text-white" />
-                </div>w
+                </div>
                 <div>
                   <p className="text-white/70 text-[10px] font-medium tracking-wide">
                     Wallet Balance

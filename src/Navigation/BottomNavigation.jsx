@@ -6,7 +6,7 @@ const BottomNavigation = ({ path }) => {
   
   const navigate = useNavigate();
   return (
-    <div className="fixed text-sm bottom-0 left-0 w-full bg-white  border-t border-gray-200 p-2 flex justify-around items-center">
+    <div className="fixed text-sm bottom-0 left-0 w-full bg-white  border-t border-gray-200 p-2 flex justify-around items-center z-50">
       {BOTTOM_MENU_DATA.map((item, index) => {
         const Icon = item.icon;
         return (
