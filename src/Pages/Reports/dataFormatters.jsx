@@ -35,6 +35,7 @@ export const formatDTHData = (data) => {
 };
 
 export const formatBBPSData = (data, serviceName) => {
+  console.log(serviceName, "serviceName");
   if (!Array.isArray(data)) return [];
   return data.map((item) => ({
     id: item.transactionId,
@@ -48,6 +49,7 @@ export const formatBBPSData = (data, serviceName) => {
     commission: `₹${item.rawResponse?.margin || 0}`,
     status: item.status,
     logo: getBillLogo(serviceName),
+    OPR_REF: item.operatorRef,
   }));
 };
 

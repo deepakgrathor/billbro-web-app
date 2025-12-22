@@ -72,6 +72,18 @@ const BBPSList = () => {
     (a) => a.section === "finance" && a.isShow
   );
 
+  const rightDesign = () => {
+    return (
+      <div className="">
+        <img
+          width={60}
+          src="https://ik.imagekit.io/isjriggan/images%20(1).png"
+          alt=""
+        />
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 relative overflow-hidden">
       {/* Decorative Background Elements */}
@@ -80,7 +92,11 @@ const BBPSList = () => {
 
       {/* Header */}
       <div className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md shadow-sm">
-        <CommonHeader title="Bill Payments" handleclick={() => navigate(-1)} />
+        <CommonHeader
+          title="Bill Payments"
+          handleclick={() => navigate(-1)}
+          rightDesign={rightDesign}
+        />
       </div>
 
       {/* Main Content */}
@@ -354,7 +370,7 @@ const BBPSList = () => {
       </div>
 
       {/* Footer - Powered by BBPS */}
-      <motion.div
+      {/* <motion.div
         className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 py-3 z-40"
         initial={{ y: 100 }}
         animate={{ y: 0 }}
@@ -373,7 +389,7 @@ const BBPSList = () => {
             className="h-5 object-contain"
           />
         </div>
-      </motion.div>
+      </motion.div> */}
 
       {/* Loader */}
       {serviceLoader && <Loader />}

@@ -413,7 +413,6 @@ const HomeContent = () => {
       <div className="fixed w-full z-50">
         <HeaderHome ProfileData={ProfileData} />
       </div>
-
       {/* Scrollable Content */}c
       <div className="overflow-y-auto pt-[70px] pb-20">
         {/* Banner Section */}
@@ -534,7 +533,7 @@ const HomeContent = () => {
                     />
                   </div>
                   <p className="text-[10px] font-medium text-gray-700">
-                    See All
+                    Pay Bills
                   </p>
                 </div>
               )}
@@ -544,39 +543,83 @@ const HomeContent = () => {
 
         {/* Refer & Earn Card */}
         <div className="px-4 mt-6">
-          <div className="bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 rounded-2xl shadow-2xl overflow-hidden">
-            <div className="p-5 flex items-center justify-between relative">
-              {/* Background Pattern */}
-              <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
+          <div className="relative rounded-3xl overflow-hidden shadow-[0_10px_40px_rgba(15,23,42,0.35)] bg-slate-900">
+            {/* Gradient border */}
+            <div className="absolute inset-0 bg-gradient-to-br from-fuchsia-500 via-purple-500 to-sky-500 opacity-80" />
+            <div className="relative m-[1px] rounded-[1.4rem] bg-slate-950/20 backdrop-blur-xl">
+              {/* Top strip */}
+              {/* <div className="flex items-center justify-between px-4 pt-3 pb-1">
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.15em] bg-white/5 text-fuchsia-300 border border-white/10">
+                  Referral Reward
+                </span>
+                <span className="text-[10px] text-slate-300/80">
+                  Mobile users only 🎯
+                </span>
+              </div> */}
 
-              {/* Content */}
-              <div className="relative flex items-center space-x-4">
-                <img
-                  src="https://ik.imagekit.io/43tomntsa/refer.png"
-                  alt="Refer"
-                  className="w-24 h-24 object-contain drop-shadow-2xl"
-                />
-                <div className="space-y-1">
-                  <p className="text-white/90 text-[11px] font-medium">
-                    Invite friends to {BRAND_NAME}
-                  </p>
-                  <p className="text-white font-black text-2xl">Get ₹15</p>
-                  <p className="text-white/80 text-[9px] leading-relaxed">
-                    When they add ₹100 or more
-                  </p>
+              {/* Main content */}
+              <div className="px-4 pb-4 pt-4 flex items-center justify-between gap-3">
+                {/* Left: image + text */}
+                <div className="flex items-center gap-3">
+                  {/* Image bubble */}
+                  <div className="relative">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-fuchsia-500/40 via-purple-500/40 to-sky-500/40 flex items-center justify-center border border-white/10">
+                      <img
+                        src="https://ik.imagekit.io/43tomntsa/refer.png"
+                        alt="Refer & Earn"
+                        className="w-12 h-12 object-contain drop-shadow-2xl"
+                      />
+                    </div>
+                    <div className="absolute -right-1 -bottom-1 px-1.5 py-[2px] rounded-full bg-emerald-500 text-[9px] font-semibold text-white shadow-lg">
+                      +₹15
+                    </div>
+                  </div>
+
+                  {/* Text */}
+                  <div className="space-y-0.5">
+                    <p className="text-[11px] font-medium text-slate-200/90">
+                      Invite friends to{" "}
+                      <span className="font-semibold text-white">
+                        {BRAND_NAME}
+                      </span>
+                    </p>
+                    <p className="text-[22px] leading-snug font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-300 to-emerald-300">
+                      Earn ₹15 instantly
+                    </p>
+                    {/* <p className="text-[10px] text-slate-400 leading-relaxed">
+                      Jab wo pehli baar{" "}
+                      <span className="font-semibold text-slate-200">
+                        ₹100+
+                      </span>{" "}
+                      add karenge, aapko turant reward mil jayega.
+                    </p> */}
+
+                    {/* Tiny bullets */}
+                    <div className="flex items-center gap-2 pt-1">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 px-2 py-[2px]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                        <span className="text-[9px] text-emerald-200 font-medium">
+                          No limit on invites
+                        </span>
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              {/* Button */}
-              <button
-                onClick={() => navigate("/refer")}
-                className="relative bg-white hover:bg-gray-50 text-purple-600 font-bold px-6 py-3 rounded-xl shadow-xl transition-all duration-300 active:scale-90 flex items-center space-x-2"
-              >
-                <MdOutlineShare size={20} />
-                <span className="text-sm">Invite</span>
-              </button>
+                {/* Right: button */}
+                <button
+                  onClick={() => navigate("/refer")}
+                  className="flex flex-col items-stretch gap-1 min-w-[88px]"
+                >
+                  <span className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white text-fuchsia-600 font-semibold text-[12px] px-3 py-2 shadow-lg active:scale-95 transition-transform duration-150">
+                    <MdOutlineShare size={18} />
+                    <span>Invite</span>
+                  </span>
+                  <span className="text-[9px] text-slate-400 text-center">
+                    Share link &amp; earn
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -720,7 +763,6 @@ const HomeContent = () => {
           </div>
         </div>
       </div>
-
       {/* Bottom Navigation */}
       <div className="fixed bottom-0 w-full">
         <BottomNavigation path={location.pathname} />

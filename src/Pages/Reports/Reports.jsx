@@ -98,11 +98,26 @@ const Reports = () => {
     setIsModalOpen(false);
     setSelectedTransaction(null);
   };
+  const rightDesign = () => {
+    return (
+      <div className="">
+        <img
+          width={60}
+          src="https://ik.imagekit.io/isjriggan/images%20(1).png"
+          alt=""
+        />
+      </div>
+    );
+  };
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="fixed top-0 w-full z-10">
-        <CommonHeader title={"Reports"} handleclick={() => navigate(-1)} />
+        <CommonHeader
+          title={"Reports"}
+          handleclick={() => navigate(-1)}
+          rightDesign={rightDesign}
+        />
       </div>
 
       {/* Body */}
