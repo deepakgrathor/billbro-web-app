@@ -733,7 +733,7 @@ const Wallet = () => {
             JSON.stringify({
               action: "OPEN_UPI_APP",
               upiIntentUrl: upiLink, // ✅ Direct upiLink
-              orderId: orderId, // ✅ YOUR order ID (Z_xxx)
+              orderId: zwitch_transaction_id, // ✅ YOUR order ID (Z_xxx)
               amount: parseFloat(amount),
             })
           );
