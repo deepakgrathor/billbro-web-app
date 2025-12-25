@@ -502,7 +502,6 @@ import React, { useEffect, useRef, useState } from "react";
 import CommonHeader from "../../Components/CommonHeader";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import ButtonComp from "../../Components/ButtonComp";
 import ToastComp from "../../Components/ToastComp";
 import {
   MdAccountBalanceWallet,
@@ -527,17 +526,10 @@ const Wallet = () => {
 
   const handleChange = (e) => {
     const value = e.target.value;
-
-    // Only allow digits
     if (!/^\d*$/.test(value)) return;
-
-    // Clear selected amount when typing
     setSelectedAmount(null);
-
-    // Set value
     setAmount(value);
 
-    // Validation check
     if (Number(value) > 50000) {
       ToastComp({
         message: "Amount cannot be more than ₹50,000",
@@ -552,9 +544,8 @@ const Wallet = () => {
   };
 
   const mountRef = useRef(null);
-  const upiAppRef = useRef(null);
 
-  // ✅ NEW: Listen for payment completion from React Native
+  // ✅ Listen for payment completion from React Native
   useEffect(() => {
     const handleMessage = (event) => {
       try {
@@ -577,12 +568,10 @@ const Wallet = () => {
       }
     };
 
-    // For web testing
     if (window.addEventListener) {
       window.addEventListener("message", handleMessage);
     }
 
-    // For React Native WebView
     if (document.addEventListener) {
       document.addEventListener("message", handleMessage);
     }
@@ -597,56 +586,47 @@ const Wallet = () => {
     };
   }, []);
 
-  // ✅ NEW: Handle payment completion
+  // ✅ FIXED: Handle payment completion based on actual response
   const handlePaymentCompletion = async (completedOrderId) => {
     console.log("Verifying payment for order:", completedOrderId);
 
     setLoading(true);
 
     try {
-      const token = localStorage.getItem("token");
-
-      // Verify payment status with backend
-      const response = await API.post(
-        `${NewBaseurl}payment/zwitch/verify-order`,
-        { order_id: completedOrderId },
-        {
-          headers: {
-            token: `${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      // ✅ Call verify API with correct payload
+      const response = await API.post(`payment/upiintent/verify-order`, {
+        orderId: completedOrderId, // ✅ Use orderId (not order_id)
+      });
 
       console.log("Payment verification response:", response.data);
 
-      if (response.data.success) {
-        const status = response.data.status || response.data.data?.status;
+      // ✅ FIXED: Check response format - { status: "SUCCESS", amount: "1.00" }
+      if (response.data.status) {
+        const status = response.data.status; // Direct status field
         setPaymentStatus(status);
 
-        if (status === "success" || status === "SUCCESS") {
-          ToastComp({
-            message: `Payment Successful! ₹${
-              response.data.data?.amount || amount
-            } added to wallet`,
-            type: "success",
+        if (status === "SUCCESS") {
+          // ✅ Navigate to success page
+          navigate("/payment-success", {
+            state: {
+              amount: response.data.amount || amount, // ✅ Use amount from response
+              orderId: completedOrderId, // ✅ Use the order ID we're verifying
+              transactionId: "N/A", // Not in response
+              date: new Date().toISOString(),
+            },
           });
 
           // Reset form
           setAmount("");
           setSelectedAmount(null);
           setOrderId(null);
-
-          // Refresh wallet balance
-          setTimeout(() => {
-            window.location.reload();
-          }, 2000);
-        } else if (status === "failure" || status === "FAILURE") {
+        } else if (status === "FAILURE" || status === "FAILED") {
           ToastComp({
             message: "Payment Failed. Please try again.",
             type: "error",
           });
-        } else if (status === "pending" || status === "PENDING") {
+          setLoading(false);
+        } else if (status === "PENDING") {
           ToastComp({
             message: "Payment is being processed. Please wait...",
             type: "info",
@@ -655,20 +635,29 @@ const Wallet = () => {
           // Retry after 3 seconds
           setTimeout(() => handlePaymentCompletion(completedOrderId), 3000);
           return; // Don't set loading to false yet
+        } else {
+          // Unknown status
+          ToastComp({
+            message: `Payment status: ${status}`,
+            type: "info",
+          });
+          setLoading(false);
         }
       } else {
+        // Status is false
         ToastComp({
           message: response.data.message || "Error verifying payment",
           type: "error",
         });
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error checking payment status:", error);
       ToastComp({
-        message: "Error verifying payment status",
+        message:
+          error.response?.data?.message || "Error verifying payment status",
         type: "error",
       });
-    } finally {
       setLoading(false);
     }
   };
@@ -714,30 +703,28 @@ const Wallet = () => {
     setPaymentStatus(null);
 
     try {
-      // ✅ Call Zwitch API (update endpoint as per your backend)
-      const response = await API.post(
-        `payment/upiintent/create-order`, // Update this endpoint
-        { amount: parseFloat(amount) }
-      );
+      // ✅ Call create order API
+      const response = await API.post(`payment/upiintent/create-order`, {
+        amount: parseFloat(amount),
+      });
 
       console.log("Create order response:", response.data);
 
+      // ✅ FIXED: Parse response - { status: true, upiLink, orderId, zwitch_transaction_id }
       if (response.data.status) {
-        // Support both response formats
-        const { orderId, upiLink, data } = response.data;
+        const { orderId, upiLink, zwitch_transaction_id } = response.data;
 
-        const finalOrderId = orderId || data?.orderId;
-        const finalIntentUrl = upiLink || data?.upiIntentUrl;
-
-        if (!finalIntentUrl) {
+        if (!upiLink) {
           throw new Error("UPI Intent URL not received from server");
         }
 
-        setOrderId(finalOrderId);
+        // ✅ Save YOUR order ID (Z_xxx)
+        setOrderId(orderId);
 
         console.log("Payment initiated:", {
-          orderId: finalOrderId,
-          upiIntentUrl: finalIntentUrl,
+          orderId: orderId, // ✅ Z_1766697974443832
+          upiLink: upiLink,
+          zwitchTxnId: zwitch_transaction_id, // pt_f7694DaBf697288
         });
 
         // Send UPI Intent URL to React Native
@@ -745,28 +732,27 @@ const Wallet = () => {
           window.ReactNativeWebView.postMessage(
             JSON.stringify({
               action: "OPEN_UPI_APP",
-              upiIntentUrl: finalIntentUrl,
-              orderId: finalOrderId,
+              upiIntentUrl: upiLink, // ✅ Direct upiLink
+              orderId: orderId, // ✅ YOUR order ID (Z_xxx)
               amount: parseFloat(amount),
             })
           );
 
           ToastComp({
             message: "Opening UPI app...",
-            type: "success",
+            type: "info",
           });
         } else {
-          // For web testing - open UPI intent directly
+          // For web testing
           console.warn("Not running in React Native WebView");
-          console.log("UPI Intent URL:", finalIntentUrl);
+          console.log("UPI Intent URL:", upiLink);
 
           ToastComp({
             message: "Redirecting to UPI app...",
-            type: "success",
+            type: "info",
           });
 
-          // Try to open UPI app
-          window.location.href = finalIntentUrl;
+          window.location.href = upiLink;
         }
       } else {
         throw new Error(response.data.message || "Payment initiation failed");
@@ -803,7 +789,6 @@ const Wallet = () => {
         {/* Balance Card */}
         <div className="px-4 pt-4">
           <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 rounded-2xl shadow-2xl overflow-hidden">
-            {/* Background Pattern */}
             <div className="absolute inset-0 bg-white/10"></div>
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
@@ -835,7 +820,6 @@ const Wallet = () => {
                 </div>
               </div>
 
-              {/* Quick Info */}
               <div className="grid grid-cols-3 gap-2 mt-4">
                 <div className="bg-white/10 backdrop-blur-sm rounded-xl p-2 text-center">
                   <p className="text-white text-xs font-bold">Today</p>
@@ -856,7 +840,7 @@ const Wallet = () => {
           </div>
         </div>
 
-        {/* ✅ NEW: Payment Status Indicator */}
+        {/* Payment Status Indicator */}
         {loading && (
           <div className="px-4 mt-4">
             <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-center space-x-3">
@@ -881,7 +865,6 @@ const Wallet = () => {
               <span>Enter Amount</span>
             </h3>
 
-            {/* Amount Input */}
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl opacity-0 group-hover:opacity-100 blur transition duration-300"></div>
               <div className="relative flex items-center bg-gradient-to-r from-gray-50 to-gray-100 border-2 border-gray-300 group-hover:border-blue-400 focus-within:border-blue-500 rounded-2xl px-5 py-6 transition-all duration-300">
@@ -913,9 +896,8 @@ const Wallet = () => {
               </div>
             </div>
 
-            {/* Limit Info */}
             <div className="mt-3 flex items-center justify-between px-2">
-              <p className="text-xs text-gray-500">Minimum: ₹10</p>
+              <p className="text-xs text-gray-500">Minimum: ₹1</p>
               <p className="text-xs text-gray-500">Maximum: ₹50,000</p>
             </div>
           </div>

@@ -37,6 +37,7 @@ import TermsConditions from "../Pages/Public/TermsConditions";
 import RefundPolicy from "../Pages/Public/RefundPolicy";
 import RaiseComplaintPage from "../Pages/Reports/RaiseComplaintPage";
 import BBPSComplaintSuccess from "../Pages/BBPS/BBPSComplain/BBPSComplaintSuccess";
+import PaymentSuccess from "../Pages/Wallet/PaymentSuccess";
 // import { RechargeProvider } from "../Context/RechargeContext";
 
 const AppNavigate = () => {
@@ -55,6 +56,7 @@ const AppNavigate = () => {
                 <Route path="/" element={<HomeContent />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/wallet" element={<Wallet />} />
+                <Route path="/payment-success" element={<PaymentSuccess />} />
                 <Route path="/reports" element={<Reports />} />
                 <Route path="/commission" element={<CommissionList />} />
                 <Route path="/notification" element={<NotificationList />} />
