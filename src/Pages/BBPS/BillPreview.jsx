@@ -538,7 +538,8 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
     return (
       <div className="">
         <img
-          width={60}
+          width={100}
+          height={40}
           src="https://ik.imagekit.io/isjriggan/images%20(1).png"
           alt="BBPS"
         />

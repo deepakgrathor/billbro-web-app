@@ -525,11 +525,11 @@ const HomeContent = () => {
                   onClick={() => navigate("/bbpslist")}
                   className="flex flex-col items-center space-y-2 cursor-pointer group"
                 >
-                  <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center shadow-md group-hover:shadow-xl group-hover:scale-110 group-active:scale-95 transition-all duration-300 border-2 border-dashed border-gray-400">
+                  <div className="w-16 h-16  bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl flex items-center justify-center shadow-md group-hover:shadow-xl group-hover:scale-110 group-active:scale-95 transition-all duration-300 border border-gray-200">
                     <img
                       src="https://app.billhub.in/assets/bbps-logo.png"
                       alt="See All"
-                      className="w-8 h-8"
+                      className="w-[50px] h-[50px] object-contain"
                     />
                   </div>
                   <p className="text-[10px] font-medium text-gray-700">

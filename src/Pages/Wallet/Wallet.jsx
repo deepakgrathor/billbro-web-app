@@ -509,9 +509,9 @@ import {
   MdSecurity,
   MdSpeed,
   MdVerifiedUser,
+  MdCheckCircle,
 } from "react-icons/md";
 import API from "../../Redux/API";
-import { NewBaseurl } from "../../Utils/Constant";
 
 const Wallet = () => {
   const navigate = useNavigate();
@@ -519,8 +519,8 @@ const Wallet = () => {
   const [orderId, setOrderId] = useState(null);
   const { ProfileData } = useSelector((state) => state.LoginSlice.profile);
   const [loading, setLoading] = useState(false);
+  const [loadingStage, setLoadingStage] = useState(""); // ✅ NEW: Track loader stages
   const [selectedAmount, setSelectedAmount] = useState(null);
-  const [paymentStatus, setPaymentStatus] = useState(null);
 
   const walletBalance = ProfileData?.Data?.wallet?.balance || 0;
 
@@ -530,9 +530,9 @@ const Wallet = () => {
     setSelectedAmount(null);
     setAmount(value);
 
-    if (Number(value) > 50000) {
+    if (Number(value) > 10000) {
       ToastComp({
-        message: "Amount cannot be more than ₹50,000",
+        message: "Amount cannot be more than ₹10,000",
         type: "error",
       });
     }
@@ -552,12 +552,15 @@ const Wallet = () => {
         const message =
           typeof event.data === "string" ? JSON.parse(event.data) : event.data;
 
-        console.log("Message received from React Native:", message);
+        console.log("📨 Message received:", message);
 
         if (message.type === "PAYMENT_COMPLETED") {
+          console.log("✅ Payment completion triggered");
           handlePaymentCompletion(message.data.orderId);
         } else if (message.type === "UPI_APP_NOT_FOUND") {
+          console.log("❌ UPI app not found");
           setLoading(false);
+          setLoadingStage("");
           ToastComp({
             message: "Please install a UPI app to complete payment",
             type: "error",
@@ -586,198 +589,159 @@ const Wallet = () => {
     };
   }, []);
 
-  // ✅ FIXED: Handle payment completion based on actual response
+  // ✅ Handle payment completion
   const handlePaymentCompletion = async (completedOrderId) => {
-    console.log("Verifying payment for order:", completedOrderId);
-
-    setLoading(true);
+    console.log("🔄 Verifying payment for order:", completedOrderId);
+    setLoadingStage("verifying"); // ✅ Stage 3: Verifying
 
     try {
-      // ✅ Call verify API with correct payload
       const response = await API.post(`payment/upiintent/verify-order`, {
-        orderId: completedOrderId, // ✅ Use orderId (not order_id)
+        orderId: completedOrderId,
       });
 
       console.log("Payment verification response:", response.data);
 
-      // ✅ FIXED: Check response format - { status: "SUCCESS", amount: "1.00" }
       if (response.data.status) {
-        const status = response.data.status; // Direct status field
-        setPaymentStatus(status);
+        const status = response.data.status;
 
         if (status === "SUCCESS") {
-          // ✅ Navigate to success page
-          navigate("/payment-success", {
-            state: {
-              amount: response.data.amount || amount, // ✅ Use amount from response
-              orderId: completedOrderId, // ✅ Use the order ID we're verifying
-              transactionId: "N/A", // Not in response
-              date: new Date().toISOString(),
-            },
-          });
+          console.log("✅ Payment successful");
+          setLoadingStage("success"); // ✅ Stage 4: Success
 
-          // Reset form
-          setAmount("");
-          setSelectedAmount(null);
-          setOrderId(null);
-        } else if (status === "FAILURE" || status === "FAILED") {
+          // Wait 1.5 seconds to show success animation
+          setTimeout(() => {
+            navigate("/payment-success", {
+              state: {
+                amount: response.data.amount || amount,
+                orderId: completedOrderId,
+                transactionId: response.data.transactionId || "N/A",
+                date: new Date().toISOString(),
+              },
+            });
+
+            // Reset
+            setAmount("");
+            setSelectedAmount(null);
+            setOrderId(null);
+            setLoading(false);
+            setLoadingStage("");
+          }, 1500);
+        } else if (status === "PENDING") {
+          console.log("⏳ Payment pending, retrying...");
+          ToastComp({
+            message: "Payment is being processed...",
+            type: "info",
+          });
+          // Retry after 3 seconds
+          setTimeout(() => handlePaymentCompletion(completedOrderId), 3000);
+          return;
+        } else {
+          console.log("❌ Payment failed");
+          setLoading(false);
+          setLoadingStage("");
           ToastComp({
             message: "Payment Failed. Please try again.",
             type: "error",
           });
-          setLoading(false);
-        } else if (status === "PENDING") {
-          ToastComp({
-            message: "Payment is being processed. Please wait...",
-            type: "info",
-          });
-
-          // Retry after 3 seconds
-          setTimeout(() => handlePaymentCompletion(completedOrderId), 3000);
-          return; // Don't set loading to false yet
-        } else {
-          // Unknown status
-          ToastComp({
-            message: `Payment status: ${status}`,
-            type: "info",
-          });
-          setLoading(false);
         }
       } else {
-        // Status is false
+        setLoading(false);
+        setLoadingStage("");
         ToastComp({
           message: response.data.message || "Error verifying payment",
           type: "error",
         });
-        setLoading(false);
       }
     } catch (error) {
       console.error("Error checking payment status:", error);
+      setLoading(false);
+      setLoadingStage("");
       ToastComp({
-        message:
-          error.response?.data?.message || "Error verifying payment status",
+        message: "Error verifying payment status",
         type: "error",
       });
-      setLoading(false);
     }
   };
 
+  // ✅ Handle payment initiation
   const handlePayment = async () => {
-    // Validation
-    if (!amount || Number(amount) <= 0) {
+    if (!amount || Number(amount) <= 0 || Number(amount) > 10000) {
       ToastComp({
-        message: "Please enter a valid amount",
-        type: "error",
-      });
-      return;
-    }
-
-    if (Number(amount) < 1) {
-      ToastComp({
-        message: "Minimum amount is ₹1",
-        type: "error",
-      });
-      return;
-    }
-
-    if (Number(amount) > 50000) {
-      ToastComp({
-        message: "Amount cannot exceed ₹50,000",
+        message: "Please enter amount between ₹1 and ₹10,000",
         type: "error",
       });
       return;
     }
 
     const token = localStorage.getItem("token");
-
     if (!token) {
-      ToastComp({
-        message: "Please login to continue",
-        type: "error",
-      });
+      ToastComp({ message: "Please login to continue", type: "error" });
       navigate("/login");
       return;
     }
 
+    console.log("💰 Initiating payment for ₹" + amount);
     setLoading(true);
-    setPaymentStatus(null);
+    setLoadingStage("creating"); // ✅ Stage 1: Creating order
 
     try {
-      // ✅ Call create order API
       const response = await API.post(`payment/upiintent/create-order`, {
         amount: parseFloat(amount),
       });
 
       console.log("Create order response:", response.data);
 
-      // ✅ FIXED: Parse response - { status: true, upiLink, orderId, zwitch_transaction_id }
       if (response.data.status) {
         const { orderId, upiLink, zwitch_transaction_id } = response.data;
 
-        if (!upiLink) {
-          throw new Error("UPI Intent URL not received from server");
-        }
-
-        // ✅ Save YOUR order ID (Z_xxx)
         setOrderId(orderId);
 
-        console.log("Payment initiated:", {
-          orderId: orderId, // ✅ Z_1766697974443832
-          upiLink: upiLink,
-          zwitchTxnId: zwitch_transaction_id, // pt_f7694DaBf697288
+        console.log("✅ Order created:", {
+          orderId,
+          zwitchTxnId: zwitch_transaction_id,
         });
+
+        setLoadingStage("opening"); // ✅ Stage 2: Opening UPI app
 
         // Send UPI Intent URL to React Native
         if (window.ReactNativeWebView) {
+          console.log("📱 Sending message to React Native");
           window.ReactNativeWebView.postMessage(
             JSON.stringify({
               action: "OPEN_UPI_APP",
-              upiIntentUrl: upiLink, // ✅ Direct upiLink
-              orderId: zwitch_transaction_id, // ✅ YOUR order ID (Z_xxx)
+              upiIntentUrl: upiLink,
+              orderId: orderId,
               amount: parseFloat(amount),
             })
           );
 
-          ToastComp({
-            message: "Opening UPI app...",
-            type: "info",
-          });
+          // After 2 seconds, show "waiting for payment" stage
+          setTimeout(() => {
+            setLoadingStage("waiting");
+            console.log("⏳ Waiting for user to complete payment");
+          }, 2000);
         } else {
-          // For web testing
-          console.warn("Not running in React Native WebView");
-          console.log("UPI Intent URL:", upiLink);
-
-          ToastComp({
-            message: "Redirecting to UPI app...",
-            type: "info",
-          });
-
-          window.location.href = upiLink;
+          console.warn("⚠️ Not running in React Native WebView");
+          setLoading(false);
+          setLoadingStage("");
         }
       } else {
-        throw new Error(response.data.message || "Payment initiation failed");
+        setLoading(false);
+        setLoadingStage("");
+        ToastComp({ message: response.data.message, type: "error" });
       }
     } catch (error) {
       console.error("Payment error:", error);
-
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        "Payment initiation failed. Please try again.";
-
-      ToastComp({
-        message: errorMessage,
-        type: "error",
-      });
-
       setLoading(false);
+      setLoadingStage("");
+      ToastComp({ message: "Payment initiation failed", type: "error" });
     }
   };
 
   return (
     <div
       ref={mountRef}
-      className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col"
+      className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col relative"
     >
       {/* Fixed Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
@@ -788,7 +752,7 @@ const Wallet = () => {
       <div className="flex-1 pt-20 pb-32 overflow-y-auto">
         {/* Balance Card */}
         <div className="px-4 pt-4">
-          <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 rounded-2xl shadow-2xl overflow-hidden">
+          <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 rounded-2xl shadow-2xl overflow-hidden relative">
             <div className="absolute inset-0 bg-white/10"></div>
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
@@ -819,43 +783,9 @@ const Wallet = () => {
                   <MdAccountBalanceWallet size={28} className="text-white" />
                 </div>
               </div>
-
-              <div className="grid grid-cols-3 gap-2 mt-4">
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-2 text-center">
-                  <p className="text-white text-xs font-bold">Today</p>
-                  <p className="text-white/80 text-[10px] mt-0.5">₹0</p>
-                </div>
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-2 text-center">
-                  <p className="text-white text-xs font-bold">This Month</p>
-                  <p className="text-white/80 text-[10px] mt-0.5">₹0</p>
-                </div>
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-2 text-center">
-                  <p className="text-white text-xs font-bold">Total</p>
-                  <p className="text-white/80 text-[10px] mt-0.5">
-                    ₹{walletBalance.toFixed(0)}
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
-
-        {/* Payment Status Indicator */}
-        {loading && (
-          <div className="px-4 mt-4">
-            <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-center space-x-3">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <div>
-                <p className="text-sm font-semibold text-blue-900">
-                  Processing Payment
-                </p>
-                <p className="text-xs text-blue-700">
-                  Please complete payment in UPI app...
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Amount Input Section */}
         <div className="px-4 mt-6">
@@ -867,7 +797,7 @@ const Wallet = () => {
 
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl opacity-0 group-hover:opacity-100 blur transition duration-300"></div>
-              <div className="relative flex items-center bg-gradient-to-r from-gray-50 to-gray-100 border-2 border-gray-300 group-hover:border-blue-400 focus-within:border-blue-500 rounded-2xl px-5 py-6 transition-all duration-300">
+              <div className="relative flex w-full items-center bg-gradient-to-r from-gray-50 to-gray-100 border-2 border-gray-300 group-hover:border-blue-400 focus-within:border-blue-500 rounded-2xl px-5 py-6 transition-all duration-300">
                 <span className="text-4xl font-black text-gray-900 mr-3">
                   ₹
                 </span>
@@ -898,7 +828,7 @@ const Wallet = () => {
 
             <div className="mt-3 flex items-center justify-between px-2">
               <p className="text-xs text-gray-500">Minimum: ₹1</p>
-              <p className="text-xs text-gray-500">Maximum: ₹50,000</p>
+              <p className="text-xs text-gray-500">Maximum: ₹10,000</p>
             </div>
           </div>
         </div>
@@ -911,12 +841,13 @@ const Wallet = () => {
           </h3>
 
           <div className="grid grid-cols-3 gap-3">
-            {PriceArr.map((item, idx) => (
+            {[500, 1000, 2000, 5000, 7000, 10000].map((item, idx) => (
               <button
                 key={idx}
+                type="button"
                 onClick={() => handleQuickAmount(item)}
                 disabled={loading}
-                className={`py-4 rounded-2xl font-bold text-sm transition-all duration-300 shadow-md hover:shadow-xl active:scale-95 ${
+                className={`py-4 z-10 items-center justify-center flex flex-col rounded-2xl font-bold text-sm transition-all duration-300 shadow-md hover:shadow-xl active:scale-95 ${
                   selectedAmount === item
                     ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white scale-105"
                     : "bg-white text-gray-900 border-2 border-gray-200 hover:border-blue-400"
@@ -1069,10 +1000,10 @@ const Wallet = () => {
         <button
           onClick={handlePayment}
           disabled={
-            !amount || Number(amount) <= 0 || Number(amount) > 50000 || loading
+            !amount || Number(amount) <= 0 || Number(amount) > 10000 || loading
           }
           className={`w-full font-bold py-4 px-6 rounded-2xl shadow-xl transform transition-all duration-300 flex items-center justify-center space-x-2 group ${
-            amount && Number(amount) > 0 && Number(amount) <= 50000 && !loading
+            amount && Number(amount) > 0 && Number(amount) <= 10000 && !loading
               ? "bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 text-white hover:scale-105 active:scale-95"
               : "bg-gray-300 text-gray-500 cursor-not-allowed"
           }`}
@@ -1085,10 +1016,8 @@ const Wallet = () => {
           ) : (
             <>
               <MdAdd size={24} />
-              <span className="text-base">{`Add ₹${
-                amount || "0"
-              } to Wallet`}</span>
-              {amount && Number(amount) > 0 && Number(amount) <= 50000 && (
+              <span className="text-base">Add ₹{amount || "0"} to Wallet</span>
+              {amount && Number(amount) > 0 && Number(amount) <= 10000 && (
                 <svg
                   className="w-5 h-5 group-hover:translate-x-1 transition-transform"
                   fill="none"
@@ -1125,11 +1054,90 @@ const Wallet = () => {
         )}
       </div>
 
+      {/* ✅ FULL SCREEN LOADER OVERLAY */}
+      {loading && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 shadow-2xl">
+            {/* Stage 1: Creating Order */}
+            {loadingStage === "creating" && (
+              <div className="text-center animate-fadeIn">
+                <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Creating Order
+                </h3>
+                <p className="text-sm text-gray-600">Please wait...</p>
+              </div>
+            )}
+
+            {/* Stage 2: Opening UPI App */}
+            {loadingStage === "opening" && (
+              <div className="text-center animate-fadeIn">
+                <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="animate-bounce text-4xl">📱</div>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Opening UPI App
+                </h3>
+                <p className="text-sm text-gray-600">Redirecting...</p>
+              </div>
+            )}
+
+            {/* Stage 3: Waiting for Payment */}
+            {loadingStage === "waiting" && (
+              <div className="text-center animate-fadeIn">
+                <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+                  <div className="text-4xl">⏳</div>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Complete Payment
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Please complete payment in UPI app
+                </p>
+                <div className="flex items-center justify-center space-x-1">
+                  <div className="w-2 h-2 bg-yellow-500 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-yellow-500 rounded-full animate-bounce delay-100"></div>
+                  <div className="w-2 h-2 bg-yellow-500 rounded-full animate-bounce delay-200"></div>
+                </div>
+              </div>
+            )}
+
+            {/* Stage 4: Verifying Payment */}
+            {loadingStage === "verifying" && (
+              <div className="text-center animate-fadeIn">
+                <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-600 border-t-transparent"></div>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Verifying Payment
+                </h3>
+                <p className="text-sm text-gray-600">Almost done...</p>
+              </div>
+            )}
+
+            {/* Stage 5: Success */}
+            {loadingStage === "success" && (
+              <div className="text-center animate-scaleIn">
+                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <MdCheckCircle className="w-12 h-12 text-green-600 animate-bounce" />
+                </div>
+                <h3 className="text-xl font-bold text-green-600 mb-2">
+                  Payment Successful!
+                </h3>
+                <p className="text-sm text-gray-600">Redirecting...</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* CSS Animations */}
       <style jsx>{`
         @keyframes scaleIn {
           from {
-            transform: scale(0);
+            transform: scale(0.9);
             opacity: 0;
           }
           to {
@@ -1151,11 +1159,15 @@ const Wallet = () => {
         .animate-fadeIn {
           animation: fadeIn 0.3s ease-out;
         }
+        .delay-100 {
+          animation-delay: 0.1s;
+        }
+        .delay-200 {
+          animation-delay: 0.2s;
+        }
       `}</style>
     </div>
   );
 };
-
-const PriceArr = [500, 1000, 2000];
 
 export default Wallet;

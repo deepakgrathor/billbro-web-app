@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { setPaymentType } from "../../Redux/Slices/PaymentSlice";
 import { IoSparklesSharp, IoFlashSharp } from "react-icons/io5";
 import { MdTrendingUp } from "react-icons/md";
+import ToastComp from "../../Components/ToastComp";
 
 const BBPSList = () => {
   const navigate = useNavigate();
@@ -23,22 +24,26 @@ const BBPSList = () => {
   }, [dispatch]);
 
   const handleServiceClick = (item) => {
-    if (item._id === "661061ecda6832bf278254e1") {
-      navigate("/googleplay", { state: item });
-      const data = {
-        type: SERVICE,
-        ids: "661061ecda6832bf278254e1",
-        serviceType: BILL,
-      };
-      dispatch(setPaymentType(data));
+    if (!item.status) {
+      ToastComp({ message: "Service is currently unavailable", type: "error" });
     } else {
-      navigate("/mainbbps", { state: item });
-      const data = {
-        type: SERVICE,
-        ids: item._id,
-        serviceType: BILL,
-      };
-      dispatch(setPaymentType(data));
+      if (item._id === "661061ecda6832bf278254e1") {
+        navigate("/googleplay", { state: item });
+        const data = {
+          type: SERVICE,
+          ids: "661061ecda6832bf278254e1",
+          serviceType: BILL,
+        };
+        dispatch(setPaymentType(data));
+      } else {
+        navigate("/mainbbps", { state: item });
+        const data = {
+          type: SERVICE,
+          ids: item._id,
+          serviceType: BILL,
+        };
+        dispatch(setPaymentType(data));
+      }
     }
   };
 
@@ -76,7 +81,8 @@ const BBPSList = () => {
     return (
       <div className="">
         <img
-          width={60}
+          width={100}
+          height={40}
           src="https://ik.imagekit.io/isjriggan/images%20(1).png"
           alt=""
         />
@@ -209,7 +215,6 @@ const BBPSList = () => {
 
               <div className="grid grid-cols-3 gap-4">
                 {filteredServices?.map((item, index) => {
-                  console.log(item, "item");
                   // Different gradient colors for variety
                   const gradients = [
                     "from-blue-500 to-cyan-500",

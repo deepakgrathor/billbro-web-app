@@ -243,7 +243,8 @@ const GooglePlay = () => {
               return (
                 <>
                   <img
-                    width={30}
+                    width={100}
+                    height={40}
                     src="https://production-api.billbro.info/uploads/services/1745668990300-APD_icon_GPRC._CB594689751_.png"
                   />
                 </>

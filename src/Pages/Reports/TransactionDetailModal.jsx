@@ -27,15 +27,17 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
     ) {
       return {
         icon: FaCheckCircle,
-        iconBg: "bg-gradient-to-br from-green-400 to-emerald-600",
-        bg: "bg-gradient-to-r from-green-50 to-emerald-50",
-        border: "border-green-200",
-        textColor: "text-green-700",
+        iconBg: "bg-gradient-to-br from-emerald-400 to-green-600",
+        bg: "bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50",
+        border: "border-emerald-300",
+        glow: "shadow-emerald-200",
+        textColor: "text-emerald-700",
+        badgeGradient: "from-emerald-500 to-green-500",
         title:
           type === "ledgerBook"
             ? "Amount Credited Successfully"
             : "Transaction Successful",
-        showBAssured: type === "billPayments" || type === "recharges", // Show B Assured for BBPS
+        showBAssured: type === "billPayments" || type === "recharges",
       };
     } else if (
       status === "failed" ||
@@ -45,23 +47,31 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
       return {
         icon: FaTimesCircle,
         iconBg: "bg-gradient-to-br from-red-400 to-rose-600",
-        bg: "bg-gradient-to-r from-red-50 to-rose-50",
-        border: "border-red-200",
+        bg: "bg-gradient-to-br from-red-50 via-rose-50 to-pink-50",
+        border: "border-red-300",
+        glow: "shadow-red-200",
         textColor: "text-red-700",
+        badgeGradient: "from-red-500 to-rose-500",
         title: "Transaction Failed",
         showBAssured: false,
       };
     } else {
       return {
         icon: FaClock,
-        iconBg: "bg-gradient-to-br from-yellow-400 to-orange-500",
+        iconBg: "bg-gradient-to-br from-amber-400 to-orange-500",
         bg:
           type === "ledgerBook"
-            ? "bg-gradient-to-r from-green-50 to-emerald-50"
-            : "bg-gradient-to-r from-yellow-50 to-amber-50",
+            ? "bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50"
+            : "bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50",
         border:
-          type === "ledgerBook" ? "border-green-200" : "border-yellow-200",
-        textColor: type === "ledgerBook" ? "text-green-700" : "text-yellow-700",
+          type === "ledgerBook" ? "border-emerald-300" : "border-amber-300",
+        glow: type === "ledgerBook" ? "shadow-emerald-200" : "shadow-amber-200",
+        textColor:
+          type === "ledgerBook" ? "text-emerald-700" : "text-amber-700",
+        badgeGradient:
+          type === "ledgerBook"
+            ? "from-emerald-500 to-green-500"
+            : "from-amber-500 to-orange-500",
         title: type === "ledgerBook" ? "Amount Debited" : "Transaction Pending",
         showBAssured: false,
       };
@@ -90,53 +100,52 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
     navigate("/contact");
   };
 
-  // Check if BBPS transaction
   const isBBPSTransaction = type === "billPayments";
-  console.log(transaction, "transaction");
+
   return (
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
+          {/* Backdrop with blur */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 bg-opacity-50 z-40"
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40"
             onClick={onClose}
           />
 
           {/* Bottom Sheet */}
           <motion.div
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-50 max-h-[85vh] overflow-y-auto shadow-2xl"
+            initial={{ y: "100%", opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: "100%", opacity: 0 }}
+            transition={{
+              type: "spring",
+              damping: 30,
+              stiffness: 300,
+              mass: 0.8,
+            }}
+            className="fixed bottom-0 left-0 right-0 bg-gradient-to-b from-white to-gray-50 rounded-t-[2rem] z-50 max-h-[90vh] overflow-y-auto shadow-2xl"
           >
             {/* Handle Bar */}
-            <div className="flex justify-center pt-3 pb-2">
-              <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+            <div className="flex justify-center pt-4 pb-2 sticky top-0 bg-white/80 backdrop-blur-xl z-10">
+              <motion.div
+                className="w-14 h-1.5 bg-gray-300 rounded-full"
+                whileHover={{ width: 60 }}
+                transition={{ duration: 0.2 }}
+              />
             </div>
 
-            {/* Bharat Connect Logo - Top Right (if BBPS transaction) */}
-            {/* {isBBPSTransaction && (
-              <div className="absolute top-4 right-14 z-10">
-                <img 
-                  src="/assets/bharat-connect/bharat-connect-logo.png" 
-                  alt="Bharat Connect"
-                  className="h-6 w-auto opacity-90"
-                />
-              </div>
-            )} */}
-
             {/* Close Button */}
-            <button
+            <motion.button
+              whileHover={{ scale: 1.1, rotate: 90 }}
+              whileTap={{ scale: 0.9 }}
               onClick={onClose}
-              className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="absolute top-5 right-5 p-2.5 bg-gray-100 hover:bg-gray-200 rounded-full transition-all shadow-md z-20"
             >
               <svg
-                className="w-6 h-6 text-gray-600"
+                className="w-5 h-5 text-gray-700"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -144,99 +153,189 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
+                  strokeWidth={2.5}
                   d="M6 18L18 6M6 6l12 12"
                 />
               </svg>
-            </button>
+            </motion.button>
 
-            <div className="px-6 pb-6 pt-2">
+            <div className="px-6 pb-8 pt-2">
               {/* Header */}
               <motion.h2
-                initial={{ opacity: 0, y: -10 }}
+                initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-xl font-bold text-gray-900 mb-6"
+                transition={{ delay: 0.1 }}
+                className="text-2xl font-black text-gray-900 mb-6 tracking-tight"
               >
                 Transaction Details
               </motion.h2>
 
-              {/* Status Badge with B Assured Logo for Success */}
+              {/* Status Badge - Premium Design */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.1 }}
-                className={`${statusConfig.bg} border-2 ${statusConfig.border} px-4 py-4 rounded-2xl mb-6`}
+                transition={{ delay: 0.15, type: "spring", stiffness: 200 }}
+                className={`${statusConfig.bg} border-2 ${statusConfig.border} px-6 py-5 rounded-3xl mb-6 shadow-lg ${statusConfig.glow} relative overflow-hidden`}
               >
-                <div className="flex items-center gap-3">
-                  {/* Show B Assured Logo for Successful BBPS Transactions */}
+                {/* Decorative gradient overlay */}
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${statusConfig.badgeGradient} opacity-5`}
+                />
+
+                <div className="flex items-center gap-4 relative z-10">
+                  {/* B Assured Logo for Success or Regular Icon */}
                   {statusConfig.showBAssured && isBBPSTransaction ? (
-                    <div className="relative">
+                    <motion.div
+                      className="relative flex-shrink-0"
+                      initial={{ scale: 0, rotate: -180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 150,
+                        delay: 0.2,
+                      }}
+                    >
+                      <div className="absolute inset-0 bg-white rounded-full blur-xl opacity-60" />
                       <img
                         src="https://ik.imagekit.io/43tomntsa/B%20Assured%20Logo_SVG.svg"
                         alt="B Assured"
-                        className="w-14 h-14 object-contain"
+                        className="w-24 h-24 object-contain relative z-10"
                       />
-                    </div>
+                      {/* Pulsating ring effect */}
+                      {/* <motion.div
+                        className="absolute inset-0 border-4 border-emerald-400 rounded-full"
+                        animate={{
+                          scale: [1, 1.3, 1],
+                          opacity: [0.8, 0, 0.8],
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                        }}
+                      /> */}
+                    </motion.div>
                   ) : (
-                    <div
-                      className={`w-12 h-12 rounded-full ${statusConfig.iconBg} flex items-center justify-center shadow-lg`}
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      className={`w-14 h-14 rounded-2xl ${statusConfig.iconBg} flex items-center justify-center shadow-xl relative`}
                     >
-                      <StatusIcon className="w-6 h-6 text-white" />
-                    </div>
+                      <StatusIcon className="w-7 h-7 text-white" />
+                    </motion.div>
                   )}
 
                   <div className="flex-1">
-                    <p
-                      className={`${statusConfig.textColor} text-sm font-bold mb-0.5`}
+                    <motion.p
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3 }}
+                      className={`${statusConfig.textColor} text-lg font-black tracking-wide`}
                     >
                       {statusConfig.title}
-                    </p>
+                    </motion.p>
                     {/* {statusConfig.showBAssured && (
-                      <p className="text-xs text-gray-600">
-                        Powered by Bharat Connect (NPCI)
-                      </p>
+                      <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.4 }}
+                        className="text-xs text-gray-600 mt-0.5 font-medium"
+                      >
+                        Secured by BBPS (NPCI)
+                      </motion.p>
                     )} */}
+                  </div>
+
+                  {/* Checkmark badge */}
+                  {transaction.status?.toLowerCase() === "success" && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{
+                        delay: 0.5,
+                        type: "spring",
+                        stiffness: 300,
+                      }}
+                      className={`bg-gradient-to-br ${statusConfig.badgeGradient} p-2 rounded-full shadow-lg`}
+                    >
+                      <svg
+                        className="w-5 h-5 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </motion.div>
+                  )}
+                </div>
+              </motion.div>
+
+              {/* Amount Section - Enhanced */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.25 }}
+                className="bg-gradient-to-br from-violet-500 via-purple-500 to-indigo-600 rounded-3xl p-6 mb-6 shadow-2xl relative overflow-hidden"
+              >
+                {/* Animated background pattern */}
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full blur-3xl" />
+                  <div className="absolute bottom-0 left-0 w-40 h-40 bg-white rounded-full blur-3xl" />
+                </div>
+
+                <div className="relative z-10">
+                  <p className="text-xs text-white/80 mb-2 font-bold uppercase tracking-widest">
+                    Total Amount
+                  </p>
+                  <div className="flex items-baseline gap-3 flex-wrap">
+                    <motion.p
+                      className="text-4xl font-black text-white drop-shadow-lg"
+                      initial={{ scale: 0.5, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{
+                        delay: 0.3,
+                        type: "spring",
+                        stiffness: 200,
+                      }}
+                    >
+                      {transaction.amount}
+                    </motion.p>
+                    {isBBPSTransaction && (
+                      <motion.span
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.4 }}
+                        className="text-sm font-semibold text-white/90 bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm"
+                      >
+                        + CCF: ₹0
+                      </motion.span>
+                    )}
                   </div>
                 </div>
               </motion.div>
 
-              {/* Amount Section */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-4 mb-6 border border-indigo-200"
-              >
-                <p className="text-xs text-gray-600 mb-1 font-medium uppercase tracking-wide">
-                  Transaction Amount
-                </p>
-                <div className="flex items-baseline gap-3">
-                  <p className="text-3xl font-black text-gray-900">
-                    {transaction.amount}
-                  </p>
-                  {/* {transaction.commission && transaction.commission !== "₹0" && (
-                    <span className="text-base font-semibold text-green-600 bg-green-50 px-2 py-1 rounded-lg">
-                      +{transaction.commission}
-                    </span>
-                  )} */}
-                </div>
-              </motion.div>
-
-              {/* Transaction Details Cards */}
+              {/* Transaction Cards - Premium Design */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
+                transition={{ delay: 0.35 }}
                 className="space-y-3"
               >
-                {/* Transaction Type & Number */}
-                <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                  <p className="text-xs text-gray-500 mb-2 font-medium uppercase tracking-wide">
-                    Transaction Details
+                {/* Transaction Type Card */}
+                <motion.div
+                  whileHover={{ scale: 1.01 }}
+                  className="bg-white rounded-2xl p-5 border-2 border-gray-100 shadow-md hover:shadow-lg transition-all"
+                >
+                  <p className="text-xs text-gray-500 mb-3 font-bold uppercase tracking-widest flex items-center gap-2">
+                    <span className="w-1 h-4 bg-purple-500 rounded-full" />
+                    Transaction Info
                   </p>
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold text-gray-700 capitalize">
+                      <span className="text-base font-bold text-gray-900 capitalize">
                         {type === "deposits"
                           ? "Wallet Deposit"
                           : type === "ledger"
@@ -248,212 +347,221 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                     {type !== "deposits" &&
                       type !== "ledgerBook" &&
                       transaction.number && (
-                        <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-                          <span className="text-xs text-gray-600">
+                        <div className="flex items-center justify-between pt-3 border-t-2 border-gray-100">
+                          <span className="text-sm text-gray-600 font-semibold">
                             Consumer Number
                           </span>
                           <div className="flex items-center gap-2">
-                            <span className="text-sm font-mono font-semibold text-gray-900">
+                            <span className="text-sm font-mono font-bold text-gray-900 bg-gray-100 px-3 py-1.5 rounded-lg">
                               {transaction.number}
                             </span>
-                            {type === "billPayments" &&
+                            {isBBPSTransaction &&
                               transaction.status === "success" && (
-                                <button
+                                <motion.button
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.9 }}
                                   onClick={() =>
                                     handleCopyWithFeedback(
                                       transaction.number,
                                       "number"
                                     )
                                   }
-                                  className="p-1.5 hover:bg-gray-200 rounded-lg transition-colors"
+                                  className="p-2 hover:bg-purple-50 rounded-xl transition-colors"
                                 >
                                   {copied === "number" ? (
-                                    <BsCheck className="w-4 h-4 text-green-600" />
+                                    <BsCheck className="w-5 h-5 text-green-600" />
                                   ) : (
-                                    <BsCopy className="w-4 h-4 text-gray-600" />
+                                    <BsCopy className="w-5 h-5 text-purple-600" />
                                   )}
-                                </button>
+                                </motion.button>
                               )}
                           </div>
                         </div>
                       )}
                   </div>
-                </div>
+                </motion.div>
 
-                {/* B-Connect Transaction ID (for BBPS) */}
+                {/* B-Connect ID Card - Ultra Premium */}
                 {isBBPSTransaction && transaction.OPR_REF && (
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border-2 border-blue-200"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 }}
+                    whileHover={{ scale: 1.02 }}
+                    className="bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 rounded-2xl p-5 shadow-2xl relative overflow-hidden"
                   >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-blue-600 uppercase tracking-wide">
-                          B-Connect Txn ID
-                        </span>
-                        <span className="px-2 py-0.5 bg-blue-600 text-white text-[10px] rounded-full font-semibold">
-                          BBPS
-                        </span>
+                    {/* Animated gradient overlay */}
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                      animate={{
+                        x: ["-100%", "100%"],
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                    />
+
+                    <div className="relative z-10">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-black text-white uppercase tracking-widest drop-shadow-lg">
+                            B-Connect Txn ID
+                          </span>
+                          <span className="px-2.5 py-1 bg-white text-blue-600 text-[10px] rounded-full font-black shadow-lg">
+                            BBPS
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-mono font-bold text-gray-900 break-all">
-                        {transaction.OPR_REF}
-                      </span>
-                      <button
-                        onClick={() =>
-                          handleCopyWithFeedback(
-                            transaction.OPR_REF,
-                            "bharatConnect"
-                          )
-                        }
-                        className="ml-2 p-2 hover:bg-blue-100 rounded-lg transition-colors flex-shrink-0"
-                      >
-                        {copied === "bharatConnect" ? (
-                          <BsCheck className="w-4 h-4 text-green-600" />
-                        ) : (
-                          <BsCopy className="w-4 h-4 text-blue-600" />
-                        )}
-                      </button>
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-base font-mono font-black text-white break-all drop-shadow-md">
+                          {transaction.OPR_REF}
+                        </span>
+                        <motion.button
+                          whileHover={{ scale: 1.15, rotate: 10 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() =>
+                            handleCopyWithFeedback(
+                              transaction.OPR_REF,
+                              "bharatConnect"
+                            )
+                          }
+                          className="flex-shrink-0 p-2.5 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl transition-all shadow-lg"
+                        >
+                          {copied === "bharatConnect" ? (
+                            <BsCheck className="w-5 h-5 text-white" />
+                          ) : (
+                            <BsCopy className="w-5 h-5 text-white" />
+                          )}
+                        </motion.button>
+                      </div>
                     </div>
                   </motion.div>
                 )}
 
-                {/* Transaction ID */}
-                <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-gray-500 font-medium uppercase tracking-wide">
+                {/* Transaction ID Card */}
+                <motion.div
+                  whileHover={{ scale: 1.01 }}
+                  className="bg-white rounded-2xl p-5 border-2 border-gray-100 shadow-md hover:shadow-lg transition-all"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs text-gray-500 font-bold uppercase tracking-widest flex items-center gap-2">
+                      <span className="w-1 h-4 bg-indigo-500 rounded-full" />
                       Transaction ID
                     </span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-mono font-semibold text-gray-900 break-all">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-sm font-mono font-bold text-gray-900 break-all bg-gray-50 px-3 py-2 rounded-lg">
                       {transaction.transactionId || transaction.id}
                     </span>
                     {transaction.status === "success" && (
-                      <button
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
                         onClick={() =>
                           handleCopyWithFeedback(
                             transaction.transactionId || transaction.id,
                             "txnId"
                           )
                         }
-                        className="ml-2 p-2 hover:bg-gray-200 rounded-lg transition-colors flex-shrink-0"
+                        className="flex-shrink-0 p-2 hover:bg-indigo-50 rounded-xl transition-colors"
                       >
                         {copied === "txnId" ? (
-                          <BsCheck className="w-4 h-4 text-green-600" />
+                          <BsCheck className="w-5 h-5 text-green-600" />
                         ) : (
-                          <BsCopy className="w-4 h-4 text-gray-600" />
+                          <BsCopy className="w-5 h-5 text-indigo-600" />
                         )}
-                      </button>
+                      </motion.button>
                     )}
                   </div>
-                </div>
+                </motion.div>
 
-                {/* Date & Time */}
-                <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                  <p className="text-xs text-gray-500 mb-2 font-medium uppercase tracking-wide">
+                {/* Date & Time Card */}
+                <motion.div
+                  whileHover={{ scale: 1.01 }}
+                  className="bg-white rounded-2xl p-5 border-2 border-gray-100 shadow-md hover:shadow-lg transition-all"
+                >
+                  <p className="text-xs text-gray-500 mb-2 font-bold uppercase tracking-widest flex items-center gap-2">
+                    <span className="w-1 h-4 bg-pink-500 rounded-full" />
                     Date & Time
                   </p>
-                  <p className="text-sm font-semibold text-gray-900">
+                  <p className="text-sm font-bold text-gray-900 bg-gray-50 px-3 py-2 rounded-lg inline-block">
                     {transaction.date}
                   </p>
-                </div>
+                </motion.div>
 
-                {/* Payment Method */}
-                {(type === "deposits" || type === "ledger") && (
-                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                    <p className="text-xs text-gray-500 mb-2 font-medium uppercase tracking-wide">
-                      Payment Method
-                    </p>
-                    <p className="text-sm font-semibold text-gray-900">
-                      {transaction.paymentMethod || "Wallet"}
-                    </p>
-                  </div>
-                )}
-
-                {/* Operator Reference (if available) */}
+                {/* Operator Reference */}
                 {transaction.OP_REF && (
-                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                    <p className="text-xs text-gray-500 mb-2 font-medium uppercase tracking-wide">
+                  <motion.div
+                    whileHover={{ scale: 1.01 }}
+                    className="bg-white rounded-2xl p-5 border-2 border-gray-100 shadow-md hover:shadow-lg transition-all"
+                  >
+                    <p className="text-xs text-gray-500 mb-3 font-bold uppercase tracking-widest flex items-center gap-2">
+                      <span className="w-1 h-4 bg-orange-500 rounded-full" />
                       Operator Reference
                     </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-mono font-semibold text-gray-900">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-sm font-mono font-bold text-gray-900 bg-gray-50 px-3 py-2 rounded-lg">
                         {transaction.OP_REF}
                       </span>
-                      <button
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
                         onClick={() =>
                           handleCopyWithFeedback(transaction.OP_REF, "opRef")
                         }
-                        className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+                        className="p-2 hover:bg-orange-50 rounded-xl transition-colors"
                       >
                         {copied === "opRef" ? (
-                          <BsCheck className="w-4 h-4 text-green-600" />
+                          <BsCheck className="w-5 h-5 text-green-600" />
                         ) : (
-                          <BsCopy className="w-4 h-4 text-gray-600" />
+                          <BsCopy className="w-5 h-5 text-orange-600" />
                         )}
-                      </button>
+                      </motion.button>
                     </div>
-                  </div>
+                  </motion.div>
                 )}
               </motion.div>
 
-              {/* Action Buttons */}
+              {/* Action Buttons - Enhanced */}
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="mt-6 space-y-3"
+                transition={{ delay: 0.45 }}
+                className="mt-8 space-y-3"
               >
-                {/* Raise Complaint Button (for BBPS transactions) */}
                 {(type === "recharges" || type === "billPayments") && (
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={handleRaiseComplaint}
-                    className="w-full py-3 border-2 border-red-300 text-red-600 rounded-xl font-semibold hover:bg-red-50 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                    className="w-full py-4 bg-gradient-to-r from-red-500 to-rose-600 text-white font-black rounded-2xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
                   >
-                    🎫 Raise a Complaint
-                  </button>
+                    <span className="text-xl">🎫</span>
+                    Raise a Complaint
+                  </motion.button>
                 )}
 
-                {/* Bottom Action Buttons */}
-                <div className="flex gap-3">
-                  <button
+                <div className="grid grid-cols-2 gap-3">
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
                     onClick={handleNeedSupport}
-                    className="flex-1 py-3 bg-gradient-to-r from-yellow-100 to-amber-100 text-yellow-700 font-semibold rounded-xl hover:from-yellow-200 hover:to-amber-200 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                    className="py-4 bg-gradient-to-br from-amber-400 to-orange-500 text-white font-black rounded-2xl shadow-lg hover:shadow-xl transition-all"
                   >
-                    💬 Need Support?
-                  </button>
-                  <button
+                    💬 Support
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
                     onClick={onClose}
-                    className="flex-1 py-3 bg-gradient-to-r from-pink-100 to-rose-100 text-pink-600 font-semibold rounded-xl hover:from-pink-200 hover:to-rose-200 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                    className="py-4 bg-gradient-to-br from-gray-600 to-gray-700 text-white font-black rounded-2xl shadow-lg hover:shadow-xl transition-all"
                   >
                     ✕ Close
-                  </button>
+                  </motion.button>
                 </div>
               </motion.div>
-
-              {/* BBPS Footer Note */}
-              {/* {isBBPSTransaction && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className="mt-6 text-center"
-                >
-                  <p className="text-xs text-gray-500">
-                    {transaction.status === "success"
-                      ? "✅ This is a valid BBPS transaction"
-                      : transaction.status === "pending"
-                      ? "⏳ Transaction is being processed"
-                      : "For support, use B-Connect Txn ID"}
-                  </p>
-                  <p className="text-[10px] text-gray-400 mt-1">
-                    Powered by Bharat Connect (NPCI)
-                  </p>
-                </motion.div>
-              )} */}
             </div>
           </motion.div>
         </>

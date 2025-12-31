@@ -35,7 +35,6 @@ export const formatDTHData = (data) => {
 };
 
 export const formatBBPSData = (data, serviceName) => {
-  console.log(serviceName, "serviceName");
   if (!Array.isArray(data)) return [];
   return data.map((item) => ({
     id: item.transactionId,
@@ -56,18 +55,19 @@ export const formatBBPSData = (data, serviceName) => {
 export const formatDepositData = (data) => {
   if (!Array.isArray(data)) return [];
   return data.map((item) => ({
-    id: item.transactionId,
+    id: item.orderId,
     type: "Wallet Deposit",
-    number: item.gatewayName || item.txnDesc || "Online Payment",
+    number: "Online Payment",
     date: formatDateDisplay(item.createdAt),
     amount: `₹${item.txnAmount}`,
     commission: "₹0",
     status: item.txnStatus,
-    logo: "💰",
+    logo: "https://ik.imagekit.io/43tomntsa/421-4213376_credit-wallet-png-icon-transparent-png-removebg-preview.png",
   }));
 };
 
 export const formatReferralData = (data) => {
+
   if (!Array.isArray(data)) return [];
   return data.map((item) => ({
     id: item.transactionId,

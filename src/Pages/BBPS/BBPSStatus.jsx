@@ -295,35 +295,18 @@ import PlayStoreRating from "../../Components/PlayStoreRating";
 import { handleCopy } from "../../Utils/CommonFunc";
 import html2canvas from "html2canvas";
 
-// 🎵 Sonic Branding Component (NPCI Guideline - Page 22)
-// const SonicBranding = () => {
-//   useEffect(() => {
-//     const audio = new Audio("/src/assets/sonic-brand.mp3");
-//     console.log(audio, "audio")
-//     audio.play().catch((err) => console.log("Audio playback prevented:", err));
-
-//     return () => {
-//       audio.pause();
-//       audio.currentTime = 0;
-//     };
-//   }, []);
-
-//   return null;
-// };
-
 const BBPSStatus = () => {
   const audioRef = useRef(null);
   const [audioPlayed, setAudioPlayed] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [showPlayButton, setShowPlayButton] = useState(false);
+  const [soundWaveActive, setSoundWaveActive] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
   const receiptRef = useRef(null);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState("");
   const [open, setOpen] = useState(false);
   const [content, setContent] = useState();
-  const [showReceipt, setShowReceipt] = useState(false);
   const data = location.state;
 
   const responseData = {
@@ -331,8 +314,8 @@ const BBPSStatus = () => {
     Operator_Code: data.Operator_Code,
     amount: data.amount,
     transactionId: data.transactionId,
-    bharatConnectTxnId: data.bharatConnectTxnId || `BC${Date.now()}`, // B-Connect Txn ID (MANDATORY)
-    consumerConvenienceFee: data.ccf || 0, // CCF (MANDATORY)
+    bharatConnectTxnId: data.bharatConnectTxnId || `BC${Date.now()}`,
+    consumerConvenienceFee: data.ccf || 0,
     status: data.status?.toLowerCase(),
     type: data.type,
     OP_REF: data.OP_REF,
@@ -346,31 +329,32 @@ const BBPSStatus = () => {
     const configs = {
       success: {
         icon: FaCheckCircle,
-        color: "text-green-600",
-        iconBg: "bg-gradient-to-br from-green-400 to-emerald-600",
-        gradient: "from-green-50 via-emerald-50 to-teal-50",
-        message: "Payment Successful!",
-        subMessage: "Your bill payment has been processed successfully",
-        showBAssured: true, // Show B Assured logo for success
+        color: "text-emerald-600",
+        iconBg: "bg-gradient-to-br from-emerald-500 to-green-600",
+        gradient: "from-emerald-500 via-green-500 to-teal-600",
+        bgPattern: "from-emerald-50 via-green-50 to-teal-50",
+        message: "PAYMENT SUCCESSFUL",
+        subMessage: "Your payment has been processed successfully",
+        showBAssured: true,
       },
       pending: {
         icon: BsClock,
         color: "text-amber-600",
-        iconBg: "bg-gradient-to-br from-yellow-400 to-orange-500",
-        gradient: "from-yellow-50 via-amber-50 to-orange-50",
-        message: "Payment Pending",
-        subMessage:
-          "Your payment is being processed. You'll be notified once confirmed.",
+        iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
+        gradient: "from-amber-500 via-yellow-500 to-orange-600",
+        bgPattern: "from-amber-50 via-yellow-50 to-orange-50",
+        message: "PAYMENT PENDING",
+        subMessage: "Processing your payment, please wait...",
         showBAssured: false,
       },
       failed: {
         icon: BsXCircle,
         color: "text-red-600",
-        iconBg: "bg-gradient-to-br from-red-400 to-rose-600",
-        gradient: "from-red-50 via-rose-50 to-pink-50",
-        message: "Payment Failed",
-        subMessage:
-          "Your payment could not be processed. Amount refunded to wallet.",
+        iconBg: "bg-gradient-to-br from-red-500 to-rose-600",
+        gradient: "from-red-500 via-rose-500 to-pink-600",
+        bgPattern: "from-red-50 via-rose-50 to-pink-50",
+        message: "PAYMENT FAILED",
+        subMessage: "Amount refunded to your wallet",
         showBAssured: false,
       },
     };
@@ -380,197 +364,120 @@ const BBPSStatus = () => {
   const statusConfig = getStatusConfig(responseData.status);
   const StatusIcon = statusConfig.icon;
 
+  const handleCopyWithFeedback = (text, field) => {
+    handleCopy(text);
+    setCopied(field);
+    setTimeout(() => setCopied(""), 2000);
+  };
+
   const downloadReceipt = async () => {
     if (receiptRef.current) {
       const canvas = await html2canvas(receiptRef.current, {
-        scale: 2,
+        scale: 3,
         backgroundColor: "#ffffff",
+        logging: false,
       });
-
       const link = document.createElement("a");
       link.download = `receipt-${responseData.bharatConnectTxnId}.png`;
-      link.href = canvas.toDataURL();
+      link.href = canvas.toDataURL("image/png", 1.0);
       link.click();
     }
   };
 
   useEffect(() => {
-    if (
-      data.status === "SUCCESS" ||
-      data.status === "success" ||
-      data.status === "Success"
-    ) {
+    if (responseData.status === "success") {
       const timer = setTimeout(() => {
         setContent(PlayStoreRating);
         setOpen(true);
-      }, 3000); // Increased delay for sonic branding
+      }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [data?.status]);
+  }, [responseData.status]);
 
-  const rightDesign = () => {
-    return (
-      <div className="">
-        <img
-          width={60}
-          src="https://ik.imagekit.io/isjriggan/images%20(1).png"
-          alt=""
-        />
-      </div>
-    );
-  };
   // ============================================
-  // 🔊 FIXED AUDIO IMPLEMENTATION
+  // 🔊 SONIC BRANDING AUDIO (NPCI GUIDELINE)
+  // Plays SIMULTANEOUSLY with B Assured logo display
   // ============================================
-
-  // Initialize audio ONCE on mount
   useEffect(() => {
-    // Only initialize if success status
     if (responseData.status === "success") {
       try {
-        // Create audio element
+
         audioRef.current = new Audio();
 
         // Set source - TRY MULTIPLE PATHS
         const audioPath = "/src/assets/sonic-brand.mp3";
         audioRef.current.src = audioPath;
 
-        // Audio properties
-        audioRef.current.volume = 0.7;
+
+        audioRef.current.volume = 1;
         audioRef.current.preload = "auto";
 
-        // Event listeners
-        audioRef.current.addEventListener("loadeddata", () => {
-          console.log("✅ Audio file loaded successfully");
-        });
-
-        audioRef.current.addEventListener("canplay", () => {
-          console.log("✅ Audio ready to play");
-        });
-
         audioRef.current.addEventListener("play", () => {
-          setIsPlaying(true);
-          console.log("▶️ Audio playing");
+          setSoundWaveActive(true);
         });
 
         audioRef.current.addEventListener("ended", () => {
-          setIsPlaying(false);
-          console.log("⏹️ Audio ended");
+          setSoundWaveActive(false);
         });
 
         audioRef.current.addEventListener("error", (e) => {
-          console.error("❌ Audio error:", {
-            code: e.target.error.code,
-            message: e.target.error.message,
-            path: audioPath,
-          });
-
-          // Error codes:
-          // 1 = MEDIA_ERR_ABORTED
-          // 2 = MEDIA_ERR_NETWORK
-          // 3 = MEDIA_ERR_DECODE
-          // 4 = MEDIA_ERR_SRC_NOT_SUPPORTED
-
-          if (e.target.error.code === 4) {
-            console.error("💡 File not found or format not supported");
-            console.error(
-              "💡 Check: public/assets/bharat-connect/sonic-brand.mp3"
-            );
-          }
+          console.error("❌ Audio error:", e.target.error.code);
         });
-
-        console.log("🔊 Audio initialized:", audioPath);
       } catch (error) {
-        console.error("❌ Audio initialization failed:", error);
+        console.error("❌ Audio init failed:", error);
       }
     }
 
-    // Cleanup function
     return () => {
       if (audioRef.current) {
-        // Remove all event listeners
         audioRef.current.pause();
         audioRef.current.removeAttribute("src");
-        audioRef.current.load(); // This stops any ongoing loading
+        audioRef.current.load();
         audioRef.current = null;
       }
     };
-  }, []); // Run ONCE on mount
+  }, []);
 
-  // Play audio after component is stable
+  // Play audio after B Assured logo animates in
   useEffect(() => {
     if (responseData.status === "success" && !audioPlayed && audioRef.current) {
-      // Wait for component to fully render
       const playTimer = setTimeout(() => {
         playAudio();
-      }, 1000); // 1 second delay
-
+      }, 800); // Sync with logo animation
       return () => clearTimeout(playTimer);
     }
   }, [responseData.status, audioPlayed]);
 
   const playAudio = async () => {
-    if (!audioRef.current || audioPlayed) {
-      console.log("⏭️ Audio already played or not initialized");
-      return;
-    }
+    if (!audioRef.current || audioPlayed) return;
 
     try {
-      // Check if audio is ready
-      if (audioRef.current.readyState < 2) {
-        console.log("⏳ Audio not ready yet, waiting...");
-
-        // Wait for audio to be ready
-        await new Promise((resolve) => {
-          audioRef.current.addEventListener("canplay", resolve, { once: true });
-          // Timeout after 3 seconds
-          setTimeout(resolve, 3000);
-        });
-      }
-
-      // Attempt to play
-      const playPromise = audioRef.current.play();
-
-      if (playPromise !== undefined) {
-        await playPromise;
-        setAudioPlayed(true);
-        setShowPlayButton(false);
-        console.log("✅ Audio played successfully");
-      }
+      await audioRef.current.play();
+      setAudioPlayed(true);
+      setShowPlayButton(false);
     } catch (error) {
-      console.warn("⚠️ Audio play prevented:", error.name, error.message);
-
+      console.warn("⚠️ Autoplay blocked:", error.name);
       if (error.name === "NotAllowedError") {
-        // Browser blocked autoplay
-        console.log("💡 Autoplay blocked - showing manual play button");
         setShowPlayButton(true);
-
-        // Auto-hide button after 8 seconds
-        setTimeout(() => {
-          setShowPlayButton(false);
-        }, 8000);
-      } else if (error.name === "NotSupportedError") {
-        console.error("💡 Audio file not found or unsupported format");
-        console.error(
-          "💡 Expected path: public/assets/bharat-connect/sonic-brand.mp3"
-        );
-      } else if (error.name === "AbortError") {
-        // Play interrupted - ignore this error
-        console.log("⚠️ Play interrupted (harmless)");
+        setTimeout(() => setShowPlayButton(false), 10000);
       }
     }
   };
 
-  // ============================================
-  // END AUDIO IMPLEMENTATION
-  // ============================================
+  const rightDesign = () => (
+    <img
+      width={100}
+      height={40}
+      src="https://ik.imagekit.io/isjriggan/images%20(1).png"
+      alt="Bharat Connect"
+      // className="h-8 w-auto"
+    />
+  );
 
   return (
     <>
-      {/* Play Sonic Branding on Success (NPCI Guideline) */}
-      {/* {statusConfig.showBAssured && <SonicBranding />} */}
-
-      <div className="fixed top-0 left-0 right-0 z-50">
+      {/* Header */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md">
         <CommonHeader
           title="Transaction Details"
           handleclick={() => navigate("/")}
@@ -578,252 +485,313 @@ const BBPSStatus = () => {
         />
       </div>
 
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-100 p-4 pt-20 pb-8">
+      {/* Main Content */}
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-100 p-3 sm:p-4 md:p-6 pt-20 sm:pt-24 pb-8">
         <motion.div
-          initial={{ opacity: 0, y: 50, scale: 0.95 }}
+          initial={{ opacity: 0, y: 60, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
-          className="w-full max-w-md"
+          transition={{ duration: 0.7, type: "spring", stiffness: 80 }}
+          className="w-full max-w-lg mx-auto"
         >
+          {/* Receipt Card */}
           <motion.div
             ref={receiptRef}
             layout
-            className="bg-white shadow-2xl rounded-3xl border border-gray-200 overflow-hidden relative"
+            className="bg-white shadow-2xl rounded-3xl sm:rounded-[2rem] border-2 border-gray-200 overflow-hidden"
           >
-            {/* Bharat Connect Logo - Top Right (NPCI Guideline - Stage 2) */}
-            {/* <div className="absolute top-4 right-4 z-10">
-              <img
-                src="/assets/bharat-connect/bharat-connect-logo.png"
-                alt="Bharat Connect"
-                className="h-8 w-auto opacity-90"
-              />
-            </div> */}
-
-            {/* Status Header with Animation */}
+            {/* Status Header */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className={`relative bg-gradient-to-br ${statusConfig.gradient} px-6 py-12 text-center overflow-hidden`}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className={`relative bg-gradient-to-br ${statusConfig.bgPattern} px-4 sm:px-6 md:px-8 py-10 sm:py-12 md:py-14 text-center overflow-hidden`}
             >
-              {/* Decorative Background Pattern */}
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full -translate-x-1/2 -translate-y-1/2"></div>
-                <div className="absolute bottom-0 right-0 w-64 h-64 bg-white rounded-full translate-x-1/2 translate-y-1/2"></div>
+              {/* Animated Background Elements */}
+              <div className="absolute inset-0 opacity-20">
+                <motion.div
+                  animate={{
+                    scale: [1, 1.2, 1],
+                    opacity: [0.3, 0.1, 0.3],
+                  }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                  className="absolute top-0 left-0 w-72 h-72 bg-white rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl"
+                />
+                <motion.div
+                  animate={{
+                    scale: [1, 1.3, 1],
+                    opacity: [0.2, 0.05, 0.2],
+                  }}
+                  transition={{ duration: 5, repeat: Infinity, delay: 1 }}
+                  className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full translate-x-1/2 translate-y-1/2 blur-3xl"
+                />
               </div>
 
-              {/* Success: B Assured Logo (NPCI Guideline - Stage 3, Page 19-20) */}
+              {/* Success: B Assured Logo + Sonic Branding */}
               {statusConfig.showBAssured ? (
                 <motion.div
                   initial={{ scale: 0, rotate: -180 }}
                   animate={{ scale: 1, rotate: 0 }}
                   transition={{
-                    delay: 0.3,
+                    delay: 0.4,
                     type: "spring",
-                    stiffness: 120,
-                    damping: 15,
+                    stiffness: 100,
+                    damping: 12,
                   }}
                   className="relative z-10"
                 >
-                  <div className="w-32 h-32 mx-auto mb-4 relative">
+                  {/* B Assured Logo Container */}
+                  <div className="w-40 h-40 sm:w-36 sm:h-36 md:w-40 md:h-40 mx-auto mb-1 relative">
                     <img
                       src="https://ik.imagekit.io/43tomntsa/B%20Assured%20Logo_SVG.svg"
                       alt="B Assured"
-                      className="w-full h-full object-contain drop-shadow-2xl"
+                      className="w-full h-full object-contain drop-shadow-2xl relative z-10"
                     />
-                    {/* Pulsating Ring Effect */}
-                    <motion.div
-                      animate={{
-                        scale: [1, 1.2, 1],
-                        opacity: [0.5, 0.2, 0.5],
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                      className="absolute inset-0 rounded-full border-4 border-green-400"
-                    />
+                    {/* Pulsating Rings */}
+                    {/* {[0.5].map((delay) => (
+                      <motion.div
+                        key={delay}
+                        animate={{
+                          scale: [1.4],
+                          opacity: [0.6, 0, 0.6],
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: "easeOut",
+                          delay,
+                        }}
+                        className="absolute inset-0 rounded-full border-4 border-emerald-400"
+                      />
+                    ))} */}
                   </div>
 
+                  {/* Sound Wave Indicator (when audio plays) */}
+                  {soundWaveActive && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      className="flex items-center justify-center gap-1 mb-3"
+                    >
+                      {[0, 0.1, 0.2, 0.3].map((delay) => (
+                        <motion.div
+                          key={delay}
+                          animate={{
+                            height: ["12px", "24px", "12px"],
+                          }}
+                          transition={{
+                            duration: 0.8,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                            delay,
+                          }}
+                          className="w-1 bg-emerald-600 rounded-full"
+                        />
+                      ))}
+                    </motion.div>
+                  )}
+
+                  {/* Manual Play Button (if autoplay blocked) */}
+                  <AnimatePresence>
+                    {showPlayButton && (
+                      <motion.button
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={playAudio}
+                        className="mb-4 px-5 py-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg flex items-center gap-2 mx-auto"
+                      >
+                        <span className="text-lg">🔊</span>
+                        <span className="text-sm font-semibold text-gray-700">
+                          Tap to Play Sound
+                        </span>
+                      </motion.button>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Success Badge */}
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 }}
+                    transition={{ delay: 0.6 }}
+                    className="inline-block"
                   >
-                    <div className="inline-block px-6 py-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg mb-2">
-                      <h1 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                        PAYMENT SUCCESSFUL
+                    <div className="bg-white/95 backdrop-blur-md px-6 py-3 sm:px-8 sm:py-3.5 rounded-full shadow-2xl mb-2">
+                      <h1 className="text-xl sm:text-2xl md:text-3xl font-black bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 bg-clip-text text-transparent tracking-tight">
+                        {statusConfig.message}
                       </h1>
                     </div>
-                    <p className="text-gray-700 text-sm font-medium mt-2 px-4">
+                    <p className="text-gray-700 text-xs sm:text-sm font-semibold mt-3 px-4">
                       {statusConfig.subMessage}
                     </p>
+                    {/* <p className="text-gray-500 text-[10px] sm:text-xs mt-1.5">
+                      Secured by BBPS (NPCI)
+                    </p> */}
                   </motion.div>
                 </motion.div>
               ) : (
-                // Pending/Failed: Standard Icon
+                // Pending/Failed Icon
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  transition={{ type: "spring", stiffness: 120 }}
+                  transition={{ type: "spring", stiffness: 100, delay: 0.3 }}
                   className="relative z-10"
                 >
                   <div
-                    className={`${statusConfig.iconBg} w-24 h-24 rounded-full flex items-center justify-center mx-auto shadow-2xl`}
+                    className={`${statusConfig.iconBg} w-24 h-24 sm:w-28 sm:h-28 rounded-full flex items-center justify-center mx-auto shadow-2xl`}
                   >
-                    <StatusIcon className="w-12 h-12 text-white" />
+                    <StatusIcon className="w-12 h-12 sm:w-14 sm:h-14 text-white" />
                   </div>
-
                   <h1
-                    className={`text-2xl font-bold mt-4 ${statusConfig.color}`}
+                    className={`text-2xl sm:text-3xl font-black mt-5 ${statusConfig.color} tracking-tight`}
                   >
                     {statusConfig.message}
                   </h1>
-                  <p className="text-gray-600 text-sm mt-2 px-4">
+                  <p className="text-gray-600 text-xs sm:text-sm font-medium mt-2 px-4">
                     {statusConfig.subMessage}
                   </p>
                 </motion.div>
               )}
             </motion.div>
 
-            {/* Amount Display */}
+            {/* Amount Banner */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="relative bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 py-6 text-center"
+              transition={{ delay: 0.5 }}
+              className={`relative bg-gradient-to-r ${statusConfig.gradient} py-5 sm:py-6 text-center overflow-hidden`}
             >
-              <p className="text-white/80 text-sm font-medium">
+              <motion.div
+                animate={{ x: ["-100%", "100%"] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+              />
+              <p className="text-white/90 text-xs sm:text-sm font-bold uppercase tracking-wider relative z-10">
                 Total Amount Paid
               </p>
-              <h2 className="text-5xl font-black text-white mt-1 tracking-tight">
+              <motion.h2
+                initial={{ scale: 0.8 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.6, type: "spring" }}
+                className="text-4xl sm:text-5xl md:text-6xl font-black text-white mt-1 tracking-tighter drop-shadow-lg relative z-10"
+              >
                 ₹{responseData.amount}
-              </h2>
+              </motion.h2>
+              <p className="text-white/80 text-xs sm:text-sm font-semibold mt-2 relative z-10">
+                + CCF: ₹{responseData.consumerConvenienceFee}
+              </p>
             </motion.div>
 
-            {/* Transaction Details Card */}
-            <div className="p-6 space-y-4">
-              {/* B-Connect Transaction ID - Highlighted (MANDATORY - Page 23) */}
+            {/* Transaction Details */}
+            <div className="p-4 sm:p-5 md:p-6 space-y-3 sm:space-y-4">
+              {/* B-Connect ID - Highlighted */}
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-4 border-2 border-blue-200 shadow-sm"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6 }}
+                className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 rounded-2xl p-4 sm:p-5 shadow-xl relative overflow-hidden"
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-bold text-blue-600 uppercase tracking-wide">
-                        B-Connect Txn ID
-                      </span>
-                      <span className="px-2 py-0.5 bg-blue-600 text-white text-[10px] rounded-full font-semibold">
-                        BBPS
-                      </span>
-                    </div>
-                    <p className="text-sm font-mono font-bold text-gray-800 break-all">
+                <motion.div
+                  animate={{ x: ["-100%", "100%"] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                />
+                <div className="relative z-10">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xs sm:text-sm font-black text-white uppercase tracking-widest">
+                      B-Connect Txn ID
+                    </span>
+                    <span className="px-2 py-0.5 bg-white text-blue-600 text-[10px] sm:text-xs rounded-full font-black">
+                      BBPS
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-sm sm:text-base font-mono font-black text-white break-all">
                       {responseData.OP_REF}
+                    </span>
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() =>
+                        handleCopyWithFeedback(responseData.OP_REF, "bconnect")
+                      }
+                      className="flex-shrink-0 p-2 sm:p-2.5 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl"
+                    >
+                      {copied === "bconnect" ? (
+                        <BsCheck className="w-5 h-5 text-white" />
+                      ) : (
+                        <BsCopy className="w-5 h-5 text-white" />
+                      )}
+                    </motion.button>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Transaction ID */}
+              <DetailCard delay={0.7}>
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[10px] sm:text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">
+                      Transaction ID
+                    </p>
+                    <p className="text-xs sm:text-sm font-mono font-bold text-gray-900 break-all">
+                      {responseData.transactionId}
                     </p>
                   </div>
-                  <button
-                    onClick={() => handleCopy(responseData.bharatConnectTxnId)}
-                    className="ml-3 p-2.5 hover:bg-blue-100 rounded-xl transition-colors"
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() =>
+                      handleCopyWithFeedback(responseData.transactionId, "txn")
+                    }
+                    className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-xl"
                   >
-                    {copied ? (
+                    {copied === "txn" ? (
                       <BsCheck className="w-5 h-5 text-green-600" />
                     ) : (
-                      <BsCopy className="w-5 h-5 text-blue-600" />
+                      <BsCopy className="w-5 h-5 text-gray-600" />
                     )}
-                  </button>
+                  </motion.button>
                 </div>
-              </motion.div>
+              </DetailCard>
 
-              {/* Transaction ID / Redeem Code */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                className="bg-gray-50 rounded-xl p-4 border border-gray-200"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1 font-medium">
-                      {data.type === "BBPS" ? "Transaction ID" : "Redeem Code"}
-                    </p>
-                    <p className="text-sm font-semibold text-gray-800 break-all">
-                      {data.type === "BBPS"
-                        ? responseData.transactionId
-                        : responseData.OP_REF}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() =>
-                      handleCopy(
-                        data.type === "BBPS"
-                          ? responseData.transactionId
-                          : responseData.OP_REF
-                      )
-                    }
-                    className="ml-3 p-2 hover:bg-gray-200 rounded-lg transition-colors"
-                  >
-                    <BsCopy className="w-5 h-5 text-gray-600" />
-                  </button>
-                </div>
-              </motion.div>
-
-              {/* Detailed Information */}
+              {/* Info Grid */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.7 }}
-                className="bg-white rounded-xl border border-gray-200 overflow-hidden"
+                transition={{ delay: 0.8 }}
+                className="bg-white rounded-2xl border-2 border-gray-100 overflow-hidden shadow-sm"
               >
-                <div className="bg-gradient-to-r from-slate-50 to-gray-50 px-4 py-2 border-b border-gray-200">
-                  <h3 className="text-xs font-bold text-gray-700 uppercase tracking-wide">
+                <div className="bg-gradient-to-r from-slate-50 to-gray-50 px-4 py-2.5 border-b border-gray-200">
+                  <h3 className="text-[10px] sm:text-xs font-black text-gray-700 uppercase tracking-widest">
                     Transaction Details
                   </h3>
                 </div>
-
                 <div className="divide-y divide-gray-100">
-                  {data.type !== "BBPS" && (
-                    <DetailRow
-                      label="Transaction ID"
-                      value={responseData.transactionId}
-                    />
-                  )}
-                  <DetailRow
+                  <InfoRow
                     label="Consumer Number"
                     value={responseData.MobileNumber}
-                    highlight
                   />
-                  <DetailRow
+                  <InfoRow
                     label="Biller Name"
                     value={responseData.Operator_Code}
                   />
-                  <DetailRow
-                    label="Operator Reference"
+                  <InfoRow
+                    label="Operator Ref"
                     value={responseData.OP_REF || "N/A"}
                   />
-                  <DetailRow
+                  <InfoRow
                     label="Bill Amount"
                     value={`₹${
                       responseData.amount - responseData.consumerConvenienceFee
                     }`}
                   />
-                  {/* Consumer Convenience Fee (MANDATORY - Page 23) */}
-                  {responseData.consumerConvenienceFee > 0 && (
-                    <DetailRow
-                      label="Consumer Convenience Fee"
-                      value={`₹${responseData.consumerConvenienceFee}`}
-                      highlight
-                    />
-                  )}
-                  <DetailRow label="Payment Mode" value="Wallet" />
-                  <DetailRow
-                    label="Date & Time"
-                    value={responseData.timestamp}
-                  />
-                  <DetailRow
+                  {/* <InfoRow label="CCF" value={`₹${responseData.consumerConvenienceFee}`} highlight /> */}
+                  <InfoRow label="Payment Mode" value="Wallet" />
+                  <InfoRow label="Date & Time" value={responseData.timestamp} />
+                  <InfoRow
                     label="Status"
                     value={responseData.status.toUpperCase()}
                     status={responseData.status}
@@ -833,24 +801,26 @@ const BBPSStatus = () => {
 
               {/* Action Buttons */}
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
+                transition={{ delay: 0.9 }}
                 className="grid grid-cols-2 gap-3 pt-2"
               >
                 <motion.button
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={downloadReceipt}
-                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all"
+                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold shadow-lg hover:shadow-xl text-sm sm:text-base"
                 >
                   <BsDownload className="w-4 h-4" />
-                  Download
+                  <span className="hidden xs:inline">Download</span>
+                  <span className="xs:hidden">Save</span>
                 </motion.button>
-
                 <motion.button
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => navigate("/")}
-                  className="flex items-center justify-center gap-2 bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+                  className="flex items-center justify-center gap-2 bg-gray-100 text-gray-700 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold hover:bg-gray-200 text-sm sm:text-base"
                 >
                   <FaHome className="w-4 h-4" />
                   Home
@@ -858,51 +828,44 @@ const BBPSStatus = () => {
               </motion.div>
             </div>
 
-            {/* Footer Note */}
+            {/* Footer */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.9 }}
-              className="bg-gradient-to-r from-slate-50 to-gray-50 text-center py-4 border-t border-gray-200"
+              transition={{ delay: 1 }}
+              className="bg-gradient-to-r from-slate-50 to-gray-50 text-center py-4 border-t-2 border-gray-100"
             >
-              <p className="text-xs text-gray-600 px-4">
+              <p className="text-[10px] sm:text-xs text-gray-600 px-4 leading-relaxed">
                 {responseData.status === "success"
-                  ? "✅ This is a computer generated receipt. No signature required."
+                  ? "✅ Computer generated receipt. No signature required."
                   : responseData.status === "pending"
-                  ? "⏳ You will receive a confirmation once payment is processed"
-                  : "❌ For any issues, please contact support with B-Connect Txn ID"}
+                  ? "⏳ Confirmation will be sent once processed"
+                  : "❌ Contact support with B-Connect Txn ID"}
               </p>
             </motion.div>
           </motion.div>
 
-          {/* Help Section */}
+          {/* Help Link */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-            className="mt-6 text-center"
+            transition={{ delay: 1.1 }}
+            className="mt-5 sm:mt-6 text-center px-4"
           >
-            <p className="text-sm text-gray-600">
+            <p className="text-xs sm:text-sm text-gray-600">
               Need help?{" "}
               <span
                 onClick={() => navigate("/contact")}
-                className="text-indigo-600 font-semibold cursor-pointer hover:underline"
+                className="text-indigo-600 font-bold cursor-pointer hover:underline"
               >
                 Contact Support
               </span>
             </p>
-            {/* <p className="text-xs text-gray-500 mt-2">
-              Powered by{" "}
-              <span className="font-semibold text-gray-700">
-                Bharat Connect
-              </span>{" "}
-              (NPCI)
-            </p> */}
           </motion.div>
         </motion.div>
       </div>
 
-      {/* Rating Bottom Sheet */}
+      {/* Rating Sheet */}
       {/* <AnimatePresence>
         {open && (
           <BottomSheet
@@ -917,35 +880,50 @@ const BBPSStatus = () => {
   );
 };
 
-// Enhanced Detail Row Component
-const DetailRow = ({ label, value, highlight, status }) => {
-  const getStatusStyle = (status) => {
-    const styles = {
-      success: "text-green-600 bg-green-50 px-2 py-1 rounded-md font-bold",
-      pending: "text-amber-600 bg-amber-50 px-2 py-1 rounded-md font-bold",
-      failed: "text-red-600 bg-red-50 px-2 py-1 rounded-md font-bold",
+// Detail Card Component
+const DetailCard = ({ children, delay = 0 }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay }}
+    className="bg-gray-50 rounded-xl sm:rounded-2xl p-3 sm:p-4 border-2 border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+  >
+    {children}
+  </motion.div>
+);
+
+// Info Row Component
+const InfoRow = ({ label, value, highlight, status }) => {
+  const getStatusBadge = (status) => {
+    const badges = {
+      success: "bg-green-100 text-green-700 border-green-200",
+      pending: "bg-amber-100 text-amber-700 border-amber-200",
+      failed: "bg-red-100 text-red-700 border-red-200",
     };
-    return styles[status] || "";
+    return badges[status] || "";
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -10 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.3 }}
-      className={`flex justify-between items-center px-4 py-3 ${
+    <div
+      className={`flex items-center justify-between gap-3 px-3 sm:px-4 py-2.5 sm:py-3 ${
         highlight ? "bg-blue-50/50" : ""
       }`}
     >
-      <span className="text-xs text-gray-600 font-medium">{label}</span>
+      <span className="text-[10px] sm:text-xs text-gray-600 font-semibold">
+        {label}
+      </span>
       <span
-        className={`text-xs font-semibold text-right ${
-          status ? getStatusStyle(status) : "text-gray-800"
-        } ${highlight ? "text-blue-700" : ""} max-w-[60%] break-all`}
+        className={`text-[10px] sm:text-xs font-bold text-right max-w-[60%] break-all ${
+          status
+            ? `px-2 sm:px-3 py-1 rounded-lg border-2 ${getStatusBadge(status)}`
+            : highlight
+            ? "text-blue-700"
+            : "text-gray-900"
+        }`}
       >
         {value}
       </span>
-    </motion.div>
+    </div>
   );
 };
 
