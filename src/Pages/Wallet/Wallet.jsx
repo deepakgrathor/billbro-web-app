@@ -556,7 +556,7 @@ const Wallet = () => {
 
         if (message.type === "PAYMENT_COMPLETED") {
           console.log("✅ Payment completion triggered");
-          handlePaymentCompletion(message.data.orderId);
+          handlePaymentCompletion(message.data.zwitch_transaction_id);
         } else if (message.type === "UPI_APP_NOT_FOUND") {
           console.log("❌ UPI app not found");
           setLoading(false);
@@ -711,6 +711,7 @@ const Wallet = () => {
               action: "OPEN_UPI_APP",
               upiIntentUrl: upiLink,
               orderId: orderId,
+              zwitch_transaction_id: zwitch_transaction_id,
               amount: parseFloat(amount),
             })
           );
