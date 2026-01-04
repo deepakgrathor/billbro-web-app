@@ -473,7 +473,7 @@ const HomeContent = () => {
         </section>
 
         {/* Quick Services */}
-        {serviceList.Data?.some((a) => a.name === "RECHARGE_SECTION")
+        {serviceList?.Data?.find((a) => a.name === "RECHARGE_SECTION")
           ?.isShow && (
           <section className="mb-6">
             <div className="flex items-end justify-between mb-3">
