@@ -1,66 +1,80 @@
-// import React, { useEffect, useState } from "react";
+// import React, { useEffect, useMemo, useState } from "react";
+// import { motion } from "framer-motion";
 // import { DummyAvatarForPassbook } from "../../Utils/MockData";
-// import { primaryColor } from "../../Utils/Style";
 // import { useDispatch, useSelector } from "react-redux";
 // import ToastComp from "../../Components/ToastComp";
 // import CommonHeader from "../../Components/CommonHeader";
 // import { useNavigate } from "react-router-dom";
-// import ButtonComp from "../../Components/ButtonComp";
-// import API from "../../Redux/API";
-// import { BBPS_PAY_BILL } from "../../Redux/Slices/ServiceSlice/ServiceSlice";
 // import Loader from "../../Components/Loader";
 // import { setWalletSelect } from "../../Redux/Slices/PaymentSlice";
-// import { MdOutlineAddCircleOutline } from "react-icons/md";
-// import BottomSheet from "../../Components/BottomSheet";
-// import PlayStoreRating from "../../Components/PlayStoreRating";
+// import {
+//   MdOutlineAddCircleOutline,
+//   MdAccountBalanceWallet,
+//   MdCalendarToday,
+//   MdInfo,
+//   MdCheckCircle,
+// } from "react-icons/md";
+// import { IoFlashSharp } from "react-icons/io5";
 // import { getUserProfile } from "../../Redux/Slices/AuthSlice/LoginSlice";
+// import { BBPS_PAY_BILL } from "../../Redux/Slices/ServiceSlice/ServiceSlice";
+// import LoaderModal from "../../Components/LoaderModal";
+
+// const QUICK_ADD = [100, 200, 500, 1000, 5000, 10000];
 
 // const BillPreview = ({ data, operatorData, number, ButtonName }) => {
 //   const [load, setLoad] = useState(false);
 //   const dispatch = useDispatch();
 //   const navigate = useNavigate();
-//   const { ProfileData, profileLoader } = useSelector(
-//     (state) => state.LoginSlice.profile
-//   );
-//   const [orderId, setOrderId] = useState();
+
+//   const { ProfileData } = useSelector((state) => state.LoginSlice.profile);
 //   const { walletSelect } = useSelector((state) => state.PaymentSlice);
-//   //   const { billPaymentLoader } = useSelector(
-//   //     (state) => state.ServiceSlice.billPayment
-//   //   );
-//   const { ids, serviceType } = useSelector(
-//     (state) => state.PaymentSlice.PaymentType
+//   const { ids } = useSelector((state) => state.PaymentSlice.PaymentType);
+//   const { serviceList, serviceLoader } = useSelector(
+//     (state) => state.ServiceSlice.service
 //   );
-//   const [amount, setAmount] = useState();
+//   const FindDirectPay = serviceList.Data?.find((a) => a.name == "DIRECT_UPI");
+//   const [amount, setAmount] = useState("");
+//   const [selectedQuick, setSelectedQuick] = useState(null);
 
-//   const handlePayment = async () => {
-//     try {
-//       setLoad(true);
+//   const walletBalance = ProfileData?.Data?.wallet?.balance || 0;
+//   const numericAmount = Number(amount || 0);
+//   const isLowBalance = walletBalance < numericAmount;
 
-//       // Validation: Check minimum amount for FASTag
-//       if (ids === "64c9e66d1efc768da459ef09" && amount < 10) {
-//         ToastComp({
-//           message: "Minimum FASTag recharge amount is ₹10",
-//           type: "error",
-//         });
-//         return;
-//       }
+//   useEffect(() => {
+//     dispatch(getUserProfile());
+//   }, [dispatch]);
 
-//       // Prepare payment data
-//       const valData = preparePaymentData();
-
-//       // Make API call
-//       const res = await dispatch(BBPS_PAY_BILL({ valData }));
-
-//       // Handle response
-//       handlePaymentResponse(res?.payload);
-//     } catch (error) {
-//       handlePaymentError(error);
-//     } finally {
-//       setLoad(false);
+//   useEffect(() => {
+//     if (data?.billAmount !== undefined && data?.billAmount !== null) {
+//       setAmount(String(data.billAmount));
 //     }
+//   }, [data?.billAmount]);
+
+//   const title = useMemo(() => {
+//     const name = operatorData?.operator_name || "Bill Preview";
+//     return name.length > 28 ? `${name.slice(0, 28)}…` : name;
+//   }, [operatorData?.operator_name]);
+
+//   const rightDesign = () => (
+//     <div className="flex items-center">
+//       <img
+//         width={92}
+//         height={34}
+//         src="https://ik.imagekit.io/isjriggan/images%20(1).png"
+//         alt="BBPS"
+//         className="object-contain"
+//       />
+//     </div>
+//   );
+
+//   const handleQuickAdd = (value) => {
+//     if (!data?.acceptPartPay) return;
+//     setSelectedQuick(value);
+//     const next = (Number(amount || 0) + value).toString();
+//     setAmount(next);
 //   };
 
-//   // Helper function to prepare payment data
+//   // Helper function to prepare payment data (logic same)
 //   const preparePaymentData = () => {
 //     const baseData = {
 //       operator: {
@@ -68,7 +82,7 @@
 //         category: operatorData.categoryId,
 //         operator_id: operatorData.op_id,
 //       },
-//       amount,
+//       amount: Number(amount),
 //       serviceId: ids,
 //     };
 
@@ -95,45 +109,38 @@
 //     };
 //   };
 
-//   // Helper function to handle API response
 //   const handlePaymentResponse = (payload) => {
-//     if (!payload) {
-//       throw new Error("No response received from server");
-//     }
-//     // Response status check
+//     if (!payload) throw new Error("No response received from server");
+
 //     if (payload.ResponseStatus === 0) {
-//       const errorMsg =
+//       throw new Error(
 //         payload.Remarks ||
-//         payload.message ||
-//         "Transaction failed. Please try again.";
-//       throw new Error(errorMsg);
+//           payload.message ||
+//           "Transaction failed. Please try again."
+//       );
 //     }
 
 //     if (payload.ResponseStatus === 1) {
-//       const data = payload.Data || {};
-//       const { status, transactionId, opRefNo, operator_ref_id } = data;
+//       const dataRes = payload.Data || {};
+//       const { status, transactionId, opRefNo, operator_ref_id } = dataRes;
 
-//       // Success or Pending status
 //       if (["Success", "success", "Pending", "pending"].includes(status)) {
 //         const responseData = {
-//           MobileNumber: number.cn || number,
+//           MobileNumber: number?.cn || number,
 //           Operator_Code: operatorData.operator_name,
-//           amount,
+//           amount: Number(amount),
 //           transactionId,
 //           status,
 //           type: "BBPS",
 //           OP_REF: opRefNo || operator_ref_id,
 //         };
-
 //         navigate("/bbpsstatus", { state: responseData });
 //         return;
 //       }
 
-//       // Failed transaction
-//       throw new Error(data.message || "Transaction failed");
+//       throw new Error(dataRes.message || "Transaction failed");
 //     }
 
-//     // Unexpected response status
 //     throw new Error(
 //       payload.Remarks ||
 //         payload.message ||
@@ -141,7 +148,6 @@
 //     );
 //   };
 
-//   // Helper function to handle errors
 //   const handlePaymentError = (error) => {
 //     const errorMessages = {
 //       "Network Error": "Network error. Please check your internet connection.",
@@ -151,222 +157,420 @@
 //     };
 
 //     let message = error?.message || "Something went wrong. Please try again.";
-
-//     // Check for specific error patterns
 //     const errorKey = Object.keys(errorMessages).find((key) =>
 //       message.toLowerCase().includes(key.toLowerCase())
 //     );
+//     if (errorKey) message = errorMessages[errorKey];
 
-//     if (errorKey) {
-//       message = errorMessages[errorKey];
+//     ToastComp({ message, type: "error" });
+//   };
+
+//   const handlePayment = async () => {
+//     try {
+//       setLoad(true);
+
+//       // Validation: Check minimum amount for FASTag
+//       if (ids === "64c9e66d1efc768da459ef09" && Number(amount) < 10) {
+//         ToastComp({
+//           message: "Minimum FASTag recharge amount is ₹10",
+//           type: "error",
+//         });
+//         return;
+//       }
+
+//       const valData = preparePaymentData();
+//       const res = await dispatch(BBPS_PAY_BILL({ valData }));
+//       handlePaymentResponse(res?.payload);
+//     } catch (e) {
+//       handlePaymentError(e);
+//     } finally {
+//       setLoad(false);
 //     }
-
-//     ToastComp({
-//       message,
-//       type: "error",
-//     });
 //   };
-
-//   useEffect(() => {
-//     setAmount(data.billAmount);
-//   }, [data.billAmount]);
-//   const rightDesign = () => {
-//     return (
-//       <div className="">
-//         <img
-//           width={60}
-//           src="https://ik.imagekit.io/isjriggan/images%20(1).png"
-//           alt=""
-//         />
-//       </div>
-//     );
-//   };
-
-//   useEffect(() => {
-//     dispatch(getUserProfile());
-//   }, []);
 
 //   return (
-//     <div>
-//       <div className="bg-white min-h-screen flex flex-col">
-//         {/* Header */}
-//         <div className="fixed top-0 left-0 right-0 z-10">
-//           <CommonHeader
-//             style={{ fontSize: 13 }}
-//             title={`${operatorData?.operator_name?.slice(0, 25)}...`}
-//             handleclick={() => navigate(-1)}
-//             rightDesign={rightDesign}
-//           />
-//         </div>
+//     <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white">
+//       {/* Header */}
+//       <div className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200">
+//         <CommonHeader
+//           style={{ fontSize: 13 }}
+//           title={title}
+//           handleclick={() => navigate(-1)}
+//           rightDesign={rightDesign}
+//         />
+//       </div>
 
-//         {/* Content */}
-//         <div className="flex-1 mt-16 overflow-y-auto p-4">
-//           <div className="bg-white border border-gray-300 rounded-lg p-3 mb-3">
-//             {/* User Info */}
-//             <div className="flex items-center space-x-3 border-b border-gray-300 pb-3">
-//               <img src={DummyAvatarForPassbook} className="w-12 rounded-full" />
-//               <div className="space-y-1">
-//                 <p className="text-black text-sm font-medium">
-//                   {data.userName}
+//       {/* Content */}
+//       <motion.div
+//         className="pt-16 pb-28 px-3 sm:px-4 max-w-xl mx-auto"
+//         initial={{ opacity: 0, y: 6 }}
+//         animate={{ opacity: 1, y: 0 }}
+//         transition={{ duration: 0.25 }}
+//       >
+//         {/* Top Summary Card */}
+//         <div className="mt-4 rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.08)]">
+//           {/* Header strip */}
+//           <div className="p-5 bg-slate-900 text-white">
+//             <div className="flex items-center gap-3">
+//               <div className="relative shrink-0">
+//                 <div className="h-12 w-12 rounded-2xl bg-white/10 border border-white/15 overflow-hidden">
+//                   <img
+//                     src={DummyAvatarForPassbook}
+//                     className="h-full w-full object-cover"
+//                     alt="User"
+//                     loading="lazy"
+//                   />
+//                 </div>
+//                 <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-slate-900" />
+//               </div>
+
+//               <div className="min-w-0 flex-1">
+//                 <p className="text-sm font-black truncate">
+//                   {data?.userName || "Customer"}
 //                 </p>
-//                 <p className="text-gray-400 text-xs">
-//                   Number: {data.cellNumber}
+//                 <p className="text-xs text-white/75 font-semibold truncate">
+//                   {data?.cellNumber ? `📱 ${data.cellNumber}` : "—"}
 //                 </p>
 //               </div>
-//             </div>
 
-//             {/* Bill Details */}
-//             <p className="text-black text-sm font-medium mt-3">Bill Details</p>
-//             <div className="border-b border-gray-300 my-2" />
-//             <div className="space-y-2">
-//               <div className="flex justify-between text-xs">
-//                 <p className="text-gray-600">Bill Date</p>
-//                 <p className="text-black">{data.billdate || "N/A"}</p>
-//               </div>
-//               <div className="flex justify-between text-xs">
-//                 <p className="text-red-600">Due Date</p>
-//                 <p className="text-red-600">{data.dueDate || "N/A"}</p>
+//               <div className="h-11 w-11 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
+//                 <MdCheckCircle className="text-2xl" />
 //               </div>
 //             </div>
 //           </div>
 
-//           {/* Amount Input */}
-//           <div className="bg-gray-100 border border-gray-300 flex items-center space-x-2 p-3 rounded-lg mb-3">
-//             <p className="text-2xl font-black">₹</p>
-//             <input
-//               disabled={!data.acceptPartPay}
-//               placeholder="Enter Amount"
-//               value={amount?.toString()}
-//               onChange={(e) => setAmount(e.target.value)}
-//               className="flex-1 font-black text-xl outline-none placeholder:font-light"
-//             />
-//           </div>
-//           {data.acceptPartPay && (
-//             <div className="my-4">
-//               <div className="flex space-x-3 overflow-x-auto items-center">
-//                 {PriceArr.map((item, idx) => (
-//                   <p
-//                     key={idx}
-//                     onClick={() => setAmount(item)}
-//                     className="text-[12px] text-gray-700 tracking-wider rounded-full border border-gray-300 p-1.5 px-4"
+//           {/* Details */}
+//           <div className="p-4">
+//             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+//               <InfoPill
+//                 icon={<MdCalendarToday className="text-slate-700" />}
+//                 label="Bill Date"
+//                 value={data?.billdate || "N/A"}
+//               />
+//               <InfoPill
+//                 danger
+//                 icon={<MdCalendarToday className="text-rose-700" />}
+//                 label="Due Date"
+//                 value={data?.dueDate || "N/A"}
+//               />
+//             </div>
+
+//             {/* Amount input */}
+//             <div className="mt-4">
+//               <div className="flex items-center justify-between mb-2">
+//                 <p className="text-[11px] font-black text-slate-700 tracking-wide uppercase">
+//                   Amount
+//                 </p>
+//                 {data?.acceptPartPay ? (
+//                   <span className="text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-1 rounded-full">
+//                     Part Pay Enabled
+//                   </span>
+//                 ) : (
+//                   <span className="text-[10px] font-black bg-slate-100 text-slate-700 border border-slate-200 px-2 py-1 rounded-full">
+//                     Fixed Amount
+//                   </span>
+//                 )}
+//               </div>
+
+//               <div className="rounded-3xl border border-slate-200 bg-slate-50 p-3">
+//                 <div className="flex items-center gap-3">
+//                   <div className="h-12 w-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shrink-0">
+//                     <span className="text-xl font-black text-slate-900">₹</span>
+//                   </div>
+
+//                   <input
+//                     disabled={!data?.acceptPartPay}
+//                     value={amount}
+//                     onChange={(e) => {
+//                       const v = e.target.value.replace(/[^0-9]/g, "");
+//                       setAmount(v);
+//                       setSelectedQuick(null);
+//                     }}
+//                     inputMode="numeric"
+//                     placeholder="Enter Amount"
+//                     className="w-full bg-transparent outline-none text-3xl font-black text-slate-900 placeholder:text-slate-300"
+//                   />
+//                 </div>
+
+//                 {/* Quick add */}
+//                 {data?.acceptPartPay && (
+//                   <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+//                     {QUICK_ADD.map((v) => {
+//                       const active = selectedQuick === v;
+//                       return (
+//                         <button
+//                           key={v}
+//                           type="button"
+//                           onClick={() => handleQuickAdd(v)}
+//                           className={`shrink-0 px-3 py-2 rounded-2xl border text-xs font-black active:scale-95 transition
+//                             ${
+//                               active
+//                                 ? "bg-slate-900 text-white border-slate-900"
+//                                 : "bg-white text-slate-800 border-slate-200"
+//                             }`}
+//                         >
+//                           +₹{v}
+//                         </button>
+//                       );
+//                     })}
+//                   </div>
+//                 )}
+//               </div>
+//             </div>
+
+//             {/* Payment method */}
+//             <div className="mt-5">
+//               <p className="text-[11px] font-black text-slate-700 tracking-wide uppercase mb-2">
+//                 Payment Method
+//               </p>
+
+//               <div className="space-y-3">
+//                 {/* Wallet Option */}
+//                 <div
+//                   onClick={() => dispatch(setWalletSelect(true))}
+//                   className={`
+//         bg-white/90 backdrop-blur-xl rounded-2xl shadow-md overflow-hidden cursor-pointer
+//         transition-all duration-300 transform hover:scale-[1.01] active:scale-[0.99]
+//         ${
+//           walletSelect
+//             ? "ring-2 ring-purple-500 shadow-lg shadow-purple-200 border border-transparent"
+//             : "border border-slate-200"
+//         }
+//       `}
+//                 >
+//                   <div className="p-4 flex items-center justify-between gap-3">
+//                     <div className="flex items-center gap-4 min-w-0">
+//                       <div
+//                         className={`
+//               w-12 h-12 rounded-xl flex items-center justify-center shrink-0
+//               ${
+//                 walletSelect
+//                   ? "bg-gradient-to-br from-purple-500 to-blue-600"
+//                   : "bg-slate-100"
+//               }
+//             `}
+//                       >
+//                         <MdAccountBalanceWallet
+//                           size={24}
+//                           className={
+//                             walletSelect ? "text-white" : "text-slate-700"
+//                           }
+//                         />
+//                       </div>
+
+//                       <div className="min-w-0">
+//                         <p className="text-xs text-slate-500 font-medium mb-1">
+//                           Wallet Balance
+//                         </p>
+
+//                         <div className="flex items-center gap-2 flex-wrap">
+//                           <p className="text-lg font-black text-slate-900">
+//                             ₹
+//                             {new Intl.NumberFormat("en-IN", {
+//                               minimumFractionDigits: 2,
+//                               maximumFractionDigits: 2,
+//                             }).format(walletBalance)}
+//                           </p>
+
+//                           {isLowBalance && (
+//                             <span className="text-[9px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold">
+//                               Low Balance
+//                             </span>
+//                           )}
+//                         </div>
+//                       </div>
+//                     </div>
+
+//                     {/* Add Money Button */}
+//                     <button
+//                       type="button"
+//                       onClick={(e) => {
+//                         e.stopPropagation();
+//                         navigate("/wallet");
+//                       }}
+//                       className="shrink-0 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all active:scale-95 shadow-md"
+//                     >
+//                       <MdOutlineAddCircleOutline size={18} />
+//                       <span className="text-xs font-bold">Add Money</span>
+//                     </button>
+//                   </div>
+
+//                   {walletSelect && (
+//                     <div className="bg-purple-50 px-4 py-2 border-t border-purple-100">
+//                       <div className="flex items-center gap-2">
+//                         <MdCheckCircle className="text-purple-600" size={16} />
+//                         <p className="text-xs text-purple-700 font-medium">
+//                           Selected Payment Method
+//                         </p>
+//                       </div>
+//                     </div>
+//                   )}
+//                 </div>
+
+//                 {/* UPI Option */}
+//                 {FindDirectPay?.status && (
+//                   <div
+//                     onClick={() => dispatch(setWalletSelect(false))}
+//                     className={`
+//         bg-white/90 backdrop-blur-xl rounded-2xl shadow-md overflow-hidden cursor-pointer
+//         transition-all duration-300 transform hover:scale-[1.01] active:scale-[0.99]
+//         ${
+//           !walletSelect
+//             ? "ring-2 ring-purple-500 shadow-lg shadow-purple-200 border border-transparent"
+//             : "border border-slate-200"
+//         }
+//       `}
 //                   >
-//                     +{item}
-//                   </p>
-//                 ))}
-//               </div>
-//             </div>
-//           )}
+//                     <div className="p-4 flex items-center justify-between">
+//                       <div className="flex items-center gap-4 min-w-0">
+//                         <div
+//                           className={`
+//               w-12 h-12 rounded-xl flex items-center justify-center shrink-0
+//               ${
+//                 !walletSelect
+//                   ? "bg-gradient-to-br from-purple-500 to-blue-600"
+//                   : "bg-slate-100"
+//               }
+//             `}
+//                         >
+//                           <img
+//                             className="w-7 h-7 object-contain"
+//                             src="https://images.icon-icons.com/2699/PNG/512/upi_logo_icon_170312.png"
+//                             alt="UPI"
+//                           />
+//                         </div>
 
-//           <div className=" mt-8 mb-4 ">
-//             <p className="m-1 font-bold mb-3 text-sm">Select Payment Method</p>
-//             <div
-//               onClick={() => dispatch(setWalletSelect(true))}
-//               style={{
-//                 borderColor: walletSelect ? primaryColor : "",
-//                 borderWidth: walletSelect ? 1 : 0,
-//               }}
-//               className={`flex items-center justify-between py-2 pl-2  bg-gray-100   border-blue-700 border-r-4 rounded-xl`}
-//             >
-//               <div className="flex items-center space-x-4">
-//                 <img
-//                   width={25}
-//                   src="https://ik.imagekit.io/43tomntsa/svgexport-3.png"
-//                   alt=""
-//                 />
-//                 {/* <MdOutlineAccountBalanceWallet size={35} /> */}
-//                 <div className="">
-//                   <p className="text-[10px] tracking-wider">Wallet Balance</p>
-//                   <div className="flex items-center space-x-2">
-//                     <p className="font-black text-base">
-//                       ₹
-//                       {new Intl.NumberFormat("en-IN", {
-//                         minimumFractionDigits: 2,
-//                         maximumFractionDigits: 2,
-//                       }).format(ProfileData?.Data?.wallet?.balance || 0)}
-//                     </p>
-//                     {ProfileData?.Data?.wallet?.balance < amount && (
-//                       <p className="text-[8px] tracking-wider bg-red-500 text-white rounded-full px-2 py-0.5">
-//                         Low Balance
-//                       </p>
+//                         <div className="min-w-0">
+//                           <p className="text-xs text-slate-500 font-medium mb-1">
+//                             Pay with UPI
+//                           </p>
+//                           <p className="text-lg font-black text-slate-900">
+//                             UPI Payment
+//                           </p>
+//                         </div>
+//                       </div>
+//                     </div>
+
+//                     {!walletSelect && (
+//                       <div className="bg-purple-50 px-4 py-2 border-t border-purple-100">
+//                         <div className="flex items-center gap-2">
+//                           <MdCheckCircle
+//                             className="text-purple-600"
+//                             size={16}
+//                           />
+//                           <p className="text-xs text-purple-700 font-medium">
+//                             Selected Payment Method
+//                           </p>
+//                         </div>
+//                       </div>
 //                     )}
 //                   </div>
-//                 </div>
-//               </div>
-//               <div
-//                 onClick={() => navigate("/wallet")}
-//                 className="flex  bg-[#1447e6] text-white pl-2 pr-1 py-2 rounded-l-full items-center space-x-2"
-//               >
-//                 <MdOutlineAddCircleOutline size={20} />
-//                 <p className="text-[10px] tracking-wide">Add Money</p>
+//                 )}
 //               </div>
 //             </div>
-//             <div
-//               onClick={() => dispatch(setWalletSelect(false))}
-//               style={{
-//                 borderColor: !walletSelect ? primaryColor : "",
-//                 borderWidth: !walletSelect ? 1 : 0,
-//               }}
-//               className={`flex items-center justify-between py-3.5 pl-2 bg-gray-100 mt-2  rounded-xl`}
-//             >
-//               <div className="flex items-center space-x-4">
-//                 <img
-//                   width={25}
-//                   src="https://images.icon-icons.com/2699/PNG/512/upi_logo_icon_170312.png"
-//                   alt=""
-//                 />
-//                 {/* <MdOutlineAccountBalanceWallet size={35} /> */}
-//                 <div className="">
-//                   <div className="flex items-center space-x-2">
-//                     <p className="font-black text-base">UPI</p>
-//                   </div>
+
+//             {/* Note */}
+//             <div className="mt-5 rounded-3xl border border-slate-200 bg-slate-50 p-4">
+//               <div className="flex gap-3">
+//                 <div className="h-10 w-10 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shrink-0">
+//                   <MdInfo className="text-xl text-slate-700" />
+//                 </div>
+//                 <div className="min-w-0">
+//                   <p className="text-sm font-black text-slate-900">
+//                     Important note
+//                   </p>
+//                   <p className="mt-1 text-xs text-slate-600 leading-relaxed">
+//                     The service provider may occasionally take up to 72 hours to
+//                     process your bill payment. You will be notified once the
+//                     payment is confirmed.
+//                   </p>
 //                 </div>
 //               </div>
 //             </div>
 //           </div>
-//           {/* Note */}
-//           <p className="text-gray-500 text-[8px] bg-blue-100 p-2 rounded-md mb-10">
-//             Note: The service provider may occasionally take up to 72 hours to
-//             process your bill.
-//           </p>
 //         </div>
+//       </motion.div>
 
-//         {/* Bottom Button */}
-//         <div className="sticky text-center bottom-0 left-0 right-0 bg-white p-4 shadow">
-//           <ButtonComp
-//             disabled={
-//               Number(amount) > ProfileData?.Data?.wallet?.balance &&
-//               walletSelect
-//             }
-//             title={
-//               Number(amount) > ProfileData?.Data?.wallet?.balance &&
-//               walletSelect
-//                 ? "Wallet Balance is Low!"
-//                 : "Proceed to pay"
-//             }
-//             handleClick={handlePayment}
-//           />
+//       {/* Bottom bar */}
+//       <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-t border-slate-200 p-3 sm:p-4 safe-area-bottom">
+//         <div className="max-w-xl mx-auto">
+//           <button
+//             onClick={handlePayment}
+//             disabled={(walletSelect && isLowBalance) || load || !numericAmount}
+//             className={`w-full rounded-2xl px-4 py-4 font-black text-base flex items-center justify-center gap-2 transition active:scale-[0.99]
+//               ${
+//                 (walletSelect && isLowBalance) || load || !numericAmount
+//                   ? "bg-slate-200 text-slate-500 cursor-not-allowed"
+//                   : "bg-slate-900 text-white shadow-[0_18px_55px_rgba(2,6,23,0.18)]"
+//               }`}
+//           >
+//             {walletSelect && isLowBalance
+//               ? "Wallet Balance is Low!"
+//               : `Pay ₹${numericAmount || 0}`}
+//             {!((walletSelect && isLowBalance) || load || !numericAmount) && (
+//               <IoFlashSharp className="text-xl" />
+//             )}
+//           </button>
+
+//           {/* tiny helper */}
+//           {walletSelect && !isLowBalance && numericAmount > 0 && (
+//             <p className="mt-2 text-center text-[11px] text-slate-500 font-semibold">
+//               Paying from wallet • Balance after pay:{" "}
+//               <span className="font-black text-slate-700">
+//                 ₹{(walletBalance - numericAmount).toFixed(2)}
+//               </span>
+//             </p>
+//           )}
 //         </div>
 //       </div>
-//       {load && <Loader />}
+
+//       {load && <LoaderModal variant="bbps" />}
 //     </div>
 //   );
 // };
-// const PriceArr = [100, 200, 500, 1000, 5000, 10000];
+
+// const InfoPill = ({ icon, label, value, danger }) => {
+//   return (
+//     <div
+//       className={`rounded-3xl border p-4 flex items-center justify-between gap-3
+//         ${
+//           danger ? "bg-rose-50 border-rose-200" : "bg-slate-50 border-slate-200"
+//         }`}
+//     >
+//       <div className="flex items-center gap-3 min-w-0">
+//         <div
+//           className={`h-10 w-10 rounded-2xl border flex items-center justify-center shrink-0
+//             ${
+//               danger ? "bg-white border-rose-200" : "bg-white border-slate-200"
+//             }`}
+//         >
+//           {icon}
+//         </div>
+//         <div className="min-w-0">
+//           <p className="text-[11px] font-black text-slate-700 uppercase tracking-wide">
+//             {label}
+//           </p>
+//           <p
+//             className={`text-sm font-black truncate ${
+//               danger ? "text-rose-700" : "text-slate-900"
+//             }`}
+//           >
+//             {value}
+//           </p>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
 // export default BillPreview;
-
-import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
+import { motion } from "framer-motion";
 import { DummyAvatarForPassbook } from "../../Utils/MockData";
 import { useDispatch, useSelector } from "react-redux";
 import ToastComp from "../../Components/ToastComp";
 import CommonHeader from "../../Components/CommonHeader";
 import { useNavigate } from "react-router-dom";
-import ButtonComp from "../../Components/ButtonComp";
-import API from "../../Redux/API";
-import { BBPS_PAY_BILL } from "../../Redux/Slices/ServiceSlice/ServiceSlice";
-import Loader from "../../Components/Loader";
-import { setWalletSelect } from "../../Redux/Slices/PaymentSlice";
 import {
   MdOutlineAddCircleOutline,
   MdAccountBalanceWallet,
@@ -374,53 +578,65 @@ import {
   MdInfo,
   MdCheckCircle,
 } from "react-icons/md";
-import { IoFlashSharp, IoWalletSharp } from "react-icons/io5";
+import { IoFlashSharp } from "react-icons/io5";
 import { getUserProfile } from "../../Redux/Slices/AuthSlice/LoginSlice";
+import { BBPS_PAY_BILL } from "../../Redux/Slices/ServiceSlice/ServiceSlice";
+import LoaderModal from "../../Components/LoaderModal";
+import { useUPIPayment } from "../../hooks/useUPIPayment";
+import { usePaymentService } from "../../hooks/usePaymentService";
+import PaymentMethodSelector from "../../Components/PaymentMethodSelector";
 
-const PriceArr = [100, 200, 500, 1000, 5000, 10000];
+const QUICK_ADD = [100, 200, 500, 1000, 5000, 10000];
 
 const BillPreview = ({ data, operatorData, number, ButtonName }) => {
-  const [load, setLoad] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { ProfileData, profileLoader } = useSelector(
-    (state) => state.LoginSlice.profile
-  );
-  const [orderId, setOrderId] = useState();
+  const [amount, setAmount] = useState("");
+  const [selectedQuick, setSelectedQuick] = useState(null);
+  const [isWalletLoading, setIsWalletLoading] = useState(false);
+
   const { walletSelect } = useSelector((state) => state.PaymentSlice);
-  const { ids, serviceType } = useSelector(
-    (state) => state.PaymentSlice.PaymentType
-  );
-  const [amount, setAmount] = useState();
-  const [selectedQuickAmount, setSelectedQuickAmount] = useState(null);
+  const { ids } = useSelector((state) => state.PaymentSlice.PaymentType);
 
-  const handlePayment = async () => {
-    try {
-      setLoad(true);
+  // Payment Service Hook
+  const { walletBalance, isWalletSufficient, showError, showSuccess } =
+    usePaymentService();
 
-      // Validation: Check minimum amount for FASTag
-      if (ids === "64c9e66d1efc768da459ef09" && amount < 10) {
-        ToastComp({
-          message: "Minimum FASTag recharge amount is ₹10",
-          type: "error",
-        });
-        return;
-      }
+  const numericAmount = Number(amount || 0);
 
-      // Prepare payment data
-      const valData = preparePaymentData();
+  useEffect(() => {
+    dispatch(getUserProfile());
+  }, [dispatch]);
 
-      // Make API call
-      const res = await dispatch(BBPS_PAY_BILL({ valData }));
-
-      // Handle response
-      handlePaymentResponse(res?.payload);
-    } catch (error) {
-      handlePaymentError(error);
-    } finally {
-      setLoad(false);
+  useEffect(() => {
+    if (data?.billAmount !== undefined && data?.billAmount !== null) {
+      setAmount(String(data.billAmount));
     }
+  }, [data?.billAmount]);
+
+  const title = useMemo(() => {
+    const name = operatorData?.operator_name || "Bill Preview";
+    return name.length > 28 ? `${name.slice(0, 28)}…` : name;
+  }, [operatorData?.operator_name]);
+
+  const rightDesign = () => (
+    <div className="flex items-center">
+      <img
+        width={92}
+        height={34}
+        src="https://ik.imagekit.io/isjriggan/images%20(1).png"
+        alt="BBPS"
+        className="object-contain"
+      />
+    </div>
+  );
+
+  const handleQuickAdd = (value) => {
+    if (!data?.acceptPartPay) return;
+    setSelectedQuick(value);
+    const next = (Number(amount || 0) + value).toString();
+    setAmount(next);
   };
 
   // Helper function to prepare payment data
@@ -431,7 +647,7 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
         category: operatorData.categoryId,
         operator_id: operatorData.op_id,
       },
-      amount,
+      amount: Number(amount),
       serviceId: ids,
     };
 
@@ -458,40 +674,37 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
     };
   };
 
-  // Helper function to handle API response
   const handlePaymentResponse = (payload) => {
-    if (!payload) {
-      throw new Error("No response received from server");
-    }
+    if (!payload) throw new Error("No response received from server");
 
     if (payload.ResponseStatus === 0) {
-      const errorMsg =
+      throw new Error(
         payload.Remarks ||
-        payload.message ||
-        "Transaction failed. Please try again.";
-      throw new Error(errorMsg);
+          payload.message ||
+          "Transaction failed. Please try again."
+      );
     }
 
     if (payload.ResponseStatus === 1) {
-      const data = payload.Data || {};
-      const { status, transactionId, opRefNo, operator_ref_id } = data;
+      const dataRes = payload.Data || {};
+      const { status, transactionId, opRefNo, operator_ref_id } = dataRes;
 
       if (["Success", "success", "Pending", "pending"].includes(status)) {
         const responseData = {
-          MobileNumber: number.cn || number,
+          MobileNumber: number?.cn || number,
           Operator_Code: operatorData.operator_name,
-          amount,
+          amount: Number(amount),
           transactionId,
           status,
           type: "BBPS",
+          paymentMethod: "WALLET",
           OP_REF: opRefNo || operator_ref_id,
         };
-
         navigate("/bbpsstatus", { state: responseData });
         return;
       }
 
-      throw new Error(data.message || "Transaction failed");
+      throw new Error(dataRes.message || "Transaction failed");
     }
 
     throw new Error(
@@ -501,7 +714,6 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
     );
   };
 
-  // Helper function to handle errors
   const handlePaymentError = (error) => {
     const errorMessages = {
       "Network Error": "Network error. Please check your internet connection.",
@@ -511,393 +723,363 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
     };
 
     let message = error?.message || "Something went wrong. Please try again.";
-
     const errorKey = Object.keys(errorMessages).find((key) =>
       message.toLowerCase().includes(key.toLowerCase())
     );
+    if (errorKey) message = errorMessages[errorKey];
 
-    if (errorKey) {
-      message = errorMessages[errorKey];
+    showError(message);
+  };
+
+  // Wallet Bill Payment
+  const performWalletBillPayment = useCallback(async () => {
+    // Validation for FASTag
+    if (ids === "64c9e66d1efc768da459ef09" && Number(amount) < 10) {
+      showError("Minimum FASTag recharge amount is ₹10");
+      return;
     }
 
-    ToastComp({
-      message,
-      type: "error",
-    });
-  };
+    if (!isWalletSufficient(Number(amount))) {
+      showError("❌ Insufficient wallet balance. Please add money.");
+      return;
+    }
 
-  useEffect(() => {
-    setAmount(data.billAmount);
-  }, [data.billAmount]);
+    setIsWalletLoading(true);
 
-  useEffect(() => {
-    dispatch(getUserProfile());
-  }, []);
+    try {
+      const valData = preparePaymentData();
+      const res = await dispatch(BBPS_PAY_BILL({ valData }));
+      handlePaymentResponse(res?.payload);
+    } catch (e) {
+      handlePaymentError(e);
+    } finally {
+      setIsWalletLoading(false);
+    }
+  }, [amount, ids, isWalletSufficient, dispatch, showError]);
 
-  const rightDesign = () => {
-    return (
-      <div className="">
-        <img
-          width={100}
-          height={40}
-          src="https://ik.imagekit.io/isjriggan/images%20(1).png"
-          alt="BBPS"
-        />
-      </div>
-    );
-  };
+  // Bill Payment After UPI
+  const performBillPaymentAfterUPI = useCallback(
+    async (upiOrderId) => {
+      try {
+        const valData = preparePaymentData();
+        const res = await dispatch(BBPS_PAY_BILL({ valData }));
 
-  const handleQuickAmountSelect = (value) => {
-    setSelectedQuickAmount(value);
-    setAmount(Number(amount) + value);
-  };
+        if (!res?.payload) {
+          throw new Error("No response from payment service");
+        }
 
-  const walletBalance = ProfileData?.Data?.wallet?.balance || 0;
-  const isLowBalance = walletBalance < amount;
+        const { ResponseStatus, Data, Remarks } = res.payload;
+
+        if (ResponseStatus !== 1 || !Data) {
+          throw new Error(Remarks || "Payment failed after UPI");
+        }
+
+        const { status, transactionId, opRefNo, operator_ref_id } = Data;
+
+        if (["Success", "success", "Pending", "pending"].includes(status)) {
+          const responseData = {
+            MobileNumber: number?.cn || number,
+            Operator_Code: operatorData.operator_name,
+            amount: Number(amount),
+            transactionId,
+            status,
+            type: "BBPS",
+            paymentMethod: "UPI",
+            upiOrderId,
+            OP_REF: opRefNo || operator_ref_id,
+          };
+          navigate("/bbpsstatus", { state: responseData });
+        } else {
+          throw new Error(Data.message || "Payment failed");
+        }
+      } catch (error) {
+        console.error("❌ Post-UPI Bill Payment Error:", error);
+        showError(
+          `Payment successful but bill payment failed. Contact support with Order ID: ${upiOrderId}`
+        );
+      }
+    },
+    [amount, number, operatorData, dispatch, navigate, showError]
+  );
+
+  // UPI Payment Hook
+  const {
+    isLoading: isUPILoading,
+    initiatePayment,
+    getLoadingMessage,
+  } = useUPIPayment(performBillPaymentAfterUPI, (error) =>
+    console.error("UPI Payment Error:", error)
+  );
+
+  // Main Payment Handler
+  const handlePayment = useCallback(() => {
+    // Validation for FASTag
+    if (ids === "64c9e66d1efc768da459ef09" && Number(amount) < 10) {
+      showError("Minimum FASTag recharge amount is ₹10");
+      return;
+    }
+
+    if (!amount || Number(amount) <= 0) {
+      showError("Please enter a valid amount");
+      return;
+    }
+
+    if (walletSelect) {
+      performWalletBillPayment();
+    } else {
+      initiatePayment(Number(amount));
+    }
+  }, [
+    amount,
+    ids,
+    walletSelect,
+    performWalletBillPayment,
+    initiatePayment,
+    showError,
+  ]);
+
+  const isLoading = isWalletLoading || isUPILoading;
+  const isButtonDisabled =
+    isLoading ||
+    (walletSelect && !isWalletSufficient(numericAmount)) ||
+    !numericAmount;
+
+  const buttonTitle = isLoading
+    ? walletSelect
+      ? "Processing Bill Payment..."
+      : getLoadingMessage()
+    : walletSelect && !isWalletSufficient(numericAmount)
+    ? "💰 Insufficient Wallet Balance"
+    : `Pay ₹${numericAmount || 0}`;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 relative overflow-hidden">
-      {/* Decorative Background Elements */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-400/10 to-purple-400/10 rounded-full blur-3xl -z-10"></div>
-      <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-purple-400/10 to-pink-400/10 rounded-full blur-3xl -z-10"></div>
-
+    <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white">
       {/* Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200">
         <CommonHeader
           style={{ fontSize: 13 }}
-          title={`${operatorData?.operator_name?.slice(0, 25)}${
-            operatorData?.operator_name?.length > 25 ? "..." : ""
-          }`}
-          handleclick={() => navigate(-1)}
+          title={title}
+          handleclick={() => !isLoading && navigate(-1)}
           rightDesign={rightDesign}
         />
       </div>
 
       {/* Content */}
       <motion.div
-        className="pt-16 pb-32 px-3 sm:px-4 md:px-6 lg:px-8 max-w-2xl mx-auto overflow-y-auto"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
+        className="pt-16 pb-28 px-3 sm:px-4 max-w-xl mx-auto"
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25 }}
       >
-        {/* Bill Info Card */}
-        <motion.div
-          className="mt-4 sm:mt-6 mb-3 sm:mb-4"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.1 }}
-        >
-          <div className="bg-white rounded-2xl sm:rounded-3xl shadow overflow-hidden border border-gray-100">
-            {/* User Section */}
-            <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-3 sm:p-5">
-              <div className="flex items-center space-x-3 sm:space-x-4">
-                <motion.div
-                  className="relative flex-shrink-0"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <div className="absolute inset-0 bg-white/30 rounded-full blur-md"></div>
+        {/* Top Summary Card */}
+        <div className="mt-4 rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.08)]">
+          {/* Header strip */}
+          <div className="p-5 bg-slate-900 text-white">
+            <div className="flex items-center gap-3">
+              <div className="relative shrink-0">
+                <div className="h-12 w-12 rounded-2xl bg-white/10 border border-white/15 overflow-hidden">
                   <img
                     src={DummyAvatarForPassbook}
-                    className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-full border-2 sm:border-4 border-white/50 shadow-lg"
+                    className="h-full w-full object-cover"
                     alt="User"
-                  />
-                </motion.div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-white font-bold text-base sm:text-lg truncate">
-                    {data.userName}
-                  </h3>
-                  <p className="text-white/80 text-xs sm:text-sm truncate">
-                    📱 {data.cellNumber}
-                  </p>
-                </div>
-                <div className="bg-white/20 backdrop-blur-sm rounded-full p-1.5 sm:p-2 flex-shrink-0">
-                  <MdCheckCircle className="text-white text-xl sm:text-2xl" />
-                </div>
-              </div>
-            </div>
-
-            {/* Bill Details */}
-            <div className="p-2 sm:p-5">
-              {/* <div className="flex items-center justify-between mb-3 sm:mb-4">
-                <h4 className="text-gray-800 font-bold text-sm sm:text-base flex items-center">
-                  <MdInfo className="mr-1 sm:mr-2 text-blue-500 text-base sm:text-lg" />
-                  Bill Details
-                </h4>
-              </div> */}
-
-              <div className="space-y-1 sm:space-y-3">
-                <motion.div
-                  className="flex justify-between items-center p-2 sm:p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl"
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <div className="flex items-center space-x-2">
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <MdCalendarToday className="text-white text-xs sm:text-sm" />
-                    </div>
-                    <span className="text-gray-600 text-xs sm:text-sm font-medium">
-                      Bill Date
-                    </span>
-                  </div>
-                  <span className="text-gray-800 font-bold text-xs sm:text-sm">
-                    {data.billdate || "N/A"}
-                  </span>
-                </motion.div>
-
-                <motion.div
-                  className="flex justify-between items-center p-2 sm:p-3 bg-gradient-to-r from-red-50 to-orange-50 rounded-xl"
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <div className="flex items-center space-x-2">
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-red-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <MdCalendarToday className="text-white text-xs sm:text-sm" />
-                    </div>
-                    <span className="text-red-600 text-xs sm:text-sm font-medium">
-                      Due Date
-                    </span>
-                  </div>
-                  <span className="text-red-600 font-bold text-xs sm:text-sm">
-                    {data.dueDate || "N/A"}
-                  </span>
-                </motion.div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Amount Section */}
-        <motion.div
-          className="mb-3 mt-5 sm:mb-4"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
-          <h4 className="text-gray-500 font-semibold text-xs sm:text-base mb-2 sm:mb-3 flex items-center">
-            <IoWalletSharp className="mr-1 sm:mr-2 text-purple-500 text-base sm:text-lg" />
-            Enter Amount
-          </h4>
-
-          <div className="relative">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl opacity-20 blur"></div>
-            <div className="relative bg-white rounded-xl sm:rounded-2xl shadow border-1 border-gray-100 p-1 sm:p-5">
-              <div className="flex items-center space-x-2 sm:space-x-3">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <span className="text-white sm:text-2xl font-black">₹</span>
-                </div>
-                <input
-                  disabled={!data.acceptPartPay}
-                  placeholder="Enter Amount"
-                  value={amount?.toString()}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/[^0-9]/g, "");
-                    setAmount(value);
-                    setSelectedQuickAmount(null);
-                  }}
-                  className="flex-1 font-black sm:text-2xl outline-none text-gray-800 placeholder:font-light placeholder:text-gray-400 bg-transparent min-w-0"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Amount Buttons */}
-          {data.acceptPartPay && (
-            <motion.div
-              className="mt-3 sm:mt-4"
-              initial={{ y: 10, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              <p className="text-[10px] sm:text-xs text-gray-600 mb-2 ml-1">
-                Quick Add
-              </p>
-              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-                {PriceArr.map((item, idx) => (
-                  <motion.button
-                    key={idx}
-                    onClick={() => handleQuickAmountSelect(item)}
-                    className={`text-xs sm:text-sm font-bold tracking-wide rounded-lg sm:rounded-xl border-2 px-3 sm:px-5 py-2 sm:py-2.5 whitespace-nowrap transition-all duration-300 flex-shrink-0 ${
-                      selectedQuickAmount === item
-                        ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white border-transparent shadow-lg"
-                        : "bg-white text-gray-700 border-gray-200 hover:border-blue-300"
-                    }`}
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    +₹{item}
-                  </motion.button>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </motion.div>
-
-        {/* Payment Method Section */}
-        <motion.div
-          className="mb-3 mt-5 sm:mb-4"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}
-        >
-          <h4 className="text-gray-500 font-semibold text-xs sm:text-base mb-2 sm:mb-3 flex items-center">
-            <MdAccountBalanceWallet className="mr-1 sm:mr-2 text-green-500 text-base sm:text-lg" />
-            Select Payment Method
-          </h4>
-
-          <div className="space-y-2 sm:space-y-3">
-            {/* Wallet Option */}
-            <motion.div
-              onClick={() => dispatch(setWalletSelect(true))}
-              className={`relative bg-white rounded-xl sm:rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden border-2 ${
-                walletSelect ? "border-blue-500" : "border-gray-100"
-              }`}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              {walletSelect && (
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-600"></div>
-              )}
-
-              <div className="p-2 sm:p-4 flex items-center justify-between gap-2">
-                <div className="flex items-center space-x-2 sm:space-x-4 flex-1 min-w-0">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <img
-                      className="w-6 sm:w-7"
-                      src="https://ik.imagekit.io/43tomntsa/svgexport-3.png"
-                      alt="Wallet"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[10px] sm:text-xs text-gray-00 font-medium">
-                      Wallet Balance
-                    </p>
-                    <div className="flex items-center space-x-1.5 sm:space-x-2 mt-0.5 sm:mt-1">
-                      <p className="font-black text-base sm:text-lg text-gray-800 truncate">
-                        ₹
-                        {new Intl.NumberFormat("en-IN", {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        }).format(walletBalance)}
-                      </p>
-                      {isLowBalance && (
-                        <span className="text-[8px] sm:text-[9px] font-bold bg-red-500 text-white rounded-full px-1.5 sm:px-2 py-0.5 animate-pulse flex-shrink-0">
-                          Low Balance
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <motion.button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate("/wallet");
-                  }}
-                  className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 sm:pl-3  sm:pr-2 py-2 sm:py-2.5 rounded-full flex items-center space-x-1 sm:space-x-2 shadow-lg hover:shadow-xl transition-all flex-shrink-0"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <MdOutlineAddCircleOutline
-                    size={16}
-                    className="sm:w-[18px] sm:h-[18px]"
-                  />
-                  <span className="text-[10px] sm:text-xs font-bold">Add</span>
-                </motion.button>
-              </div>
-            </motion.div>
-
-            {/* UPI Option */}
-            <motion.div
-              onClick={() => dispatch(setWalletSelect(false))}
-              className={`relative bg-white rounded-xl sm:rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden border-2 ${
-                !walletSelect ? "border-orange-500" : "border-gray-100"
-              }`}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              {!walletSelect && (
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 to-red-500"></div>
-              )}
-
-              <div className="p-2 sm:p-4 flex items-center space-x-2 sm:space-x-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-100 to-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <img
-                    className="w-6 sm:w-7"
-                    src="https://images.icon-icons.com/2699/PNG/512/upi_logo_icon_170312.png"
-                    alt="UPI"
+                    loading="lazy"
                   />
                 </div>
-                <div>
-                  <p className="font-black text-sm sm:text-base text-gray-800">
-                    UPI
-                  </p>
-                  <p className="text-[10px] sm:text-xs text-gray-600">
-                    Fast & Secure
-                  </p>
-                </div>
+                <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-slate-900" />
               </div>
-            </motion.div>
-          </div>
-        </motion.div>
 
-        {/* Note */}
-        <motion.div
-          className="mb-3 sm:mb-4"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-blue-100">
-            <div className="flex items-start space-x-2 sm:space-x-3">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                <MdInfo className="text-white text-base sm:text-lg" />
-              </div>
-              <div>
-                <h5 className="text-xs sm:text-sm font-bold text-gray-800 mb-1">
-                  Important Note
-                </h5>
-                <p className="text-[9px] sm:text-xs text-gray-600 leading-relaxed">
-                  The service provider may occasionally take up to 72 hours to
-                  process your bill payment. You will be notified once the
-                  payment is confirmed.
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-black truncate">
+                  {data?.userName || "Customer"}
+                </p>
+                <p className="text-xs text-white/75 font-semibold truncate">
+                  {data?.cellNumber ? `📱 ${data.cellNumber}` : "—"}
                 </p>
               </div>
+
+              <div className="h-11 w-11 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
+                <MdCheckCircle className="text-2xl" />
+              </div>
             </div>
           </div>
-        </motion.div>
+
+          {/* Details */}
+          <div className="p-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <InfoPill
+                icon={<MdCalendarToday className="text-slate-700" />}
+                label="Bill Date"
+                value={data?.billdate || "N/A"}
+              />
+              <InfoPill
+                danger
+                icon={<MdCalendarToday className="text-rose-700" />}
+                label="Due Date"
+                value={data?.dueDate || "N/A"}
+              />
+            </div>
+
+            {/* Amount input */}
+            <div className="mt-4">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-[11px] font-black text-slate-700 tracking-wide uppercase">
+                  Amount
+                </p>
+                {data?.acceptPartPay ? (
+                  <span className="text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-1 rounded-full">
+                    Part Pay Enabled
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-black bg-slate-100 text-slate-700 border border-slate-200 px-2 py-1 rounded-full">
+                    Fixed Amount
+                  </span>
+                )}
+              </div>
+
+              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shrink-0">
+                    <span className="text-xl font-black text-slate-900">₹</span>
+                  </div>
+
+                  <input
+                    disabled={!data?.acceptPartPay || isLoading}
+                    value={amount}
+                    onChange={(e) => {
+                      const v = e.target.value.replace(/[^0-9]/g, "");
+                      setAmount(v);
+                      setSelectedQuick(null);
+                    }}
+                    inputMode="numeric"
+                    placeholder="Enter Amount"
+                    className="w-full bg-transparent outline-none text-3xl font-black text-slate-900 placeholder:text-slate-300 disabled:opacity-50"
+                  />
+                </div>
+
+                {/* Quick add */}
+                {data?.acceptPartPay && (
+                  <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+                    {QUICK_ADD.map((v) => {
+                      const active = selectedQuick === v;
+                      return (
+                        <button
+                          key={v}
+                          type="button"
+                          onClick={() => !isLoading && handleQuickAdd(v)}
+                          disabled={isLoading}
+                          className={`shrink-0 px-3 py-2 rounded-2xl border text-xs font-black active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed
+                            ${
+                              active
+                                ? "bg-slate-900 text-white border-slate-900"
+                                : "bg-white text-slate-800 border-slate-200"
+                            }`}
+                        >
+                          +₹{v}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Payment Method Selector - REUSABLE COMPONENT */}
+            <div className="mt-5">
+              <PaymentMethodSelector
+                walletBalance={walletBalance}
+                payableAmount={numericAmount}
+                isLoading={isLoading}
+              />
+            </div>
+
+            {/* Note */}
+            <div className="mt-5 rounded-3xl border border-slate-200 bg-slate-50 p-4">
+              <div className="flex gap-3">
+                <div className="h-10 w-10 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shrink-0">
+                  <MdInfo className="text-xl text-slate-700" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-black text-slate-900">
+                    Important note
+                  </p>
+                  <p className="mt-1 text-xs text-slate-600 leading-relaxed">
+                    The service provider may occasionally take up to 72 hours to
+                    process your bill payment. You will be notified once the
+                    payment is confirmed.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </motion.div>
 
-      {/* Bottom Payment Button */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 p-3 sm:p-4 z-40 shadow-2xl safe-area-bottom">
-        <motion.div
-          className="max-w-2xl mx-auto"
-          initial={{ y: 100 }}
-          animate={{ y: 0 }}
-          transition={{ type: "spring", stiffness: 100 }}
-        >
-          <motion.button
+      {/* Bottom bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-t border-slate-200 p-3 sm:p-4 safe-area-bottom">
+        <div className="max-w-xl mx-auto">
+          <button
             onClick={handlePayment}
-            disabled={isLowBalance && walletSelect}
-            className={`w-full font-bold py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-xl transition-all duration-300 flex items-center justify-center space-x-2 text-sm sm:text-base ${
-              isLowBalance && walletSelect
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white hover:shadow-2xl"
-            }`}
-            whileHover={isLowBalance && walletSelect ? {} : { scale: 1.02 }}
-            whileTap={isLowBalance && walletSelect ? {} : { scale: 0.98 }}
+            disabled={isButtonDisabled}
+            className={`w-full rounded-2xl px-4 py-4 font-black text-base flex items-center justify-center gap-2 transition active:scale-[0.99]
+              ${
+                isButtonDisabled
+                  ? "bg-slate-200 text-slate-500 cursor-not-allowed"
+                  : "bg-slate-900 text-white shadow-[0_18px_55px_rgba(2,6,23,0.18)]"
+              }`}
           >
-            <span>
-              {isLowBalance && walletSelect
-                ? "Wallet Balance is Low!"
-                : `Pay ₹${amount || 0}`}
-            </span>
-            {!(isLowBalance && walletSelect) && (
-              <IoFlashSharp className="text-lg sm:text-xl" />
+            {buttonTitle}
+            {!isButtonDisabled && <IoFlashSharp className="text-xl" />}
+          </button>
+
+          {/* Balance helper */}
+          {walletSelect &&
+            isWalletSufficient(numericAmount) &&
+            numericAmount > 0 && (
+              <p className="mt-2 text-center text-[11px] text-slate-500 font-semibold">
+                Paying from wallet • Balance after pay:{" "}
+                <span className="font-black text-slate-700">
+                  ₹{(walletBalance - numericAmount).toFixed(2)}
+                </span>
+              </p>
             )}
-          </motion.button>
-        </motion.div>
+        </div>
       </div>
 
-      {/* Loader */}
-      {load && <Loader />}
+      {isLoading && <LoaderModal variant="bbps" />}
+    </div>
+  );
+};
+
+const InfoPill = ({ icon, label, value, danger }) => {
+  return (
+    <div
+      className={`rounded-3xl border p-4 flex items-center justify-between gap-3
+        ${
+          danger ? "bg-rose-50 border-rose-200" : "bg-slate-50 border-slate-200"
+        }`}
+    >
+      <div className="flex items-center gap-3 min-w-0">
+        <div
+          className={`h-10 w-10 rounded-2xl border flex items-center justify-center shrink-0
+            ${
+              danger ? "bg-white border-rose-200" : "bg-white border-slate-200"
+            }`}
+        >
+          {icon}
+        </div>
+        <div className="min-w-0">
+          <p className="text-[11px] font-black text-slate-700 uppercase tracking-wide">
+            {label}
+          </p>
+          <p
+            className={`text-sm font-black truncate ${
+              danger ? "text-rose-700" : "text-slate-900"
+            }`}
+          >
+            {value}
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

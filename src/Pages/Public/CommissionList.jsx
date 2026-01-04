@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ImageBaseURL } from "../../Utils/Constant";
 import { fetchServiceList } from "../../Redux/Slices/ServiceSlice/ServiceSlice";
@@ -10,13 +10,16 @@ import {
   MdPhone,
   MdTv,
   MdElectricBolt,
-  MdLocalGasStation,
   MdTrendingUp,
   MdCardGiftcard,
+  MdSearch,
+  MdInfo,
+  MdChevronRight,
 } from "react-icons/md";
 
 const CommissionList = () => {
   const [load, setLoad] = useState(false);
+  const [query, setQuery] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -77,32 +80,24 @@ const CommissionList = () => {
 
   const { serviceList } = useSelector((state) => state.ServiceSlice.service);
 
-  const serviceNames = [
-    "Postpaid",
-    "Electricity",
-    "Fastag",
-    "LPG",
-    "Insurance",
-    "Landline",
-    "Broadband",
-  ];
+  const serviceNames = useMemo(
+    () => ["Postpaid", "Electricity", "Fastag", "LPG", "Insurance", "Landline", "Broadband"],
+    []
+  );
 
-  const getPercentData = (name) =>
-    serviceList?.Data?.find((a) => a.name === name);
+  const getPercentData = (name) => serviceList?.Data?.find((a) => a.name === name);
 
-  const serviceDataMap = {};
-  serviceNames.forEach((name) => {
-    serviceDataMap[name] = getPercentData(name);
-  });
-
-  const BBPSArr = serviceNames.map((name) => {
-    const data = serviceDataMap[name];
-    return {
-      img: data?.icon,
-      title: data?.name,
-      margin: data?.percent,
-    };
-  });
+  const BBPSArr = useMemo(() => {
+    return serviceNames.map((name) => {
+      const data = getPercentData(name);
+      return {
+        img: data?.icon,
+        title: data?.name,
+        margin: data?.percent,
+      };
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serviceList, serviceNames]);
 
   const fetchDTHPercent = getPercentData("DTH");
   const fetchGooglePlayPercent = serviceList?.Data?.find(
@@ -120,10 +115,9 @@ const CommissionList = () => {
         (operator, index) => operator.margin === dthOperatorArr[index].margin
       );
 
-      if (isDifferent) {
-        setDTHOperatorArr(updatedOperators);
-      }
+      if (isDifferent) setDTHOperatorArr(updatedOperators);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchDTHPercent]);
 
   useEffect(() => {
@@ -145,234 +139,256 @@ const CommissionList = () => {
 
     FetchRechargeOperatorPercent();
     dispatch(fetchServiceList());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Render Commission Card Component
-  const CommissionCard = ({ item, type = "percentage" }) => (
-    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-200 overflow-hidden group">
-      <div className="p-4 flex items-center justify-between">
-        {/* Left - Logo & Name */}
-        <div className="flex items-center space-x-4">
-          <div className="w-14 h-14 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
-            <img
-              src={type === "bbps" ? `${ImageBaseURL}${item.img}` : item.img}
-              alt={item.title}
-              className="w-10 h-10 object-contain"
-            />
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) {
+      return {
+        prepaid: operatorsArr,
+        dth: dthOperatorArr,
+        bbps: BBPSArr,
+      };
+    }
+    const contains = (s) => (s || "").toLowerCase().includes(q);
+
+    return {
+      prepaid: operatorsArr.filter((x) => contains(x.title)),
+      dth: dthOperatorArr.filter((x) => contains(x.title)),
+      bbps: BBPSArr.filter((x) => contains(x.title)),
+    };
+  }, [query, operatorsArr, dthOperatorArr, BBPSArr]);
+
+  const totalOperators = operatorsArr.length + dthOperatorArr.length;
+
+  const Section = ({ icon, title, meta, children }) => (
+    <div className="mt-4">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="h-10 w-10 rounded-2xl bg-slate-900 text-white flex items-center justify-center shrink-0">
+            {icon}
           </div>
-          <div>
-            <p className="text-sm font-bold text-gray-900 capitalize">
-              {item.title}
-            </p>
-            <p className="text-[10px] text-gray-500 mt-0.5">Commission Rate</p>
+          <div className="min-w-0">
+            <p className="text-base font-black text-slate-900 leading-tight">{title}</p>
+            {meta && <p className="text-[11px] text-slate-500 font-semibold">{meta}</p>}
           </div>
         </div>
-
-        {/* Right - Commission Badge */}
-        <div className="bg-gradient-to-r from-green-500 to-emerald-600 px-4 py-2 rounded-xl shadow-lg">
-          <p className="text-white font-bold text-sm">
-            {type === "bbps" ? `₹${item.margin}` : `${item.margin}%`}
-          </p>
+        <div className="text-[11px] font-bold text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-full shrink-0">
+          View
         </div>
       </div>
+      {children}
     </div>
   );
 
+  const CommissionRow = ({ item, type = "percentage" }) => {
+    const value =
+      type === "bbps" ? `₹${item.margin ?? 0}` : `${item.margin ?? 0}%`;
+
+    return (
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-[0_10px_30px_rgba(2,6,23,0.06)] overflow-hidden">
+        <div className="p-4 flex items-center gap-3">
+          <div className="h-12 w-12 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
+            <img
+              src={type === "bbps" ? `${ImageBaseURL}${item.img}` : item.img}
+              alt={item.title}
+              className="h-8 w-8 object-contain"
+              loading="lazy"
+            />
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-black text-slate-900 truncate">
+              {item.title}
+            </p>
+            <p className="text-[11px] text-slate-500 font-semibold">
+              Commission rate
+            </p>
+          </div>
+
+          <div className="shrink-0 flex items-center gap-2">
+            <div className="px-3 py-2 rounded-xl bg-emerald-600 text-white font-black text-sm">
+              {value}
+            </div>
+            {/* <div className="h-9 w-9 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center">
+              <MdChevronRight className="text-slate-500" />
+            </div> */}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white">
       {/* Header */}
-      <div className="fixed top-0 w-full z-50 bg-white shadow-md">
-        <CommonHeader
-          title={"Commission Chart"}
-          handleclick={() => navigate(-1)}
-        />
+      <div className="fixed top-0 w-full z-50 bg-white/92 backdrop-blur-xl border-b border-slate-200">
+        <CommonHeader title={"Commission Chart"} handleclick={() => navigate(-1)} />
       </div>
 
-      {/* Main Content */}
-      <div className="pt-20 pb-6 px-4">
-        {/* Hero Card */}
-        <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 rounded-2xl shadow-2xl p-6 mb-6 relative overflow-hidden">
-          {/* Background Pattern */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
-
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                <MdTrendingUp size={32} className="text-white" />
-              </div>
-              <div>
-                <p className="text-white/90 text-sm font-medium">
-                  Earn Commission
+      {/* Body */}
+      <div className="pt-16 pb-8 px-3 sm:px-4 max-w-xl mx-auto">
+        {/* Hero */}
+        <div className="rounded-3xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.08)] overflow-hidden">
+          <div className="p-5 bg-slate-900 text-white">
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-[11px] font-semibold tracking-widest text-white/70 uppercase">
+                  Live commission rates
                 </p>
-                <p className="text-white font-black text-2xl mt-1">
-                  On Every Transaction
+                <p className="mt-1 text-2xl font-black tracking-tight">
+                  Earn on every transaction
+                </p>
+                <p className="mt-1 text-sm text-white/80 font-semibold">
+                  Rates vary by operator & service.
                 </p>
               </div>
+              <div className="h-14 w-14 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
+                <MdTrendingUp className="text-3xl" />
+              </div>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-xl">
-              <p className="text-white text-xs font-medium">Live Rates</p>
+          </div>
+
+          {/* Search + Stats */}
+          <div className="p-5">
+            <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3">
+              <MdSearch className="text-slate-500 text-xl shrink-0" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search operator or service..."
+                className="w-full bg-transparent outline-none text-sm font-semibold text-slate-900 placeholder:text-slate-400"
+              />
+            </div>
+
+            <div className="mt-4 grid grid-cols-3 gap-2">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-center">
+                <p className="text-lg font-black text-slate-900">{totalOperators}</p>
+                <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">
+                  Operators
+                </p>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-center">
+                <p className="text-lg font-black text-emerald-700">Instant</p>
+                <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">
+                  Credit
+                </p>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-center">
+                <p className="text-lg font-black text-slate-900">24/7</p>
+                <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">
+                  Live
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Prepaid Section */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                <MdPhone size={20} className="text-white" />
-              </div>
-              <h2 className="text-lg font-bold text-gray-900">
-                Mobile Prepaid
-              </h2>
-            </div>
-            <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-              {operatorsArr.length} Operators
-            </span>
-          </div>
-
+        {/* Sections */}
+        <Section
+          icon={<MdPhone size={20} />}
+          title="Mobile Prepaid"
+          meta={`${filtered.prepaid.length} operators`}
+        >
           <div className="space-y-3">
-            {operatorsArr.map((item) => (
-              <CommissionCard key={item.id} item={item} type="percentage" />
+            {filtered.prepaid.map((item) => (
+              <CommissionRow key={item.id} item={item} type="percentage" />
             ))}
+            {filtered.prepaid.length === 0 && (
+              <EmptyState text="No prepaid operators found." />
+            )}
           </div>
-        </div>
+        </Section>
 
-        {/* DTH Section */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                <MdTv size={20} className="text-white" />
-              </div>
-              <h2 className="text-lg font-bold text-gray-900">DTH Recharge</h2>
-            </div>
-            <span className="text-xs font-semibold text-purple-600 bg-purple-50 px-3 py-1 rounded-full">
-              {dthOperatorArr.length} Operators
-            </span>
-          </div>
-
+        <Section
+          icon={<MdTv size={20} />}
+          title="DTH Recharge"
+          meta={`${filtered.dth.length} operators`}
+        >
           <div className="space-y-3">
-            {dthOperatorArr.map((item) => (
-              <CommissionCard key={item.id} item={item} type="percentage" />
+            {filtered.dth.map((item) => (
+              <CommissionRow key={item.id} item={item} type="percentage" />
             ))}
+            {filtered.dth.length === 0 && <EmptyState text="No DTH operators found." />}
           </div>
-        </div>
+        </Section>
 
-        {/* Bill Payment Section */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
-                <MdElectricBolt size={20} className="text-white" />
-              </div>
-              <h2 className="text-lg font-bold text-gray-900">Bill Payments</h2>
-            </div>
-            <span className="text-xs font-semibold text-green-600 bg-green-50 px-3 py-1 rounded-full">
-              Flat Rate
-            </span>
-          </div>
-
+        <Section
+          icon={<MdElectricBolt size={20} />}
+          title="Bill Payments"
+          meta="Flat rate (₹)"
+        >
           <div className="space-y-3">
-            {BBPSArr.map((item, index) => (
-              <CommissionCard key={index} item={item} type="bbps" />
+            {filtered.bbps.map((item, idx) => (
+              <CommissionRow key={idx} item={item} type="bbps" />
             ))}
+            {filtered.bbps.length === 0 && <EmptyState text="No bill services found." />}
           </div>
-        </div>
+        </Section>
 
-        {/* Others Section */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
-                <MdCardGiftcard size={20} className="text-white" />
-              </div>
-              <h2 className="text-lg font-bold text-gray-900">Others</h2>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-200 overflow-hidden group">
-            <div className="p-4 flex items-center justify-between">
-              {/* Left - Logo & Name */}
-              <div className="flex items-center space-x-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-red-50 to-orange-50 rounded-xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
+        <Section
+          icon={<MdCardGiftcard size={20} />}
+          title="Others"
+          meta="Gift card"
+        >
+          <div className="space-y-3">
+            <div className="bg-white border border-slate-200 rounded-2xl shadow-[0_10px_30px_rgba(2,6,23,0.06)] overflow-hidden">
+              <div className="p-4 flex items-center gap-3">
+                <div className="h-12 w-12 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
                   <img
                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_Play_2022_icon.svg/1856px-Google_Play_2022_icon.svg.png"
                     alt="Google Play"
-                    className="w-10 h-10 object-contain"
+                    className="h-8 w-8 object-contain"
+                    loading="lazy"
                   />
                 </div>
-                <div>
-                  <p className="text-sm font-bold text-gray-900">Google Play</p>
-                  <p className="text-[10px] text-gray-500 mt-0.5">Gift Card</p>
+
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-black text-slate-900">Google Play</p>
+                  <p className="text-[11px] text-slate-500 font-semibold">Gift card</p>
+                </div>
+
+                <div className="shrink-0 flex items-center gap-2">
+                  <div className="px-3 py-2 rounded-xl bg-emerald-600 text-white font-black text-sm">
+                    {fetchGooglePlayPercent ?? 0}%
+                  </div>
+                  {/* <div className="h-9 w-9 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center">
+                    <MdChevronRight className="text-slate-500" />
+                  </div> */}
                 </div>
               </div>
-
-              {/* Right - Commission Badge */}
-              <div className="bg-gradient-to-r from-green-500 to-emerald-600 px-4 py-2 rounded-xl shadow-lg">
-                <p className="text-white font-bold text-sm">
-                  {fetchGooglePlayPercent}%
-                </p>
-              </div>
             </div>
           </div>
-        </div>
+        </Section>
 
-        {/* Info Card */}
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-2xl p-4 mb-6">
-          <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mt-0.5">
-              <svg
-                className="w-4 h-4 text-white"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                  clipRule="evenodd"
-                />
-              </svg>
+        {/* Info */}
+        <div className="mt-5 rounded-3xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.06)]">
+          <div className="p-5 flex items-start gap-3">
+            <div className="h-10 w-10 rounded-2xl bg-slate-900 text-white flex items-center justify-center shrink-0">
+              <MdInfo className="text-xl" />
             </div>
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-blue-900 mb-1">
-                📊 Commission Info
-              </p>
-              <p className="text-xs text-blue-800 leading-relaxed">
-                Commissions are credited instantly to your wallet after each
-                successful transaction. Rates may vary based on operator and
-                transaction amount.
+            <div className="min-w-0">
+              <p className="text-sm font-black text-slate-900">Commission Info</p>
+              <p className="mt-1 text-xs text-slate-600 leading-relaxed">
+                Commission is credited instantly after a successful transaction.
+                Rates may vary based on operator/service and amount.
               </p>
             </div>
-          </div>
-        </div>
-
-        {/* Stats Card */}
-        <div className="grid grid-cols-3 gap-3 mb-6">
-          <div className="bg-white rounded-xl shadow-md p-4 text-center border border-gray-200">
-            <p className="text-2xl font-black text-blue-600">
-              {operatorsArr.length + dthOperatorArr.length}
-            </p>
-            <p className="text-[10px] text-gray-600 mt-1 font-medium">
-              Operators
-            </p>
-          </div>
-          <div className="bg-white rounded-xl shadow-md p-4 text-center border border-gray-200">
-            <p className="text-2xl font-black text-green-600">Instant</p>
-            <p className="text-[10px] text-gray-600 mt-1 font-medium">Credit</p>
-          </div>
-          <div className="bg-white rounded-xl shadow-md p-4 text-center border border-gray-200">
-            <p className="text-2xl font-black text-purple-600">24/7</p>
-            <p className="text-[10px] text-gray-600 mt-1 font-medium">
-              Available
-            </p>
           </div>
         </div>
       </div>
 
-      {/* Loader */}
       {load && <Loader />}
+    </div>
+  );
+};
+
+const EmptyState = ({ text }) => {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-center">
+      <p className="text-sm font-bold text-slate-700">{text}</p>
+      <p className="mt-1 text-xs text-slate-500">Try a different search.</p>
     </div>
   );
 };

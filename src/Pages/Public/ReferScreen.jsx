@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import CommonHeader from "../../Components/CommonHeader";
 import { BRAND_NAME } from "../../Utils/Constant";
 import {
   MdWhatsapp,
-  MdOutlineHistory,
   MdContentCopy,
   MdCheck,
+  MdPeople,
+  MdCardGiftcard,
+  MdTrendingUp,
 } from "react-icons/md";
 import { useSelector } from "react-redux";
 
@@ -16,212 +18,302 @@ const ReferScreen = () => {
   const [copied, setCopied] = useState(false);
 
   const referralCode = ProfileData?.Data?.referalId || "LOADING...";
+  const isLoading = referralCode === "LOADING...";
 
-  // Copy to clipboard function
-  const handleCopyCode = () => {
-    navigator.clipboard.writeText(referralCode);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  const shareMessage = useMemo(() => {
+    return `🎉 Join ${BRAND_NAME} and get amazing rewards!
 
-  // WhatsApp share function
-  const handleWhatsAppShare = () => {
-    const message = `🎉 Join ${BRAND_NAME} and get amazing rewards!\n\n💰 Use my referral code: ${referralCode}\n\n✅ Get ₹15 when you add ₹100 or more\n\nDownload now: [Your App Link]`;
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, "_blank");
-  };
+💰 Use my referral code: ${referralCode}
+
+✅ Get ₹15 when you add ₹100 or more
+
+Download now and start earning!`;
+  }, [referralCode]);
+
+  // ✅ Same logic
+  const handleCopyCode = useCallback(() => {
+    if (isLoading) return;
+    navigator.clipboard
+      .writeText(referralCode)
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      })
+      .catch((err) => console.error("Failed to copy:", err));
+  }, [referralCode, isLoading]);
+
+  const handleWhatsAppShare = useCallback(() => {
+    if (isLoading) return;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareMessage)}`;
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+  }, [isLoading, shareMessage]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white">
       {/* Header */}
-      <div className="fixed top-0 w-full z-10 bg-white shadow-sm">
-        <CommonHeader
-          title={"Refer & Earn"}
-          handleclick={() => navigate("/")}
-        />
+      <div className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200">
+        <CommonHeader title={"Refer & Earn"} handleclick={() => navigate("/")} />
       </div>
 
-      {/* Main Content */}
-      <div className="pt-16 pb-28 px-4">
-        {/* Hero Section */}
-        <div className="flex flex-col items-center justify-center space-y-6 mt-4">
-          {/* Illustration with Animation */}
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full blur-3xl opacity-20 animate-pulse"></div>
-            <img
-              src="https://ik.imagekit.io/43tomntsa/refer.png"
-              alt="Refer & Earn"
-              className="w-72 h-72r object-contain relative drop-shadow-2xl animate-float"
-            />
-          </div>
+      {/* Content */}
+      <div className="pt-20 pb-[140px] px-3 sm:px-4 max-w-xl mx-auto">
+        {/* Hero (White modern, clean) */}
+        <div className="rounded-3xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.08)] overflow-hidden">
+          {/* Top strip */}
+          <div className="px-5 py-5 bg-slate-900 text-white">
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-[11px] font-semibold tracking-widest text-white/70 uppercase">
+                  Invite friends
+                </p>
+                <h2 className="mt-1 text-2xl font-black tracking-tight">
+                  Earn rewards together
+                </h2>
+                <p className="mt-1 text-sm text-white/80 font-semibold">
+                  Share your code. They add money. Both get rewarded.
+                </p>
+              </div>
 
-          {/* Title & Description */}
-          <div className="text-center space-y-3 px-4">
-            <h2 className="text-2xl font-bold text-gray-800 leading-tight">
-              Share & Earn Together! 🎉
-            </h2>
-            <p className="text-sm text-gray-600 leading-relaxed">
-              Share {BRAND_NAME} with your friends and earn exciting rewards
-              when they join!
-            </p>
-          </div>
-
-          {/* Reward Card */}
-          <div className="bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl shadow-2xl p-6 w-full max-w-sm transform hover:scale-105 transition-transform duration-300">
-            <div className="text-center space-y-2">
-              <p className="text-white text-sm font-medium opacity-90">
-                Earn Up To
-              </p>
-              <p className="text-white text-5xl font-bold drop-shadow-lg">
-                ₹15
-              </p>
-              <p className="text-white text-xs opacity-90 pt-2">
-                When your friend adds ₹100 or more
-              </p>
+              <div className="shrink-0 h-14 w-14 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center">
+                <MdCardGiftcard className="text-3xl" />
+              </div>
             </div>
           </div>
 
-          {/* Referral Code Card */}
-          <div className="w-full max-w-sm space-y-3">
-            <p className="text-center text-sm font-semibold text-gray-700">
-              Your Referral Code
-            </p>
-            <div
-              onClick={handleCopyCode}
-              className="relative bg-white border-2 border-dashed border-blue-400 rounded-2xl p-5 shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300 active:scale-95"
-            >
-              {/* Background Pattern */}
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl opacity-50"></div>
-
-              {/* Code Display */}
-              <div className="relative flex items-center justify-between">
-                <div className="flex-1">
-                  <p className="text-center text-2xl font-bold text-gray-800 tracking-widest font-mono">
-                    {referralCode}
-                  </p>
+          {/* Reward strip */}
+          <div className="px-5 py-5 bg-white">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <p className="text-[11px] font-semibold tracking-widest text-slate-500 uppercase">
+                  You earn
+                </p>
+                <div className="mt-2 flex items-center gap-2">
+                  <p className="text-3xl font-black text-slate-900">₹15</p>
+                  <MdTrendingUp className="text-emerald-600 text-2xl" />
                 </div>
-                <div className="ml-4">
-                  {copied ? (
-                    <div className="bg-green-500 p-2 rounded-full animate-bounce">
-                      <MdCheck size={24} className="text-white" />
-                    </div>
-                  ) : (
-                    <div className="bg-blue-500 p-2 rounded-full hover:bg-blue-600 transition-colors">
-                      <MdContentCopy size={24} className="text-white" />
-                    </div>
-                  )}
-                </div>
+                <p className="mt-1 text-xs text-slate-600 font-semibold">
+                  when friend adds ₹100+
+                </p>
               </div>
 
-              {/* Copy Hint */}
-              <p className="text-center text-xs text-gray-500 mt-3">
-                {copied ? "✓ Copied to clipboard!" : "Tap to copy code"}
-              </p>
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <p className="text-[11px] font-semibold tracking-widest text-slate-500 uppercase">
+                  Friend earns
+                </p>
+                <div className="mt-2 flex items-center gap-2">
+                  <p className="text-3xl font-black text-slate-900">₹15</p>
+                  <MdTrendingUp className="text-emerald-600 text-2xl" />
+                </div>
+                <p className="mt-1 text-xs text-slate-600 font-semibold">
+                  same reward for them
+                </p>
+              </div>
             </div>
-          </div>
 
-          {/* How it Works */}
-          <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-5 space-y-4 mt-4">
-            <h3 className="text-center font-bold text-gray-800 text-lg">
-              How It Works? 🤔
-            </h3>
-            <div className="space-y-4">
-              {/* Step 1 */}
-              <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
-                  1
+            {/* Small note */}
+            <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-4">
+              <div className="flex items-start gap-3">
+                <div className="h-10 w-10 rounded-2xl bg-slate-900 text-white flex items-center justify-center shrink-0">
+                  <MdPeople className="text-xl" />
                 </div>
-                <div className="flex-1 pt-1">
-                  <p className="text-sm font-semibold text-gray-800">
-                    Share Your Code
+                <div className="min-w-0">
+                  <p className="text-sm font-black text-slate-900">
+                    Unlimited referrals
                   </p>
-                  <p className="text-xs text-gray-600 mt-1">
-                    Share your referral code with friends via WhatsApp or social
-                    media
-                  </p>
-                </div>
-              </div>
-
-              {/* Step 2 */}
-              <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
-                  2
-                </div>
-                <div className="flex-1 pt-1">
-                  <p className="text-sm font-semibold text-gray-800">
-                    Friend Signs Up
-                  </p>
-                  <p className="text-xs text-gray-600 mt-1">
-                    Your friend registers using your referral code
-                  </p>
-                </div>
-              </div>
-
-              {/* Step 3 */}
-              <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg">
-                  3
-                </div>
-                <div className="flex-1 pt-1">
-                  <p className="text-sm font-semibold text-gray-800">
-                    Get Rewards
-                  </p>
-                  <p className="text-xs text-gray-600 mt-1">
-                    Earn ₹15 when they add ₹100 or more to their wallet
+                  <p className="mt-1 text-xs text-slate-600 leading-relaxed">
+                    Refer as many friends as you want — rewards keep adding up.
                   </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Referral Code Card */}
+        <div className="mt-4 rounded-3xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.06)]">
+          <div className="p-5">
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-[11px] font-semibold tracking-widest text-slate-500 uppercase">
+                  Your referral code
+                </p>
+                <p className="mt-1 text-sm font-black text-slate-900">
+                  Tap to copy
+                </p>
+              </div>
+
+              <div className="shrink-0 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5">
+                <p className="text-[11px] font-bold text-slate-700 flex items-center gap-1.5">
+                  <MdPeople className="text-slate-600" />
+                  0 friends
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={handleCopyCode}
+              disabled={isLoading}
+              className={[
+                "mt-4 w-full rounded-2xl border border-dashed p-5 transition",
+                "bg-slate-50 border-slate-300 hover:bg-slate-100 active:scale-[0.99]",
+                isLoading ? "opacity-60 cursor-not-allowed" : "",
+              ].join(" ")}
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <p
+                    className={[
+                      "text-center font-black tracking-[0.3em] sm:tracking-[0.35em] font-mono",
+                      "text-2xl sm:text-3xl",
+                      isLoading ? "text-slate-400" : "text-slate-900",
+                    ].join(" ")}
+                  >
+                    {referralCode}
+                  </p>
+
+                  <p
+                    className={[
+                      "mt-3 text-center text-xs font-semibold",
+                      copied ? "text-emerald-700" : "text-slate-600",
+                    ].join(" ")}
+                  >
+                    {copied
+                      ? "✓ Copied to clipboard"
+                      : isLoading
+                      ? "Loading your code..."
+                      : "Tap anywhere to copy"}
+                  </p>
+                </div>
+
+                {!isLoading && (
+                  <div className="shrink-0">
+                    <div
+                      className={[
+                        "h-12 w-12 rounded-2xl flex items-center justify-center border",
+                        copied
+                          ? "bg-emerald-600 border-emerald-600"
+                          : "bg-slate-900 border-slate-900",
+                      ].join(" ")}
+                    >
+                      {copied ? (
+                        <MdCheck className="text-white text-2xl" />
+                      ) : (
+                        <MdContentCopy className="text-white text-2xl" />
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {/* How it works */}
+        <div className="mt-4 rounded-3xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.06)]">
+          <div className="p-5">
+            <p className="text-[11px] font-semibold tracking-widest text-slate-500 uppercase">
+              How it works
+            </p>
+            <h3 className="mt-1 text-base font-black text-slate-900">
+              3 simple steps
+            </h3>
+
+            <div className="mt-4 space-y-3">
+              <Step
+                no="01"
+                title="Share your code"
+                desc="Send your referral code on WhatsApp or any messaging app."
+              />
+              <Step
+                no="02"
+                title="Friend signs up"
+                desc="They register using your code."
+              />
+              <Step
+                no="03"
+                title="Both get ₹15"
+                desc="When your friend adds ₹100 or more to wallet."
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Benefits (responsive grid) */}
+        <div className="mt-4 rounded-3xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.06)]">
+          <div className="p-5">
+            <p className="text-[11px] font-semibold tracking-widest text-slate-500 uppercase text-center">
+              Benefits
+            </p>
+            <h3 className="mt-1 text-base font-black text-slate-900 text-center">
+              Why refer?
+            </h3>
+
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <MiniCard emoji="🚀" title="Unlimited earnings" />
+              <MiniCard emoji="⚡" title="Fast rewards" />
+              <MiniCard emoji="🎁" title="Extra benefits" />
+              <MiniCard emoji="🤝" title="Help friends" />
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Fixed Bottom Buttons */}
-      <div className="fixed flex space-x-2 bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-10">
-        {/* WhatsApp Share Button */}
-        <button
-          onClick={handleWhatsAppShare}
-          className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl py-4 flex items-center justify-center space-x-3 shadow-lg active:scale-95 transition-all duration-200"
-        >
-          <MdWhatsapp size={20} />
-          <span className="font-semibold text-xs tracking-wide">
+      {/* Bottom CTA (safe-area ready + responsive) */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/92 backdrop-blur-xl border-t border-slate-200">
+        <div className="max-w-xl mx-auto px-3 sm:px-4 py-3 pb-[calc(env(safe-area-inset-bottom,0px)+12px)]">
+          <button
+            onClick={handleWhatsAppShare}
+            disabled={isLoading}
+            className={[
+              "w-full rounded-2xl py-4 font-black flex items-center justify-center gap-2 transition",
+              isLoading
+                ? "bg-slate-200 text-slate-500 cursor-not-allowed"
+                : "bg-emerald-600 text-white hover:bg-emerald-700 active:scale-[0.99]",
+            ].join(" ")}
+          >
+            <MdWhatsapp size={22} />
             Share on WhatsApp
-          </span>
-        </button>
+          </button>
 
-        {/* Refer History Button */}
-        {/* <button
-          onClick={() => {
-            navigate("/reports", {
-              state: {
-                activeTab: "referrals",
-              },
-            });
-          }}
-          className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl py-4 flex items-center justify-center space-x-3 shadow-lg active:scale-95 transition-all duration-200"
-        >
-          <MdOutlineHistory size={20} />
-          <span className="font-semibold text-xs tracking-wide">
-            View Refer History
-          </span>
-        </button> */}
+          {/* Secondary action (copy) for small screens usability */}
+          <button
+            onClick={handleCopyCode}
+            disabled={isLoading}
+            className={[
+              "mt-2 w-full rounded-2xl py-3 font-black flex items-center justify-center gap-2 transition border",
+              isLoading
+                ? "border-slate-200 text-slate-400 cursor-not-allowed"
+                : "border-slate-200 text-slate-900 hover:bg-slate-50 active:scale-[0.99]",
+            ].join(" ")}
+          >
+            {copied ? <MdCheck size={20} /> : <MdContentCopy size={20} />}
+            {copied ? "Copied" : "Copy code"}
+          </button>
+        </div>
       </div>
+    </div>
+  );
+};
 
-      {/* Animation Styles */}
-      <style jsx>{`
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-20px);
-          }
-        }
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
-        }
-      `}</style>
+const Step = ({ no, title, desc }) => {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 flex items-start gap-3">
+      <div className="shrink-0 h-11 w-11 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-black">
+        {no}
+      </div>
+      <div className="min-w-0">
+        <p className="text-sm font-black text-slate-900">{title}</p>
+        <p className="mt-1 text-xs text-slate-600 leading-relaxed">{desc}</p>
+      </div>
+    </div>
+  );
+};
+
+const MiniCard = ({ emoji, title }) => {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 text-center">
+      <div className="text-2xl">{emoji}</div>
+      <p className="mt-2 text-xs font-black text-slate-800">{title}</p>
     </div>
   );
 };

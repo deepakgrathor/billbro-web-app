@@ -9,6 +9,7 @@ import {
   TbReceiptRefund,
   TbClipboardList,
   TbShieldLock,
+  TbShare,
 } from "react-icons/tb";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import { BsStar } from "react-icons/bs";
@@ -40,6 +41,11 @@ export const BOTTOM_MENU_DATA = [
     name: "Profile",
     route: "/profile",
   },
+  //  {
+  //   icon: TbShare ,
+  //   name: "Refer",
+  //   route: "/refer",
+  // },
 ];
 export const All_Recharge_Operator_List = [
   {
@@ -523,16 +529,16 @@ export const ProfileArr = [
     icon: TbMailPlus,
     handleclick: () => window.open(`mailto:${EMAIL_ID}`, "_blank"),
   },
-  {
-    title: "Rate our App",
-    icon: BsStar,
-    route: "/profile",
-    handleclick: () =>
-      window.open(
-        `https://play.google.com/store/apps/details?id=${PACKAGE_NAME}`,
-        "_blank"
-      ),
-  },
+  // {
+  //   title: "Rate our App",
+  //   icon: BsStar,
+  //   route: "/profile",
+  //   handleclick: () =>
+  //     window.open(
+  //       `https://play.google.com/store/apps/details?id=${PACKAGE_NAME}`,
+  //       "_blank"
+  //     ),
+  // },
   // {
   //   title: "Contact Support",
   //   icon: TbHeadphones,

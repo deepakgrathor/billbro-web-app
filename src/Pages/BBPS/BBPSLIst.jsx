@@ -397,7 +397,13 @@ const BBPSList = () => {
       </motion.div> */}
 
       {/* Loader */}
-      {serviceLoader && <Loader />}
+      {serviceLoader && (
+        <Loader
+          loading={serviceLoader}
+          title="Getting things ready"
+          subtitle="Fetching latest services for you..."
+        />
+      )}
     </div>
   );
 };

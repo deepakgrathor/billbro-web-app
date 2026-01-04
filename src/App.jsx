@@ -51,10 +51,10 @@ function App() {
   const [loading, setLoading] = useState(true);
   const { appDetails } = useSelector((state) => state.PublicSlice);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2000); // 3 sec splash
-    return () => clearTimeout(timer);
-  }, []);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => setLoading(false), 2000); // 3 sec splash
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   if (!isMobile) {
     // Desktop / large screen
@@ -65,7 +65,7 @@ function App() {
     <>
       <DisableInteractionWrapper>
         <Toaster position="bottom-center" reverseOrder={false} />
-        {loading ? <SplashScreen /> : <AppNavigate />}
+        <AppNavigate />
       </DisableInteractionWrapper>
     </>
   );

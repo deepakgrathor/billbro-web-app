@@ -301,7 +301,7 @@
 
 // export default HomeContent;
 
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import BottomNavigation from "../../Navigation/BottomNavigation";
 import HeaderHome from "./HeaderHome";
 import BannerSlider from "../../Components/BannerSlider";
@@ -332,6 +332,8 @@ import { getBannerList } from "../../Redux/Slices/PublicSlice/PublicSlice";
 const HomeContent = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
+
   const { serviceList, serviceLoader } = useSelector(
     (state) => state.ServiceSlice.service
   );
@@ -339,38 +341,53 @@ const HomeContent = () => {
     (state) => state.PublicSlice.bannerList
   );
   const { ProfileData } = useSelector((state) => state.LoginSlice.profile);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchServiceList());
     dispatch(getBannerList({ type: "service" }));
     dispatch(getUserProfile());
     getSettingFunc();
-  }, []);
+  }, [dispatch]);
 
   const allowedSections = ["recharge", "finance"];
 
-  let filteredServices = [];
-  let TravelServices = [];
-  let InsuranceServices = [];
+  const {
+    MobileServices,
+    TravelServices,
+    InsuranceServices,
+    showBanner,
+    RECHARGE_SECTION,
+  } = useMemo(() => {
+    let filtered = [];
+    let travel = [];
+    let insurance = [];
 
-  serviceList.Data?.forEach((a) => {
-    if (a.isShow) {
-      if (allowedSections.includes(a.section)) {
-        filteredServices.push(a);
-      } else if (a.section === "travel") {
-        TravelServices.push(a);
-      } else if (a.section === "insurance") {
-        InsuranceServices.push(a);
+    const data = serviceList?.Data || [];
+    data.forEach((a) => {
+      if (a?.isShow) {
+        if (allowedSections.includes(a.section)) filtered.push(a);
+        else if (a.section === "travel") travel.push(a);
+        else if (a.section === "insurance") insurance.push(a);
       }
-    }
-  });
+    });
 
-  const MobileServices = filteredServices.slice(0, 7);
+    const bannerFlag = data?.find((a) => a?.name === "BANNER_SHOW")?.isShow;
+    const rechargeSection = data?.find(
+      (a) => a?.name === "RECHARGE_SECTION"
+    )?.isShow;
+
+    return {
+      MobileServices: filtered.slice(0, 7),
+      TravelServices: travel,
+      InsuranceServices: insurance,
+      showBanner: !!bannerFlag,
+      RECHARGE_SECTION: rechargeSection,
+    };
+  }, [serviceList]);
+  console.log(RECHARGE_SECTION, "RECHARGE_SECTION");
 
   const handleServiceClick = (item) => {
     if (item._id === "64c9e5bf1efc768da459ef00") {
-      // Mobile
       navigate("/mobile", { state: item });
       const data = {
         type: SERVICE,
@@ -379,16 +396,10 @@ const HomeContent = () => {
       };
       dispatch(setPaymentType(data));
     } else if (item._id === "64c9e5de1efc768da459ef03") {
-      // DTH
       navigate("/dth", { state: item });
-      const data = {
-        type: SERVICE,
-        ids: item._id,
-        serviceType: DTH_RECHARGE,
-      };
+      const data = { type: SERVICE, ids: item._id, serviceType: DTH_RECHARGE };
       dispatch(setPaymentType(data));
     } else if (item._id === "661061ecda6832bf278254e1") {
-      // Google
       navigate("/googleplay", { state: item });
       const data = {
         type: SERVICE,
@@ -397,287 +408,338 @@ const HomeContent = () => {
       };
       dispatch(setPaymentType(data));
     } else {
-      // BBPS
       navigate("/mainbbps", { state: item });
-      const data = {
-        type: SERVICE,
-        ids: item._id,
-        serviceType: BILL,
-      };
+      const data = { type: SERVICE, ids: item._id, serviceType: BILL };
       dispatch(setPaymentType(data));
     }
   };
+
+  const walletBalance =
+    ProfileData?.Data?.wallet?.balance?.toLocaleString?.() || "0";
+
   return (
-    <div className="relative h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Fixed Header */}
-      <div className="fixed w-full z-50">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200">
         <HeaderHome ProfileData={ProfileData} />
       </div>
-      {/* Scrollable Content */}c
-      <div className="overflow-y-auto pt-[70px] pb-20">
-        {/* Banner Section */}
-        {serviceList.Data?.find((a) => a.name === "BANNER_SHOW")?.isShow && (
-          <div className="px-4">
+
+      {/* Page Container (Mobile-first) */}
+      <div className="mx-auto w-full max-w-[520px] px-4 pt-4 pb-[calc(96px+env(safe-area-inset-bottom))]">
+        {/* Banner */}
+        {showBanner && (
+          <section className="mb-5">
             {bannerLoader ? (
-              <div className="h-44 bg-gray-300 animate-pulse rounded-2xl shadow-lg"></div>
+              <div className="h-44 rounded-3xl bg-slate-200 animate-pulse shadow-sm" />
             ) : (
-              <div className="rounded-2xl overflow-hidden shadow-2xl">
-                <BannerSlider data={bannerData.Data} />
+              <div className="rounded-3xl overflow-hidden border border-slate-200 shadow-[0_12px_30px_rgba(2,6,23,0.10)]">
+                <BannerSlider data={bannerData?.Data} />
               </div>
             )}
-          </div>
+          </section>
         )}
-        <div className="px-4 pb-4 mt-6">
-          <div className=" border bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 rounded-2xl p-4 shadow-2xl">
-            <div className="flex items-center justify-between">
-              {/* Wallet Info */}
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                  <MdAccountBalanceWallet size={24} className="text-white" />
+
+        {/* Wallet Card */}
+        <section className="mb-6">
+          <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_14px_40px_rgba(2,6,23,0.10)]">
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 via-fuchsia-600/10 to-sky-600/10" />
+            <div className="relative p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-fuchsia-600 flex items-center justify-center shadow-lg">
+                    <MdAccountBalanceWallet size={24} className="text-white" />
+                  </div>
+
+                  <div className="leading-tight">
+                    <p className="text-[11px] font-semibold text-slate-500">
+                      Wallet Balance
+                    </p>
+                    <p className="text-2xl font-black tracking-tight text-slate-900">
+                      ₹{walletBalance}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-white/70 text-[10px] font-medium tracking-wide">
-                    Wallet Balance
-                  </p>
-                  <p className="text-white font-bold text-2xl tracking-wide">
-                    ₹{ProfileData.Data?.wallet?.balance.toLocaleString() || "0"}
-                  </p>
-                </div>
+
+                <button
+                  onClick={() => navigate("/wallet")}
+                  className="h-11 px-4 rounded-2xl bg-slate-900 text-white text-sm font-semibold shadow-lg active:scale-[0.98] transition"
+                >
+                  Add Money
+                </button>
               </div>
 
-              {/* Add Money Button */}
-              <button
-                onClick={() => navigate("/wallet")}
-                className="bg-white hover:bg-gray-100 text-blue-600 font-bold px-5 py-2.5 rounded-xl shadow-lg transition-all duration-300 active:scale-95 flex items-center space-x-2"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={3}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-                <span className="text-sm">Add</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Actions - Services */}
-        <div className="px-4 mt-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-gray-900 flex items-center space-x-2">
-              <span className="w-1 h-6 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full"></span>
-              <span>Quick Services</span>
-            </h2>
-            <button
-              onClick={() => navigate("/bbpslist")}
-              className="text-sm font-semibold text-blue-600 flex items-center space-x-1 hover:text-blue-700 transition-colors"
-            >
-              <span>See All</span>
-              <MdArrowForward size={16} />
-            </button>
-          </div>
-
-          {/* Services Grid */}
-          <div className="bg-white rounded-2xl shadow-xl p-4">
-            <div className="grid grid-cols-4 gap-4">
-              {serviceLoader
-                ? Array(8)
-                    .fill(0)
-                    .map((_, idx) => (
-                      <div
-                        key={idx}
-                        className="flex flex-col items-center space-y-2 animate-pulse"
-                      >
-                        <div className="w-16 h-16 bg-gray-300 rounded-2xl"></div>
-                        <div className="h-3 w-12 bg-gray-300 rounded"></div>
-                      </div>
-                    ))
-                : MobileServices?.map((item, idx) => (
-                    <div
-                      key={idx}
-                      onClick={() => handleServiceClick(item)}
-                      className="flex flex-col items-center space-y-2 cursor-pointer group"
-                    >
-                      <div className="w-16 h-16 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl flex items-center justify-center shadow-md group-hover:shadow-xl group-hover:scale-110 group-active:scale-95 transition-all duration-300 border border-gray-200">
-                        <img
-                          src={`${ImageBaseURL}${item.icon}`}
-                          alt={item.name}
-                          className="w-10 h-10 object-contain"
-                        />
-                      </div>
-                      <p className="text-[10px] font-medium text-gray-700 text-center leading-tight">
-                        {item.name}
-                      </p>
-                    </div>
-                  ))}
-
-              {/* See All Button */}
-              {!serviceLoader && (
-                <div
-                  onClick={() => navigate("/bbpslist")}
-                  className="flex flex-col items-center space-y-2 cursor-pointer group"
-                >
-                  <div className="w-16 h-16  bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl flex items-center justify-center shadow-md group-hover:shadow-xl group-hover:scale-110 group-active:scale-95 transition-all duration-300 border border-gray-200">
-                    <img
-                      src="https://app.billhub.in/assets/bbps-logo.png"
-                      alt="See All"
-                      className="w-[50px] h-[50px] object-contain"
-                    />
-                  </div>
-                  <p className="text-[10px] font-medium text-gray-700">
-                    Pay Bills
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Refer & Earn Card */}
-        <div className="px-4 mt-6">
-          <div className="relative rounded-3xl overflow-hidden shadow-[0_10px_40px_rgba(15,23,42,0.35)] bg-slate-900">
-            {/* Gradient border */}
-            <div className="absolute inset-0 bg-gradient-to-br from-fuchsia-500 via-purple-500 to-sky-500 opacity-80" />
-            <div className="relative m-[1px] rounded-[1.4rem] bg-slate-950/20 backdrop-blur-xl">
-              {/* Top strip */}
-              {/* <div className="flex items-center justify-between px-4 pt-3 pb-1">
-                <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-[0.15em] bg-white/5 text-fuchsia-300 border border-white/10">
-                  Referral Reward
+              {/* <div className="mt-3 flex items-center gap-2 text-[11px] text-slate-500">
+                <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  Secure payments
                 </span>
-                <span className="text-[10px] text-slate-300/80">
-                  Mobile users only 🎯
+                <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1">
+                  <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                  Instant updates
                 </span>
               </div> */}
+            </div>
+          </div>
+        </section>
 
-              {/* Main content */}
-              <div className="px-4 pb-4 pt-4 flex items-center justify-between gap-3">
-                {/* Left: image + text */}
+        {/* Quick Services */}
+        {RECHARGE_SECTION && (
+          <section className="mb-6">
+            <div className="flex items-end justify-between mb-3">
+              <div>
+                <p className="text-xs font-semibold text-slate-500">Payments</p>
+                <h2 className="text-lg font-black tracking-tight text-slate-900">
+                  Quick Services
+                </h2>
+              </div>
+
+              <button
+                onClick={() => navigate("/bbpslist")}
+                className="inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 active:opacity-70"
+              >
+                See all <MdArrowForward size={16} />
+              </button>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white shadow-[0_12px_30px_rgba(2,6,23,0.08)]">
+              <div className="p-4">
+                <div className="grid grid-cols-4 gap-3">
+                  {serviceLoader
+                    ? Array(8)
+                        .fill(0)
+                        .map((_, idx) => (
+                          <div key={idx} className="space-y-2">
+                            <div className="h-14 w-14 mx-auto rounded-2xl bg-slate-200 animate-pulse" />
+                            <div className="h-3 w-12 mx-auto rounded bg-slate-200 animate-pulse" />
+                          </div>
+                        ))
+                    : MobileServices?.map((item, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => handleServiceClick(item)}
+                          className="group flex flex-col items-center gap-2 active:scale-[0.98] transition"
+                        >
+                          <div className="h-14 w-14 rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white shadow-sm group-hover:shadow-md transition flex items-center justify-center">
+                            <img
+                              src={`${ImageBaseURL}${item.icon}`}
+                              alt={item.name}
+                              className="h-9 w-9 object-contain"
+                              loading="lazy"
+                            />
+                          </div>
+                          <p className="text-[10px] font-semibold text-slate-700 text-center leading-tight">
+                            {item.name}
+                          </p>
+                        </button>
+                      ))}
+
+                  {!serviceLoader && (
+                    <button
+                      onClick={() => navigate("/bbpslist")}
+                      className="group flex flex-col items-center gap-2 active:scale-[0.98] transition"
+                    >
+                      <div className="h-14 w-14 rounded-2xl border border-slate-200 bg-gradient-to-br from-indigo-50 to-white shadow-sm group-hover:shadow-md transition flex items-center justify-center">
+                        <img
+                          src="https://app.billhub.in/assets/bbps-logo.png"
+                          alt="Pay Bills"
+                          className="h-10 w-10 object-contain"
+                          loading="lazy"
+                        />
+                      </div>
+                      <p className="text-[10px] font-semibold text-slate-700">
+                        Pay Bills
+                      </p>
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Travel / Insurance (Optional sections if available) */}
+        {/* {(TravelServices?.length > 0 || InsuranceServices?.length > 0) && (
+          <section className="mb-6 space-y-5">
+            {TravelServices?.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-base font-black text-slate-900">
+                    Travel
+                  </h3>
+                </div>
+
+                <div className="flex gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  {TravelServices.map((item, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleServiceClick(item)}
+                      className="min-w-[160px] rounded-3xl border border-slate-200 bg-white p-4 shadow-sm active:scale-[0.99] transition"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-sky-500/15 to-indigo-500/15 border border-slate-200 flex items-center justify-center">
+                          <img
+                            src={`${ImageBaseURL}${item.icon}`}
+                            alt={item.name}
+                            className="h-8 w-8 object-contain"
+                            loading="lazy"
+                          />
+                        </div>
+                        <div className="text-left">
+                          <p className="text-sm font-extrabold text-slate-900">
+                            {item.name}
+                          </p>
+                          <p className="text-[11px] text-slate-500">
+                            Tap to continue
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {InsuranceServices?.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-base font-black text-slate-900">
+                    Insurance
+                  </h3>
+                </div>
+
+                <div className="flex gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  {InsuranceServices.map((item, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleServiceClick(item)}
+                      className="min-w-[160px] rounded-3xl border border-slate-200 bg-white p-4 shadow-sm active:scale-[0.99] transition"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-500/15 to-teal-500/15 border border-slate-200 flex items-center justify-center">
+                          <img
+                            src={`${ImageBaseURL}${item.icon}`}
+                            alt={item.name}
+                            className="h-8 w-8 object-contain"
+                            loading="lazy"
+                          />
+                        </div>
+                        <div className="text-left">
+                          <p className="text-sm font-extrabold text-slate-900">
+                            {item.name}
+                          </p>
+                          <p className="text-[11px] text-slate-500">
+                            Quick & secure
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+        )} */}
+
+        {/* Refer & Earn */}
+        <section className="mb-6">
+          <div className="relative overflow-hidden rounded-[28px] border border-slate-200 shadow-[0_16px_60px_rgba(2,6,23,0.18)]">
+            <div className="absolute inset-0 bg-gradient-to-br from-fuchsia-600 via-indigo-600 to-sky-600" />
+            <div className="relative p-4">
+              <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  {/* Image bubble */}
-                  <div className="relative">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-fuchsia-500/40 via-purple-500/40 to-sky-500/40 flex items-center justify-center border border-white/10">
-                      <img
-                        src="https://ik.imagekit.io/43tomntsa/refer.png"
-                        alt="Refer & Earn"
-                        className="w-12 h-12 object-contain drop-shadow-2xl"
-                      />
-                    </div>
-                    <div className="absolute -right-1 -bottom-1 px-1.5 py-[2px] rounded-full bg-emerald-500 text-[9px] font-semibold text-white shadow-lg">
-                      +₹15
-                    </div>
+                  <div className="h-14 w-14 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center">
+                    <img
+                      src="https://ik.imagekit.io/43tomntsa/refer.png"
+                      alt="Refer"
+                      className="h-10 w-10 object-contain"
+                      loading="lazy"
+                    />
                   </div>
 
-                  {/* Text */}
-                  <div className="space-y-0.5">
-                    <p className="text-[11px] font-medium text-slate-200/90">
+                  <div className="leading-tight">
+                    <p className="text-[12px] font-semibold text-white/85">
                       Invite friends to{" "}
-                      <span className="font-semibold text-white">
+                      <span className="font-black text-white">
                         {BRAND_NAME}
                       </span>
                     </p>
-                    <p className="text-[22px] leading-snug font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-300 to-emerald-300">
+                    <p className="text-[22px] font-black text-white">
                       Earn ₹15 instantly
                     </p>
-                    {/* <p className="text-[10px] text-slate-400 leading-relaxed">
-                      Jab wo pehli baar{" "}
-                      <span className="font-semibold text-slate-200">
-                        ₹100+
-                      </span>{" "}
-                      add karenge, aapko turant reward mil jayega.
-                    </p> */}
-
-                    {/* Tiny bullets */}
-                    <div className="flex items-center gap-2 pt-1">
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 px-2 py-[2px]">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                        <span className="text-[9px] text-emerald-200 font-medium">
-                          No limit on invites
-                        </span>
+                    <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/15 px-2.5 py-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
+                      <span className="text-[10px] font-semibold text-white/90">
+                        No limit on invites
                       </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Right: button */}
                 <button
                   onClick={() => navigate("/refer")}
-                  className="flex flex-col items-stretch gap-1 min-w-[88px]"
+                  className="shrink-0 rounded-2xl bg-white text-indigo-700 px-4 py-3 text-sm font-extrabold shadow-lg active:scale-[0.98] transition inline-flex items-center gap-2"
                 >
-                  <span className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white text-fuchsia-600 font-semibold text-[12px] px-3 py-2 shadow-lg active:scale-95 transition-transform duration-150">
-                    <MdOutlineShare size={18} />
-                    <span>Invite</span>
-                  </span>
-                  <span className="text-[9px] text-slate-400 text-center">
-                    Share link &amp; earn
-                  </span>
+                  <MdOutlineShare size={18} />
+                  Invite
                 </button>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Support Card */}
-        <div className="px-4 mt-6">
-          <div
+        {/* Support */}
+        <section className="mb-6">
+          <button
             onClick={() => navigate("/contact")}
-            className="bg-white rounded-2xl shadow-lg p-4 flex items-center space-x-4 cursor-pointer hover:shadow-xl transition-all duration-300 active:scale-95 border border-green-200"
+            className="w-full rounded-3xl border border-emerald-200 bg-white shadow-sm p-4 flex items-center gap-4 active:scale-[0.99] transition"
           >
-            <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+            <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-lg">
               <MdWhatsapp size={26} className="text-white" />
             </div>
-            <div className="flex-1">
-              <p className="text-sm font-bold text-gray-900">Need Help?</p>
-              <p className="text-xs text-gray-600">
-                Connect with our support team
+            <div className="flex-1 text-left">
+              <p className="text-sm font-black text-slate-900">Need help?</p>
+              <p className="text-xs text-slate-500">
+                Chat with our support team
               </p>
             </div>
-            <MdArrowForward size={20} className="text-gray-400" />
+            <MdArrowForward size={20} className="text-slate-400" />
+          </button>
+        </section>
+
+        {/* Why Choose Us */}
+        <section className="mb-8">
+          <div className="mb-3">
+            <p className="text-xs font-semibold text-slate-500">Trust</p>
+            <h2 className="text-lg font-black tracking-tight text-slate-900">
+              Why choose us
+            </h2>
           </div>
-        </div>
 
-        {/* Features Grid */}
-        <div className="px-4 mt-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center space-x-2">
-            <span className="w-1 h-6 bg-gradient-to-b from-green-500 to-emerald-600 rounded-full"></span>
-            <span>Why Choose Us?</span>
-          </h2>
-
-          <div className="grid grid-cols-2 gap-4">
-            {/* Feature 1 */}
-            <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-4 shadow-lg">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center mb-3">
-                <MdTrendingUp size={24} className="text-white" />
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="h-11 w-11 rounded-2xl bg-indigo-600/10 border border-slate-200 flex items-center justify-center mb-3">
+                <MdTrendingUp size={24} className="text-indigo-700" />
               </div>
-              <p className="text-white font-bold text-sm">Instant</p>
-              <p className="text-white/80 text-xs mt-1">
-                Lightning fast transactions
+              <p className="text-sm font-black text-slate-900">Instant</p>
+              <p className="text-xs text-slate-500 mt-1">
+                Fast transactions, minimal steps
               </p>
             </div>
 
-            {/* Feature 2 */}
-            <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-4 shadow-lg">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center mb-3">
-                <MdStar size={24} className="text-white" />
+            <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="h-11 w-11 rounded-2xl bg-fuchsia-600/10 border border-slate-200 flex items-center justify-center mb-3">
+                <MdStar size={24} className="text-fuchsia-700" />
               </div>
-              <p className="text-white font-bold text-sm">Rewards</p>
-              <p className="text-white/80 text-xs mt-1">
-                Earn on every recharge
+              <p className="text-sm font-black text-slate-900">Rewards</p>
+              <p className="text-xs text-slate-500 mt-1">
+                Benefits on recharges & bills
               </p>
             </div>
 
-            {/* Feature 3 */}
-            <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-4 shadow-lg">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center mb-3">
+            <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="h-11 w-11 rounded-2xl bg-emerald-600/10 border border-slate-200 flex items-center justify-center mb-3">
                 <svg
-                  className="w-6 h-6 text-white"
+                  className="w-6 h-6 text-emerald-700"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -688,83 +750,45 @@ const HomeContent = () => {
                   />
                 </svg>
               </div>
-              <p className="text-white font-bold text-sm">Secure</p>
-              <p className="text-white/80 text-xs mt-1">
-                100% safe & encrypted
+              <p className="text-sm font-black text-slate-900">Secure</p>
+              <p className="text-xs text-slate-500 mt-1">
+                Encrypted & protected payments
               </p>
             </div>
 
-            {/* Feature 4 */}
-            <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl p-4 shadow-lg">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center mb-3">
+            <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="h-11 w-11 rounded-2xl bg-amber-500/10 border border-slate-200 flex items-center justify-center mb-3">
                 <svg
-                  className="w-6 h-6 text-white"
+                  className="w-6 h-6 text-amber-700"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
                   <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
                 </svg>
               </div>
-              <p className="text-white font-bold text-sm">Trusted</p>
-              <p className="text-white/80 text-xs mt-1">By lakhs of users</p>
+              <p className="text-sm font-black text-slate-900">Trusted</p>
+              <p className="text-xs text-slate-500 mt-1">
+                Loved by growing users
+              </p>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Footer */}
-        <div className="bg-gradient-to-br from-gray-100 to-gray-200 mt-8 mb-4 py-8 px-4">
+        <footer className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
           <div className="text-center">
-            <p className="text-4xl font-black text-gray-300 tracking-wider">
+            <p className="text-3xl font-black tracking-tight text-slate-300">
               {BRAND_NAME}
             </p>
-            <p className="text-gray-400 text-xs mt-3 font-medium tracking-wide">
+            <p className="text-xs text-slate-500 mt-2 font-semibold">
               MADE WITH ❤️ IN INDIA
             </p>
-            <div className="flex items-center justify-center space-x-4 mt-4">
-              <div className="flex items-center space-x-2 text-xs text-gray-500">
-                <svg
-                  className="w-4 h-4 text-green-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span>Secure</span>
-              </div>
-              <div className="flex items-center space-x-2 text-xs text-gray-500">
-                <svg
-                  className="w-4 h-4 text-blue-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span>Fast</span>
-              </div>
-              <div className="flex items-center space-x-2 text-xs text-gray-500">
-                <svg
-                  className="w-4 h-4 text-purple-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
-                </svg>
-                <span>Trusted</span>
-              </div>
-            </div>
           </div>
-        </div>
+        </footer>
       </div>
+
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 w-full">
+      <div className="fixed bottom-0 left-0 right-0 z-50">
         <BottomNavigation path={location.pathname} />
       </div>
     </div>
