@@ -87,8 +87,8 @@ const MainBBPS = () => {
     return (
       <div className="">
         <img
-          width={100}
-          height={40}
+          width={70}
+          height={30}
           src="https://ik.imagekit.io/isjriggan/images%20(1).png"
           alt=""
         />

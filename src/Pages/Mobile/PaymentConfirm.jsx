@@ -623,7 +623,7 @@
 // };
 
 // export default PaymentConfirm;
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import CommonHeader from "../../Components/CommonHeader";
 import { useLocation, useNavigate } from "react-router-dom";
 import { COMPANY_LOGO } from "../../Utils/Constant";
@@ -651,6 +651,7 @@ const PaymentConfirm = () => {
   // Redux selectors
   const { Totalprice } = useSelector((state) => state.PaymentSlice.PaymentType);
   const { walletSelect } = useSelector((state) => state.PaymentSlice);
+  const [isWalletLoading, setIsWalletLoading] = useState(false);
 
   // Payment Service Hook
   const { walletBalance, isWalletSufficient, formatAmount, showError } =
@@ -670,6 +671,7 @@ const PaymentConfirm = () => {
       showError("❌ Insufficient wallet balance. Please add money.");
       return;
     }
+    setIsWalletLoading(true);
 
     try {
       const payload = {
@@ -720,6 +722,8 @@ const PaymentConfirm = () => {
           error?.message ||
           "Recharge Failed. Please try again."
       );
+    } finally {
+      setIsWalletLoading(false);
     }
   }, [
     rechargeData,
@@ -804,6 +808,8 @@ const PaymentConfirm = () => {
     }
   }, [walletSelect, performWalletRecharge, initiatePayment, payableAmount]);
 
+  const isLoading = isWalletLoading || isUPILoading;
+
   // Initialize
   useEffect(() => {
     dispatch(getUserProfile());
@@ -821,14 +827,13 @@ const PaymentConfirm = () => {
 
   // Button states
   const isButtonDisabled =
-    isUPILoading || (walletSelect && !isWalletSufficient(payableAmount));
+    isLoading || (walletSelect && !isWalletSufficient(payableAmount));
 
-  const buttonTitle = isUPILoading
+  const buttonTitle = isLoading
     ? getLoadingMessage()
     : walletSelect && !isWalletSufficient(payableAmount)
     ? "💰 Insufficient Wallet Balance"
     : "Proceed to Pay";
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
       {/* Fixed Header */}
@@ -836,7 +841,7 @@ const PaymentConfirm = () => {
         <CommonHeader
           title="Confirm & Pay"
           handleclick={() => {
-            if (!isUPILoading) {
+            if (!isLoading) {
               dispatch(resetRechargeData());
               navigate("/mobile");
             }
@@ -869,8 +874,8 @@ const PaymentConfirm = () => {
                 </div>
               </div>
               <button
-                onClick={() => !isUPILoading && navigate("/plans")}
-                disabled={isUPILoading}
+                onClick={() => !isLoading && navigate("/plans")}
+                disabled={isLoading}
                 className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all active:scale-95 flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <MdEdit size={14} />
@@ -969,7 +974,7 @@ const PaymentConfirm = () => {
           <PaymentMethodSelector
             walletBalance={walletBalance}
             payableAmount={payableAmount}
-            isLoading={isUPILoading}
+            isLoading={isLoading}
           />
         </div>
 
@@ -998,7 +1003,7 @@ const PaymentConfirm = () => {
       </div>
 
       {/* Loader */}
-      {isUPILoading && <LoaderModal variant="mobile" />}
+      {isLoading && <LoaderModal variant="mobile" />}
 
       {/* Animations */}
       <style jsx>{`

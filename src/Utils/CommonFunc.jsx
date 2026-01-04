@@ -64,6 +64,7 @@ export const getSettingFunc = async () => {
       localStorage.setItem("customerPhone", data.customerPhone);
     if (data.isCashfreeProduction)
       localStorage.setItem("isCashfreeProduction", data.isCashfreeProduction);
+    return data;
   } catch (error) {
     // console.error("CheckAppVersion failed:", error);
   }

@@ -301,7 +301,7 @@
 
 // export default HomeContent;
 
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import BottomNavigation from "../../Navigation/BottomNavigation";
 import HeaderHome from "./HeaderHome";
 import BannerSlider from "../../Components/BannerSlider";
@@ -333,7 +333,7 @@ const HomeContent = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-
+  const [referralAmount, setReferralAmount] = useState(0);
   const { serviceList, serviceLoader } = useSelector(
     (state) => state.ServiceSlice.service
   );
@@ -346,8 +346,16 @@ const HomeContent = () => {
     dispatch(fetchServiceList());
     dispatch(getBannerList({ type: "service" }));
     dispatch(getUserProfile());
-    getSettingFunc();
   }, [dispatch]);
+
+  const handleGetReferAmount = async () => {
+    const settings = await getSettingFunc();
+    setReferralAmount(settings?.referAmount || 0);
+  };
+
+  useEffect(() => {
+    handleGetReferAmount();
+  }, []);
 
   const allowedSections = ["recharge", "finance"];
 
@@ -415,7 +423,7 @@ const HomeContent = () => {
       </div>
 
       {/* Page Container (Mobile-first) */}
-      <div className="mx-auto w-full max-w-[520px] px-4 pt-4 pb-[calc(96px+env(safe-area-inset-bottom))]">
+      <div className="mx-auto w-full max-w-[520px] px-2 pt-2 pb-[calc(96px+env(safe-area-inset-bottom))]">
         {/* Banner */}
         {showBanner && (
           <section className="mb-5">
@@ -655,7 +663,7 @@ const HomeContent = () => {
                       </span>
                     </p>
                     <p className="text-[22px] font-black text-white">
-                      Earn ₹15 instantly
+                      Earn ₹{referralAmount}c instantly
                     </p>
                     <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/15 px-2.5 py-1">
                       <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />

@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import CommonHeader from "../../Components/CommonHeader";
 import { useNavigate } from "react-router-dom";
 import { BRAND_NAME, COMPANY_LOGO } from "../../Utils/Constant";
-import { ProfileArr, SocialArr } from "../../Utils/MockData";
+import { getFilteredProfileArr, SocialArr } from "../../Utils/MockData";
 import Loader from "../../Components/Loader";
 import { TbLogout } from "react-icons/tb";
 import { AuthContext } from "../../Navigation/AuthContext";
@@ -14,11 +14,10 @@ import { MdVerified, MdStar } from "react-icons/md";
 const ProfilePage = () => {
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
-
+  const { serviceList } = useSelector((state) => state.ServiceSlice.service);
   const { ProfileData, profileLoader } = useSelector(
     (state) => state.LoginSlice.profile
   );
-
   // ✅ FIX: Memoized user data
   const userData = {
     firstName: ProfileData?.Data?.firstName || "User",
@@ -61,6 +60,11 @@ const ProfilePage = () => {
     }
   };
 
+  const ProfileArr = useMemo(
+    () => getFilteredProfileArr(serviceList),
+    [serviceList]
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-fuchsia-50 relative overflow-hidden">
       {/* Animated Background Blobs */}
@@ -86,9 +90,12 @@ const ProfilePage = () => {
         <motion.div className="mb-6" variants={itemVariants}>
           <div className="relative bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 rounded-3xl overflow-hidden shadow-2xl">
             {/* Pattern Overlay */}
-            <div className="absolute inset-0 opacity-10" style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-            }}></div>
+            <div
+              className="absolute inset-0 opacity-10"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+              }}
+            ></div>
 
             {/* Decorative Elements */}
             <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-20 -mt-20"></div>
@@ -176,7 +183,12 @@ const ProfilePage = () => {
                 {/* Icon Container */}
                 <div className="w-12 h-12 bg-gradient-to-br from-violet-100 to-fuchsia-100 rounded-xl flex items-center justify-center group-hover:from-violet-500 group-hover:to-fuchsia-500 transition-all duration-300 shadow-sm">
                   {item.image ? (
-                    <img width={24} src={item.image} alt={item.title} className="group-hover:scale-110 transition-transform" />
+                    <img
+                      width={24}
+                      src={item.image}
+                      alt={item.title}
+                      className="group-hover:scale-110 transition-transform"
+                    />
                   ) : (
                     <item.icon className="text-2xl text-violet-600 group-hover:text-white transition-colors duration-300" />
                   )}
@@ -217,7 +229,9 @@ const ProfilePage = () => {
                 <p className="font-bold text-red-600 text-sm tracking-wide group-hover:text-red-700">
                   Logout
                 </p>
-                <p className="text-red-400 text-xs mt-0.5">Sign out of your account</p>
+                <p className="text-red-400 text-xs mt-0.5">
+                  Sign out of your account
+                </p>
               </div>
 
               {/* Arrow Icon */}
@@ -229,27 +243,29 @@ const ProfilePage = () => {
         </motion.div>
 
         {/* Social Media Section */}
-        <motion.div className="mb-6" variants={itemVariants}>
-          <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-gray-100">
-            <p className="text-center text-sm font-bold text-gray-700 mb-5">
-              Connect with us 🌐
-            </p>
-            <div className="flex justify-center gap-4">
-              {SocialArr.map((item, index) => (
-                <motion.div
-                  key={index}
-                  className="w-12 h-12 bg-gradient-to-br from-gray-100 to-gray-200 hover:from-violet-500 hover:to-fuchsia-500 rounded-xl flex items-center justify-center cursor-pointer shadow-md hover:shadow-xl transition-all duration-300 group"
-                  whileHover={{ scale: 1.15, rotate: 5 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <div className="text-2xl text-gray-600 group-hover:text-white transition-colors duration-300">
-                    {item.icon}
-                  </div>
-                </motion.div>
-              ))}
+        {serviceList?.Data?.find((a) => a.name === "SOCIAL_SHOW")?.isShow && (
+          <motion.div className="mb-6" variants={itemVariants}>
+            <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-gray-100">
+              <p className="text-center text-sm font-bold text-gray-700 mb-5">
+                Connect with us 🌐
+              </p>
+              <div className="flex justify-center gap-4">
+                {SocialArr.map((item, index) => (
+                  <motion.div
+                    key={index}
+                    className="w-12 h-12 bg-gradient-to-br from-gray-100 to-gray-200 hover:from-violet-500 hover:to-fuchsia-500 rounded-xl flex items-center justify-center cursor-pointer shadow-md hover:shadow-xl transition-all duration-300 group"
+                    whileHover={{ scale: 1.15, rotate: 5 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <div className="text-2xl text-gray-600 group-hover:text-white transition-colors duration-300">
+                      {item.icon}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        )}
 
         {/* Footer */}
         <motion.div
@@ -271,7 +287,11 @@ const ProfilePage = () => {
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-violet-400 to-fuchsia-400 rounded-2xl blur-lg opacity-50"></div>
               <div className="relative w-16 h-16 p-3 bg-white border-2 border-gray-200 rounded-2xl flex items-center justify-center shadow-xl">
-                <img src={COMPANY_LOGO} alt="" className="w-full h-full object-contain" />
+                <img
+                  src={COMPANY_LOGO}
+                  alt=""
+                  className="w-full h-full object-contain"
+                />
               </div>
             </div>
           </motion.div>
@@ -291,9 +311,9 @@ const ProfilePage = () => {
           </div>
 
           {/* Version */}
-          <p className="text-center text-gray-400 text-xs mt-4 font-medium">
+          {/* <p className="text-center text-gray-400 text-xs mt-4 font-medium">
             Version 1.0.0
-          </p>
+          </p> */}
 
           {/* Trust Badges */}
           <div className="flex items-center justify-center gap-6 mt-6">
@@ -325,13 +345,26 @@ const ProfilePage = () => {
       {/* CSS Animations */}
       <style jsx>{`
         @keyframes blob {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(30px, -50px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.9); }
+          0%,
+          100% {
+            transform: translate(0, 0) scale(1);
+          }
+          33% {
+            transform: translate(30px, -50px) scale(1.1);
+          }
+          66% {
+            transform: translate(-20px, 20px) scale(0.9);
+          }
         }
-        .animate-blob { animation: blob 7s infinite; }
-        .animation-delay-2000 { animation-delay: 2s; }
-        .animation-delay-4000 { animation-delay: 4s; }
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        .animation-delay-4000 {
+          animation-delay: 4s;
+        }
       `}</style>
     </div>
   );

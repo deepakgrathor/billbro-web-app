@@ -80,7 +80,7 @@ export const fetchTransactionData = async ({
       }
 
       case "referrals": {
-        const response = await API.get(`/txn/list`, {
+        const response = await API.get(`/txn/list?txnResource=Wallet`, {
           params: { page, limit, ...dateParams },
         });
         const allTxns = decryptFunc(response.data.Data) || [];

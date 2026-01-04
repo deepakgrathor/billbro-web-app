@@ -9,15 +9,12 @@ const BBPSComplaintSuccess = () => {
   const [complaintData, setComplaintData] = useState(null);
 
   useEffect(() => {
-  
-
     // Get complaint data from navigation state
     if (location.state?.complaintData) {
       setComplaintData(location.state.complaintData);
-    } 
-    
+    }
+
     // else {
-    //   console.log("No complaint data, redirecting...");
     //   // If no data, redirect back
     //   navigate("/bbps-complaint", { replace: true });
     // }
@@ -69,8 +66,8 @@ const BBPSComplaintSuccess = () => {
     return (
       <div className="">
         <img
-          width={100}
-          height={40}
+          width={70}
+          height={30}
           src="https://ik.imagekit.io/isjriggan/images%20(1).png"
           alt="Bharat Connect"
         />

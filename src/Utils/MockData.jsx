@@ -14,7 +14,6 @@ import {
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import { BsStar } from "react-icons/bs";
 import { AuthContext } from "../Navigation/AuthContext";
-import { EMAIL_ID, PACKAGE_NAME } from "./Constant";
 
 export const DummyAvatarForPassbook =
   "https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/man-user-circle-icon.png";
@@ -527,7 +526,7 @@ export const ProfileArr = [
   {
     title: "Write to us",
     icon: TbMailPlus,
-    handleclick: () => window.open(`mailto:${EMAIL_ID}`, "_blank"),
+    handleclick: () => window.open(`mailto:feedback@billbro.in`, "_blank"),
   },
   // {
   //   title: "Rate our App",
@@ -545,6 +544,49 @@ export const ProfileArr = [
   //   route: "/contact",
   // },
 ];
+
+// ✅ Filter ProfileArr dynamically based on service status
+export const getFilteredProfileArr = (serviceList) => {
+  const baseProfileArr = [
+    {
+      title: "Privacy Policy",
+      icon: TbShieldLock,
+      route: "/privacy-policy",
+    },
+    {
+      title: "Terms & Conditions",
+      icon: TbClipboardList,
+      route: "/terms-conditions",
+    },
+    {
+      title: "Refund Policy",
+      icon: TbReceiptRefund,
+      route: "/refund-policy",
+    },
+    {
+      title: "BBPS Complaint",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQT9Kk5ZklcaVdzaK9ORrixwIdDQ-ymuiDvxA&s",
+      route: "/bbps-complaint-registration",
+      requiredService: "BBPS_COMPLAINT_SHOW", // ✅ Add this flag
+    },
+    {
+      title: "Write to us",
+      icon: TbMailPlus,
+      handleclick: () => window.open(`mailto:feedback@billbro.in`, "_blank"),
+    },
+  ];
+
+  // ✅ Filter based on service availability
+  return baseProfileArr.filter((item) => {
+    if (!item.requiredService) return true; // Always show items without flag
+
+    const service = serviceList?.Data?.find(
+      (s) => s.name === item.requiredService
+    );
+    return service?.isShow === true; // Only show if isShow is true
+  });
+};
 export const SocialArr = [
   {
     name: "Facebook",

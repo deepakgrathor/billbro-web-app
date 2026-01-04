@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CommonHeader from "../../Components/CommonHeader";
 import { BRAND_NAME } from "../../Utils/Constant";
@@ -11,23 +11,32 @@ import {
   MdTrendingUp,
 } from "react-icons/md";
 import { useSelector } from "react-redux";
+import { getSettingFunc } from "../../Utils/CommonFunc";
 
 const ReferScreen = () => {
   const navigate = useNavigate();
   const { ProfileData } = useSelector((state) => state.LoginSlice.profile);
   const [copied, setCopied] = useState(false);
-
+  const [referralAmount, setReferralAmount] = useState(0);
   const referralCode = ProfileData?.Data?.referalId || "LOADING...";
   const isLoading = referralCode === "LOADING...";
 
   const shareMessage = useMemo(() => {
-    return `🎉 Join ${BRAND_NAME} and get amazing rewards!
+    return `💎 ${BRAND_NAME} - India's Fastest Recharge App
 
-💰 Use my referral code: ${referralCode}
+🚀 Services:
+✅ Mobile & DTH Recharge
+✅ Bill Payments (Electricity, Gas, Water)
+✅ Instant Cashback & Rewards
 
-✅ Get ₹15 when you add ₹100 or more
+🎁 EXCLUSIVE OFFER FOR YOU:
+Use Referral Code: *${referralCode}*
+Get ₹15 Bonus on ₹100+ wallet recharge!
 
-Download now and start earning!`;
+📲 Download Now:
+https://play.google.com/store/apps/details?id=com.billbro.app
+
+🔒 100% Safe & Secure | ⚡ Lightning Fast | 🏆 10,000+ Happy Users`;
   }, [referralCode]);
 
   // ✅ Same logic
@@ -44,15 +53,29 @@ Download now and start earning!`;
 
   const handleWhatsAppShare = useCallback(() => {
     if (isLoading) return;
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareMessage)}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(
+      shareMessage
+    )}`;
     window.open(whatsappUrl, "_blank", "noopener,noreferrer");
   }, [isLoading, shareMessage]);
+
+  const handleGetReferAmount = async () => {
+    const settings = await getSettingFunc();
+    setReferralAmount(settings?.referAmount || 0);
+  };
+
+  useEffect(() => {
+    handleGetReferAmount();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white">
       {/* Header */}
       <div className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200">
-        <CommonHeader title={"Refer & Earn"} handleclick={() => navigate("/")} />
+        <CommonHeader
+          title={"Refer & Earn"}
+          handleclick={() => navigate("/")}
+        />
       </div>
 
       {/* Content */}
@@ -82,31 +105,21 @@ Download now and start earning!`;
 
           {/* Reward strip */}
           <div className="px-5 py-5 bg-white">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <p className="text-[11px] font-semibold tracking-widest text-slate-500 uppercase">
-                  You earn
-                </p>
-                <div className="mt-2 flex items-center gap-2">
-                  <p className="text-3xl font-black text-slate-900">₹15</p>
-                  <MdTrendingUp className="text-emerald-600 text-2xl" />
+            <div className="rounded-xl border-l-4 border-emerald-500 bg-emerald-50 p-4 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-bold tracking-wider text-emerald-700 uppercase mb-1.5">
+                    You Earn
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-4xl font-black text-emerald-900">₹{referralAmount}</p>
+                    <MdTrendingUp className="text-emerald-600 text-2xl" />
+                  </div>
+                  <p className="mt-2 text-xs text-slate-700 font-semibold">
+                    Per referral on ₹100+ add
+                  </p>
                 </div>
-                <p className="mt-1 text-xs text-slate-600 font-semibold">
-                  when friend adds ₹100+
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <p className="text-[11px] font-semibold tracking-widest text-slate-500 uppercase">
-                  Friend earns
-                </p>
-                <div className="mt-2 flex items-center gap-2">
-                  <p className="text-3xl font-black text-slate-900">₹15</p>
-                  <MdTrendingUp className="text-emerald-600 text-2xl" />
-                </div>
-                <p className="mt-1 text-xs text-slate-600 font-semibold">
-                  same reward for them
-                </p>
+                <div className="text-5xl opacity-20">🎁</div>
               </div>
             </div>
 
@@ -144,8 +157,7 @@ Download now and start earning!`;
 
               <div className="shrink-0 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5">
                 <p className="text-[11px] font-bold text-slate-700 flex items-center gap-1.5">
-                  <MdPeople className="text-slate-600" />
-                  0 friends
+                  <MdPeople className="text-slate-600" />0 friends
                 </p>
               </div>
             </div>

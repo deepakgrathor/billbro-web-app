@@ -150,7 +150,6 @@ const TransactionCard = ({ transaction, onClick }) => {
   // ✅ OPTIMIZATION: Memoized status calculations
   const statusConfig = useMemo(() => {
     const status = transaction.status;
-    console.log(status, "status");
     if (
       status === "Success" ||
       status === "Credit" ||

@@ -67,17 +67,16 @@ export const formatDepositData = (data) => {
 };
 
 export const formatReferralData = (data) => {
-
   if (!Array.isArray(data)) return [];
   return data.map((item) => ({
-    id: item.transactionId,
+    id: item.transactionId || item.orderId || item.txnId,
     type: "Referral Bonus",
     number: item.txnDesc || "Referral Reward",
     date: formatDateDisplay(item.createdAt),
     amount: `₹${item.txnAmount}`,
     commission: `₹${item.txnAmount}`,
     status: item.txnStatus,
-    logo: "🎁",
+    logo: "https://ik.imagekit.io/43tomntsa/421-4213376_credit-wallet-png-icon-transparent-png-removebg-preview.png",
   }));
 };
 
