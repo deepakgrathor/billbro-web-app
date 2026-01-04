@@ -6,15 +6,42 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // ✅ Check token on mount
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
-    setLoading(false);
+    const checkAuth = () => {
+      const token = localStorage.getItem("token");
+      setIsAuthenticated(!!token);
+      setLoading(false);
+    };
+
+    checkAuth();
+
+    // ✅ Listen for token injection from React Native
+    const handleStorageChange = (e) => {
+      if (e.key === "token" || e.type === "storage") {
+        const token = localStorage.getItem("token");
+        setIsAuthenticated(!!token);
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    // ✅ IMPORTANT: Also listen for manual storage events
+    // (WebContainer already dispatches this!)
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, []);
+
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (token) {
+  //     setIsAuthenticated(true);
+  //   } else {
+  //     setIsAuthenticated(false);
+  //   }
+  //   setLoading(false);
+  // }, []);
 
   const login = (token) => {
     localStorage.setItem("token", token);

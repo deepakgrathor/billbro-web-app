@@ -351,40 +351,30 @@ const HomeContent = () => {
 
   const allowedSections = ["recharge", "finance"];
 
-  const {
-    MobileServices,
-    TravelServices,
-    InsuranceServices,
-    showBanner,
-    RECHARGE_SECTION,
-  } = useMemo(() => {
-    let filtered = [];
-    let travel = [];
-    let insurance = [];
+  const { MobileServices, TravelServices, InsuranceServices, showBanner } =
+    useMemo(() => {
+      let filtered = [];
+      let travel = [];
+      let insurance = [];
 
-    const data = serviceList?.Data || [];
-    data.forEach((a) => {
-      if (a?.isShow) {
-        if (allowedSections.includes(a.section)) filtered.push(a);
-        else if (a.section === "travel") travel.push(a);
-        else if (a.section === "insurance") insurance.push(a);
-      }
-    });
+      const data = serviceList?.Data || [];
+      data.forEach((a) => {
+        if (a?.isShow) {
+          if (allowedSections.includes(a.section)) filtered.push(a);
+          else if (a.section === "travel") travel.push(a);
+          else if (a.section === "insurance") insurance.push(a);
+        }
+      });
 
-    const bannerFlag = data?.find((a) => a?.name === "BANNER_SHOW")?.isShow;
-    const rechargeSection = data?.find(
-      (a) => a?.name === "RECHARGE_SECTION"
-    )?.isShow;
+      const bannerFlag = data?.find((a) => a?.name === "BANNER_SHOW")?.isShow;
 
-    return {
-      MobileServices: filtered.slice(0, 7),
-      TravelServices: travel,
-      InsuranceServices: insurance,
-      showBanner: !!bannerFlag,
-      RECHARGE_SECTION: rechargeSection,
-    };
-  }, [serviceList]);
-  console.log(RECHARGE_SECTION, "RECHARGE_SECTION");
+      return {
+        MobileServices: filtered.slice(0, 7),
+        TravelServices: travel,
+        InsuranceServices: insurance,
+        showBanner: !!bannerFlag,
+      };
+    }, [serviceList]);
 
   const handleServiceClick = (item) => {
     if (item._id === "64c9e5bf1efc768da459ef00") {
@@ -483,7 +473,8 @@ const HomeContent = () => {
         </section>
 
         {/* Quick Services */}
-        {RECHARGE_SECTION && (
+        {serviceList.Data?.some((a) => a.name === "RECHARGE_SECTION")
+          ?.isShow && (
           <section className="mb-6">
             <div className="flex items-end justify-between mb-3">
               <div>
