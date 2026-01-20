@@ -212,15 +212,33 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                   >
                     <div className="flex items-center gap-4">
                       {/* Icon / B Assured */}
-                      {statusConfig.showBAssured && isBBPSTransaction ? (
+                     
+
+                      <div className="min-w-0 flex-1">
+                        <p
+                          className={[
+                            "text-lg sm:text-lg font-black",
+                            statusConfig.pillText,
+                          ].join(" ")}
+                        >
+                          {statusConfig.title}
+                        </p>
+                        {/* <p className="mt-1 text-sm text-slate-600">
+                          {statusConfig.subtitle}
+                        </p> */}
+                        
+                      </div>
+
+                     
+                       {statusConfig.showBAssured && isBBPSTransaction ? (
                         <div className="shrink-0">
-                          <div className="h-12 w-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center overflow-hidden">
+                          {/* <div className="h-20 w-20 rounded-2xl bg-white border border-slate-200 flex items-center justify-center overflow-hidden">
                             <img
                               src="https://ik.imagekit.io/43tomntsa/B%20Assured%20Logo_SVG.svg"
                               alt="B Assured"
-                              className="h-10 w-10 object-contain"
+                              className="h-20 w-20 object-contain"
                             />
-                          </div>
+                          </div> */}
                         </div>
                       ) : (
                         <div
@@ -231,26 +249,6 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                         >
                           <StatusIcon className="w-7 h-7 text-white" />
                         </div>
-                      )}
-
-                      <div className="min-w-0 flex-1">
-                        <p
-                          className={[
-                            "text-base sm:text-lg font-black",
-                            statusConfig.pillText,
-                          ].join(" ")}
-                        >
-                          {statusConfig.title}
-                        </p>
-                        {/* <p className="mt-1 text-sm text-slate-600">
-                          {statusConfig.subtitle}
-                        </p> */}
-                      </div>
-
-                      {transaction.status?.toLowerCase() === "success" && (
-                        <span className="shrink-0 inline-flex items-center rounded-full bg-white border border-slate-200 px-3 py-1 text-xs font-black text-slate-700">
-                          VERIFIED
-                        </span>
                       )}
                     </div>
                   </div>
@@ -269,11 +267,11 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                           {transaction.amount}
                         </p>
 
-                        {isBBPSTransaction && (
+                        {/* {isBBPSTransaction && (
                           <span className="text-xs font-bold bg-white/10 border border-white/15 px-3 py-1.5 rounded-full">
                             + CCF: ₹0
                           </span>
-                        )}
+                        )} */}
                       </div>
                     </div>
                   </div>
@@ -355,6 +353,18 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                                 colorClass="text-blue-600"
                               />
                             }
+                          />
+                        </div>
+                      </>
+                    )}
+                    {isBBPSTransaction && transaction.OPR_REF && (
+                      <>
+                        <div className="h-px bg-slate-200" />
+                        <div className="px-4">
+                          <InfoRow
+                            label="CCF (Customer Convenience Fee)"
+                            value={`₹0`}
+                            mono
                           />
                         </div>
                       </>

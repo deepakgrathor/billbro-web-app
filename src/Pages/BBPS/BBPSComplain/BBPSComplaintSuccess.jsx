@@ -88,7 +88,7 @@ const BBPSComplaintSuccess = () => {
             handleclick={() => {
               navigate("/", { replace: true });
             }}
-            rightDesign={rightDesign}
+            // rightDesign={rightDesign}
           />
         </div>
 

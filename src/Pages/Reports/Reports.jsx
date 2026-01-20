@@ -139,7 +139,7 @@ const Reports = () => {
         <CommonHeader
           title={"Reports"}
           handleclick={() => navigate(-1)}
-          rightDesign={rightDesign}
+          // rightDesign={rightDesign}
         />
       </div>
 

@@ -1,1 +1,72 @@
+# =========================
+# Dependencies
+# =========================
 node_modules/
+
+# =========================
+# Build Outputs
+# =========================
+build/
+dist/
+out/
+.next/
+.cache/
+
+# =========================
+# Environment Variables
+# =========================
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# =========================
+# Logs
+# =========================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# =========================
+# OS Generated Files
+# =========================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# =========================
+# IDE / Editor
+# =========================
+.vscode/
+.idea/
+.vs/
+
+# =========================
+# Coverage & Testing
+# =========================
+coverage/
+
+# =========================
+# TypeScript
+# =========================
+*.tsbuildinfo
+
+# =========================
+# Certificates / Keys (Security)
+# =========================
+*.pem
+*.p12
+*.key
+*.crt
+*.cer
+
+# =========================
+# Java / Misc (Just in case)
+# =========================
+*.class
+*.war
+*.jar

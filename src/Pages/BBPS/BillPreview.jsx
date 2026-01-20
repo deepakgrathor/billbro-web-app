@@ -860,7 +860,7 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
           style={{ fontSize: 13 }}
           title={title}
           handleclick={() => !isLoading && navigate(-1)}
-          rightDesign={rightDesign}
+          // rightDesign={rightDesign}
         />
       </div>
 

@@ -243,7 +243,7 @@ https://play.google.com/store/apps/details?id=com.billbro.app
               />
               <Step
                 no="03"
-                title="Both get ₹15"
+                title="You get ₹15"
                 desc="When your friend adds ₹100 or more to wallet."
               />
             </div>

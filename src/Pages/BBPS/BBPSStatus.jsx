@@ -401,13 +401,11 @@ const BBPSStatus = () => {
   useEffect(() => {
     if (responseData.status === "success") {
       try {
-
         audioRef.current = new Audio();
 
         // Set source - TRY MULTIPLE PATHS
         const audioPath = "/src/assets/sonic-brand.mp3";
         audioRef.current.src = audioPath;
-
 
         audioRef.current.volume = 1;
         audioRef.current.preload = "auto";
@@ -481,7 +479,7 @@ const BBPSStatus = () => {
         <CommonHeader
           title="Transaction Details"
           handleclick={() => navigate("/")}
-          rightDesign={rightDesign}
+          // rightDesign={rightDesign}
         />
       </div>
 
@@ -679,15 +677,12 @@ const BBPSStatus = () => {
               >
                 ₹{responseData.amount}
               </motion.h2>
-              <p className="text-white/80 text-xs sm:text-sm font-semibold mt-2 relative z-10">
-                + CCF: ₹{responseData.consumerConvenienceFee}
-              </p>
             </motion.div>
 
             {/* Transaction Details */}
             <div className="p-4 sm:p-5 md:p-6 space-y-3 sm:space-y-4">
               {/* B-Connect ID - Highlighted */}
-              <motion.div
+              {/* <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6 }}
@@ -702,9 +697,6 @@ const BBPSStatus = () => {
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-xs sm:text-sm font-black text-white uppercase tracking-widest">
                       B-Connect Txn ID
-                    </span>
-                    <span className="px-2 py-0.5 bg-white text-blue-600 text-[10px] sm:text-xs rounded-full font-black">
-                      BBPS
                     </span>
                   </div>
                   <div className="flex items-center justify-between gap-3">
@@ -727,28 +719,28 @@ const BBPSStatus = () => {
                     </motion.button>
                   </div>
                 </div>
-              </motion.div>
+              </motion.div> */}
 
               {/* Transaction ID */}
               <DetailCard delay={0.7}>
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <p className="text-[10px] sm:text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">
-                      Transaction ID
+                      B-Connect Txn ID
                     </p>
                     <p className="text-xs sm:text-sm font-mono font-bold text-gray-900 break-all">
-                      {responseData.transactionId}
+                      {responseData.OP_REF}
                     </p>
                   </div>
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() =>
-                      handleCopyWithFeedback(responseData.transactionId, "txn")
+                      handleCopyWithFeedback(responseData.OP_REF, "bconnect")
                     }
                     className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-xl"
                   >
-                    {copied === "txn" ? (
+                    {copied === "bconnect" ? (
                       <BsCheck className="w-5 h-5 text-green-600" />
                     ) : (
                       <BsCopy className="w-5 h-5 text-gray-600" />
@@ -770,6 +762,14 @@ const BBPSStatus = () => {
                   </h3>
                 </div>
                 <div className="divide-y divide-gray-100">
+                  <InfoRow
+                    label="Transaction ID"
+                    value={responseData.transactionId}
+                  />
+                  <InfoRow
+                    label="CCF (Customer Convenience Fee)"
+                    value={`₹0`}
+                  />
                   <InfoRow
                     label="Consumer Number"
                     value={responseData.MobileNumber}

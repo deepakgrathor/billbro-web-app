@@ -538,12 +538,13 @@ const HomeContent = () => {
                       className="group flex flex-col items-center gap-2 active:scale-[0.98] transition"
                     >
                       <div className="h-14 w-14 rounded-2xl border border-slate-200 bg-gradient-to-br from-indigo-50 to-white shadow-sm group-hover:shadow-md transition flex items-center justify-center">
-                        <img
+                        <MdArrowForward size={25} />
+                        {/* <img
                           src="https://app.billhub.in/assets/bbps-logo.png"
                           alt="Pay Bills"
                           className="h-10 w-10 object-contain"
                           loading="lazy"
-                        />
+                        /> */}
                       </div>
                       <p className="text-[10px] font-semibold text-slate-700">
                         Pay Bills
@@ -663,7 +664,7 @@ const HomeContent = () => {
                       </span>
                     </p>
                     <p className="text-[22px] font-black text-white">
-                      Earn ₹{referralAmount}c instantly
+                      Earn ₹{referralAmount} instantly
                     </p>
                     <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/15 px-2.5 py-1">
                       <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />

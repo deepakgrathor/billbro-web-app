@@ -233,7 +233,7 @@ const BBPSComplain = () => {
         <CommonHeader
           title="Register Complaint"
           handleclick={() => navigate("/")}
-          rightDesign={rightDesign}
+          // rightDesign={rightDesign}
         />
       </div>
 

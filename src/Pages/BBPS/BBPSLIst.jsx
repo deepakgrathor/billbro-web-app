@@ -101,7 +101,7 @@ const BBPSList = () => {
         <CommonHeader
           title="Bill Payments"
           handleclick={() => navigate(-1)}
-          rightDesign={rightDesign}
+          // rightDesign={rightDesign}
         />
       </div>
 
