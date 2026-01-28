@@ -125,12 +125,12 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
   const InfoRow = ({ label, value, mono, right }) => (
     <div className="flex items-start justify-between gap-3 py-3">
       <div className="min-w-0">
-        <p className="text-[11px] font-semibold tracking-widest text-slate-500 uppercase">
+        <p className="text-[12px] font-bold tracking-wider text-gray-900 uppercase">
           {label}
         </p>
         <p
           className={[
-            "mt-1 text-sm font-semibold text-slate-900 break-all",
+            "mt-1 text-sm font-semibold text-slate-500 break-all",
             mono ? "font-mono" : "",
           ].join(" ")}
         >
@@ -172,7 +172,7 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                        Transaction Details
+                        Payment Receipt
                       </h2>
                       <p className="mt-1 text-sm text-slate-600">
                         Review status & references
@@ -212,7 +212,6 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                   >
                     <div className="flex items-center gap-4">
                       {/* Icon / B Assured */}
-                     
 
                       <div className="min-w-0 flex-1">
                         <p
@@ -226,17 +225,15 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                         {/* <p className="mt-1 text-sm text-slate-600">
                           {statusConfig.subtitle}
                         </p> */}
-                        
                       </div>
 
-                     
-                       {statusConfig.showBAssured && isBBPSTransaction ? (
+                      {statusConfig.showBAssured && isBBPSTransaction ? (
                         <div className="shrink-0">
-                          {/* <div className="h-20 w-20 rounded-2xl bg-white border border-slate-200 flex items-center justify-center overflow-hidden">
+                          {/* <div className="h-22 w-22 rounded-2xl bg-white border border-slate-200 flex items-center justify-center overflow-hidden">
                             <img
                               src="https://ik.imagekit.io/43tomntsa/B%20Assured%20Logo_SVG.svg"
                               alt="B Assured"
-                              className="h-20 w-20 object-contain"
+                              className="h-22 w-22 object-contain"
                             />
                           </div> */}
                         </div>
@@ -283,7 +280,44 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                     <div className="px-4">
                       <InfoRow label="Transaction Type" value={txnTypeLabel} />
                     </div>
+                    {isBBPSTransaction && transaction.OPR_REF && (
+                      <>
+                        <div className="h-px bg-slate-200" />
+                        <div className="px-4">
+                          <InfoRow
+                            label="B-Connect Txn ID"
+                            value={transaction.OPR_REF}
+                            mono
+                            right={
+                              <CopyButton
+                                field="bharatConnect"
+                                onClick={() =>
+                                  handleCopyWithFeedback(
+                                    transaction.OPR_REF,
+                                    "bharatConnect"
+                                  )
+                                }
+                                colorClass="text-blue-600"
+                              />
+                            }
+                          />
+                        </div>
+                      </>
+                    )}
+                    {isBBPSTransaction && transaction.OPR_REF && (
+                      <>
+                        <div className="h-px bg-slate-200" />
+                        <div className="px-4">
+                          <InfoRow
+                            label="CCF (Customer Convenience Fee)"
+                            value={`₹0`}
+                            mono
+                          />
+                        </div>
+                      </>
+                    )}
                     <div className="h-px bg-slate-200" />
+
                     <div className="px-4">
                       <InfoRow
                         label="Transaction ID"
@@ -333,43 +367,6 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                         </>
                       )}
 
-                    {isBBPSTransaction && transaction.OPR_REF && (
-                      <>
-                        <div className="h-px bg-slate-200" />
-                        <div className="px-4">
-                          <InfoRow
-                            label="B-Connect Txn ID"
-                            value={transaction.OPR_REF}
-                            mono
-                            right={
-                              <CopyButton
-                                field="bharatConnect"
-                                onClick={() =>
-                                  handleCopyWithFeedback(
-                                    transaction.OPR_REF,
-                                    "bharatConnect"
-                                  )
-                                }
-                                colorClass="text-blue-600"
-                              />
-                            }
-                          />
-                        </div>
-                      </>
-                    )}
-                    {isBBPSTransaction && transaction.OPR_REF && (
-                      <>
-                        <div className="h-px bg-slate-200" />
-                        <div className="px-4">
-                          <InfoRow
-                            label="CCF (Customer Convenience Fee)"
-                            value={`₹0`}
-                            mono
-                          />
-                        </div>
-                      </>
-                    )}
-
                     {transaction.OP_REF && (
                       <>
                         <div className="h-px bg-slate-200" />
@@ -402,36 +399,34 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                   </div>
 
                   {/* Actions */}
-                  <div className="mt-5 space-y-3">
-                    {(type === "recharges" || type === "billPayments") && (
-                      <motion.button
-                        whileHover={{ scale: 1.01 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={handleRaiseComplaint}
-                        className="w-full py-4 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black shadow-lg shadow-rose-200/40 transition flex items-center justify-center gap-2"
-                      >
-                        <span className="text-lg">🎫</span>
-                        Raise a Complaint
-                      </motion.button>
-                    )}
-
-                    <div className="grid grid-cols-2 gap-3">
+                  <div className="mt-5">
+                    <div className="flex gap-2">
+                      {(type === "recharges" || type === "billPayments") && (
+                        <motion.button
+                          whileHover={{ scale: 1.01 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={handleRaiseComplaint}
+                          className="flex-[1.4] min-w-0 text-xs py-4 px-3 rounded-2xl bg-black hover:bg-rose-700 text-white font-black shadow-lg shadow-rose-200/40 transition text-center"
+                        >
+                          Raise Complaint
+                        </motion.button>
+                      )}
                       <motion.button
                         whileHover={{ scale: 1.01 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={handleNeedSupport}
-                        className="py-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-black shadow-lg shadow-amber-200/40 transition"
+                        className="flex-1 min-w-0 py-4 px-3 rounded-2xl text-xs bg-black hover:bg-amber-600 text-white font-black shadow-lg shadow-amber-200/40 transition"
                       >
-                        💬 Support
+                        💭 Support
                       </motion.button>
 
                       <motion.button
                         whileHover={{ scale: 1.01 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={onClose}
-                        className="py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black shadow-lg transition"
+                        className="flex-1 min-w-0 py-4 px-3 rounded-2xl text-xs bg-black hover:bg-slate-800 text-white font-black shadow-lg transition"
                       >
-                        ✕ Close
+                        ❌ Close
                       </motion.button>
                     </div>
                   </div>

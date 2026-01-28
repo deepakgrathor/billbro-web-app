@@ -335,10 +335,10 @@ const HomeContent = () => {
   const dispatch = useDispatch();
   const [referralAmount, setReferralAmount] = useState(0);
   const { serviceList, serviceLoader } = useSelector(
-    (state) => state.ServiceSlice.service
+    (state) => state.ServiceSlice.service,
   );
   const { bannerData, bannerLoader } = useSelector(
-    (state) => state.PublicSlice.bannerList
+    (state) => state.PublicSlice.bannerList,
   );
   const { ProfileData } = useSelector((state) => state.LoginSlice.profile);
 
@@ -412,8 +412,7 @@ const HomeContent = () => {
     }
   };
 
-  const walletBalance =
-    ProfileData?.Data?.wallet?.balance?.toLocaleString?.() || "0";
+  const walletBalance = ProfileData?.Data?.wallet?.balance?.toFixed(2) || "0";
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">

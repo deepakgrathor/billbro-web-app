@@ -720,7 +720,7 @@ const PaymentConfirm = () => {
         error?.response?.data?.Remarks ||
           error?.payload?.Remarks ||
           error?.message ||
-          "Recharge Failed. Please try again."
+          "Recharge Failed. Please try again.",
       );
     } finally {
       setIsWalletLoading(false);
@@ -782,11 +782,11 @@ const PaymentConfirm = () => {
       } catch (error) {
         console.error("❌ Post-UPI Recharge Error:", error);
         showError(
-          `Payment successful but recharge failed. Contact support with Order ID: ${upiOrderId}`
+          `Payment successful but recharge failed. Contact support with Order ID: ${upiOrderId}`,
         );
       }
     },
-    [rechargeData, payableAmount, dispatch, navigate, showError]
+    [rechargeData, payableAmount, dispatch, navigate, showError],
   );
 
   // UPI Payment Hook
@@ -796,7 +796,7 @@ const PaymentConfirm = () => {
     getLoadingMessage,
   } = useUPIPayment(
     performRechargeAfterUPI, // onSuccess
-    (error) => console.error("UPI Payment Error:", error) // onError
+    (error) => console.error("UPI Payment Error:", error), // onError
   );
 
   // Main Payment Handler
@@ -832,8 +832,8 @@ const PaymentConfirm = () => {
   const buttonTitle = isLoading
     ? getLoadingMessage()
     : walletSelect && !isWalletSufficient(payableAmount)
-    ? "💰 Insufficient Wallet Balance"
-    : "Proceed to Pay";
+      ? "💰 Insufficient Wallet Balance"
+      : "Proceed to Pay";
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
       {/* Fixed Header */}

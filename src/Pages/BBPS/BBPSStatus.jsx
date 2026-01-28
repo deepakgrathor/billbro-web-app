@@ -477,7 +477,7 @@ const BBPSStatus = () => {
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md">
         <CommonHeader
-          title="Transaction Details"
+          title="Payment Successful"
           handleclick={() => navigate("/")}
           // rightDesign={rightDesign}
         />
@@ -722,10 +722,10 @@ const BBPSStatus = () => {
               </motion.div> */}
 
               {/* Transaction ID */}
-              <DetailCard delay={0.7}>
+              {/* <DetailCard delay={0.7}>
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex-1 min-w-0">
-                    <p className="text-[10px] sm:text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">
+                    <p className="text-[12px] sm:text-xs text-gray-900 font-bold uppercase tracking-wider mb-1">
                       B-Connect Txn ID
                     </p>
                     <p className="text-xs sm:text-sm font-mono font-bold text-gray-900 break-all">
@@ -747,7 +747,7 @@ const BBPSStatus = () => {
                     )}
                   </motion.button>
                 </div>
-              </DetailCard>
+              </DetailCard> */}
 
               {/* Info Grid */}
               <motion.div
@@ -757,19 +757,29 @@ const BBPSStatus = () => {
                 className="bg-white rounded-2xl border-2 border-gray-100 overflow-hidden shadow-sm"
               >
                 <div className="bg-gradient-to-r from-slate-50 to-gray-50 px-4 py-2.5 border-b border-gray-200">
-                  <h3 className="text-[10px] sm:text-xs font-black text-gray-700 uppercase tracking-widest">
+                  <h3 className="text-[12px] sm:text-xs font-black text-gray-900 uppercase tracking-widest">
                     Transaction Details
                   </h3>
                 </div>
                 <div className="divide-y divide-gray-100">
                   <InfoRow
-                    label="Transaction ID"
-                    value={responseData.transactionId}
+                    label="B-Connect Txn ID"
+                    value={responseData.OP_REF}
+                    handleCopyWithFeedback={() =>
+                      handleCopyWithFeedback(responseData.OP_REF, "bconnect")
+                    }
+                    copied={copied}
+                    copyField="bconnect"
                   />
                   <InfoRow
                     label="CCF (Customer Convenience Fee)"
                     value={`₹0`}
                   />
+                  <InfoRow
+                    label="Transaction ID"
+                    value={responseData.transactionId}
+                  />
+
                   <InfoRow
                     label="Consumer Number"
                     value={responseData.MobileNumber}
@@ -893,7 +903,15 @@ const DetailCard = ({ children, delay = 0 }) => (
 );
 
 // Info Row Component
-const InfoRow = ({ label, value, highlight, status }) => {
+const InfoRow = ({
+  label,
+  value,
+  highlight,
+  status,
+  handleCopyWithFeedback,
+  copied,
+  copyField, // 👈 Add this prop
+}) => {
   const getStatusBadge = (status) => {
     const badges = {
       success: "bg-green-100 text-green-700 border-green-200",
@@ -905,24 +923,42 @@ const InfoRow = ({ label, value, highlight, status }) => {
 
   return (
     <div
-      className={`flex items-center justify-between gap-3 px-3 sm:px-4 py-2.5 sm:py-3 ${
+      className={`flex w-full items-center justify-between gap-3 px-3 sm:px-4 py-2.5 sm:py-3 ${
         highlight ? "bg-blue-50/50" : ""
       }`}
     >
-      <span className="text-[10px] sm:text-xs text-gray-600 font-semibold">
+      <span className="text-[12px] sm:text-xs text-gray-900 font-bold flex-shrink-0">
         {label}
       </span>
-      <span
-        className={`text-[10px] sm:text-xs font-bold text-right max-w-[60%] break-all ${
-          status
-            ? `px-2 sm:px-3 py-1 rounded-lg border-2 ${getStatusBadge(status)}`
-            : highlight
-            ? "text-blue-700"
-            : "text-gray-900"
-        }`}
-      >
-        {value}
-      </span>
+      <div className="flex items-center gap-2 min-w-0 justify-end">
+        <span
+          className={`text-[11px] sm:text-xs font-bold text-right break-all ${
+            status
+              ? `px-2 sm:px-3 py-1 rounded-lg border-2 ${getStatusBadge(
+                  status
+                )}`
+              : highlight
+              ? "text-blue-700"
+              : "text-gray-500"
+          }`}
+        >
+          {value}
+        </span>
+        {handleCopyWithFeedback && (
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={handleCopyWithFeedback}
+            className="flex-shrink-0 hover:bg-gray-100 rounded-xl"
+          >
+            {copied === copyField ? ( // 👈 Dynamic check
+              <BsCheck className="w-4 h-4 text-green-600" />
+            ) : (
+              <BsCopy className="w-4 h-4 text-gray-600" />
+            )}
+          </motion.button>
+        )}
+      </div>
     </div>
   );
 };

@@ -12,10 +12,10 @@ body {
 
 /* Hide all scrollbars globally */
 * {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
-  overscroll-behavior: none;
-  overscroll-behavior-y: none;
+  scrollbar-width: none; 
+  -ms-overflow-style: none; 
+  /* overscroll-behavior: none; */
+  /* overscroll-behavior-y: none; */
 }
 
 *::-webkit-scrollbar {

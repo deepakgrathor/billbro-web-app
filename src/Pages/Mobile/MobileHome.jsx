@@ -23,14 +23,14 @@ const MobileHome = () => {
   const rechargeData = useSelector((state) => state.RechargeSlice.rechargeData);
 
   const { serviceList, serviceLoader } = useSelector(
-    (state) => state.ServiceSlice.service
+    (state) => state.ServiceSlice.service,
   );
 
   const { plans, loader } = useSelector(
-    (state) => state.RechargeSlice.getPlans
+    (state) => state.RechargeSlice.getPlans,
   );
   const { loaderUniversal, operatorandCircle } = useSelector(
-    (state) => state.RechargeSlice
+    (state) => state.RechargeSlice,
   );
   const { bannerData } = useSelector((state) => state.PublicSlice.bannerList);
 
@@ -40,10 +40,10 @@ const MobileHome = () => {
       operatorandCircle.Data.STATUS == 1
     ) {
       const PLANAPI_OPERATOR_FIND = All_Recharge_Operator_List.find(
-        (a) => a.PlanApi_Operator_code == operatorandCircle.Data.OpCode
+        (a) => a.PlanApi_Operator_code == operatorandCircle.Data.OpCode,
       );
       const PLANAPI_CIRCLE_FIND = All_Recharge_Circle_List.find(
-        (a) => a.planapi_circlecode == operatorandCircle.Data.CircleCode
+        (a) => a.planapi_circlecode == operatorandCircle.Data.CircleCode,
       );
       dispatch(
         setRechargeData({
@@ -60,7 +60,7 @@ const MobileHome = () => {
                 ? "MP and Chattisgarh"
                 : PLANAPI_CIRCLE_FIND?.circlename,
           },
-        })
+        }),
       );
     }
   }, [operatorandCircle]);
@@ -70,7 +70,7 @@ const MobileHome = () => {
     if (rechargeData.mobileNumber.length === 10) {
       if (/^\d{10}$/.test(rechargeData.mobileNumber)) {
         dispatch(
-          getOperatorandCirclebyPhone({ phone: rechargeData.mobileNumber })
+          getOperatorandCirclebyPhone({ phone: rechargeData.mobileNumber }),
         );
       }
     }
@@ -118,7 +118,7 @@ const MobileHome = () => {
           </label>
 
           <div
-            className={`relative flex items-center bg-gray-50 border-2 rounded-2xl px-4 py-4 transition-all duration-300 ${
+            className={`relative flex items-center bg-gray-50 border-2 rounded-2xl px-3 py-3 transition-all duration-300 ${
               isFocused
                 ? "border-purple-500 bg-purple-50/50 shadow-lg"
                 : "border-gray-200 hover:border-gray-300"
@@ -137,7 +137,7 @@ const MobileHome = () => {
                   setRechargeData({
                     ...rechargeData,
                     mobileNumber: e.target.value,
-                  })
+                  }),
                 );
                 setConSearch(e.target.value);
               }}
@@ -147,7 +147,7 @@ const MobileHome = () => {
               maxLength={10}
               pattern="^[6-9]\d{9}$"
               placeholder="Enter 10 digit number"
-              className="flex-1 text-lg font-semibold outline-none placeholder-gray-400 bg-transparent text-gray-800"
+              className="flex-1 font-semibold outline-none placeholder-gray-400 bg-transparent text-gray-800"
               onInput={(e) => {
                 e.target.value = e.target.value.replace(/[^0-9]/g, "");
               }}
