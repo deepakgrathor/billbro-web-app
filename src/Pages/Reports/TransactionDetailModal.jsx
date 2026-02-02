@@ -229,13 +229,13 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
 
                       {statusConfig.showBAssured && isBBPSTransaction ? (
                         <div className="shrink-0">
-                          {/* <div className="h-22 w-22 rounded-2xl bg-white border border-slate-200 flex items-center justify-center overflow-hidden">
+                          <div className="h-22 w-22 rounded-2xl  flex items-center justify-center overflow-hidden">
                             <img
                               src="https://ik.imagekit.io/43tomntsa/B%20Assured%20Logo_SVG.svg"
                               alt="B Assured"
                               className="h-22 w-22 object-contain"
                             />
-                          </div> */}
+                          </div>
                         </div>
                       ) : (
                         <div

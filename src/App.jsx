@@ -8,30 +8,30 @@ import { useDispatch, useSelector } from "react-redux";
 import API from "./Redux/API";
 import { useIsMobile } from "./hooks/useIsMobile";
 
-function DesktopBlockScreen() {
-  return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-        padding: "1.5rem",
-        textAlign: "center",
-        fontFamily: "sans-serif",
-      }}
-    >
-      <h1 style={{ fontSize: "1.8rem", marginBottom: "1rem" }}>
-        Mobile Only Experience
-      </h1>
-      <p style={{ maxWidth: "400px", opacity: 0.8 }}>
-        Ye app abhi sirf mobile view ke liye design ki gayi hai. Kripya ise apne
-        phone ya chhoti screen par open karein. 🙏
-      </p>
-    </div>
-  );
-}
+// function DesktopBlockScreen() {
+//   return (
+//     <div
+//       style={{
+//         minHeight: "100vh",
+//         display: "flex",
+//         alignItems: "center",
+//         justifyContent: "center",
+//         flexDirection: "column",
+//         padding: "1.5rem",
+//         textAlign: "center",
+//         fontFamily: "sans-serif",
+//       }}
+//     >
+//       <h1 style={{ fontSize: "1.8rem", marginBottom: "1rem" }}>
+//         Mobile Only Experience
+//       </h1>
+//       <p style={{ maxWidth: "400px", opacity: 0.8 }}>
+//         Ye app abhi sirf mobile view ke liye design ki gayi hai. Kripya ise apne
+//         phone ya chhoti screen par open karein. 🙏
+//       </p>
+//     </div>
+//   );
+// }
 
 function ActualApp() {
   // yaha tumhara pura React app ka existing code hoga
@@ -56,10 +56,10 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  if (!isMobile) {
-    // Desktop / large screen
-    return <DesktopBlockScreen />;
-  }
+  // if (!isMobile) {
+  //   // Desktop / large screen
+  //   return <DesktopBlockScreen />;
+  // }
 
   return (
     <>

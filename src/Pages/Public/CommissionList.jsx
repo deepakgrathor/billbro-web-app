@@ -81,11 +81,20 @@ const CommissionList = () => {
   const { serviceList } = useSelector((state) => state.ServiceSlice.service);
 
   const serviceNames = useMemo(
-    () => ["Postpaid", "Electricity", "Fastag", "LPG", "Insurance", "Landline", "Broadband"],
-    []
+    () => [
+      "Postpaid",
+      "Electricity",
+      "Fastag",
+      "LPG",
+      "Insurance",
+      "Landline",
+      "Broadband",
+    ],
+    [],
   );
 
-  const getPercentData = (name) => serviceList?.Data?.find((a) => a.name === name);
+  const getPercentData = (name) =>
+    serviceList?.Data?.find((a) => a.name === name);
 
   const BBPSArr = useMemo(() => {
     return serviceNames.map((name) => {
@@ -101,7 +110,7 @@ const CommissionList = () => {
 
   const fetchDTHPercent = getPercentData("DTH");
   const fetchGooglePlayPercent = serviceList?.Data?.find(
-    (a) => a._id === "661061ecda6832bf278254e1"
+    (a) => a._id === "661061ecda6832bf278254e1",
   )?.percent;
 
   useEffect(() => {
@@ -112,7 +121,7 @@ const CommissionList = () => {
       }));
 
       const isDifferent = !updatedOperators.every(
-        (operator, index) => operator.margin === dthOperatorArr[index].margin
+        (operator, index) => operator.margin === dthOperatorArr[index].margin,
       );
 
       if (isDifferent) setDTHOperatorArr(updatedOperators);
@@ -170,8 +179,12 @@ const CommissionList = () => {
             {icon}
           </div>
           <div className="min-w-0">
-            <p className="text-base font-black text-slate-900 leading-tight">{title}</p>
-            {meta && <p className="text-[11px] text-slate-500 font-semibold">{meta}</p>}
+            <p className="text-base font-black text-slate-900 leading-tight">
+              {title}
+            </p>
+            {meta && (
+              <p className="text-[11px] text-slate-500 font-semibold">{meta}</p>
+            )}
           </div>
         </div>
         <div className="text-[11px] font-bold text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-full shrink-0">
@@ -224,7 +237,10 @@ const CommissionList = () => {
     <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white">
       {/* Header */}
       <div className="fixed top-0 w-full z-50 bg-white/92 backdrop-blur-xl border-b border-slate-200">
-        <CommonHeader title={"Commission Chart"} handleclick={() => navigate(-1)} />
+        <CommonHeader
+          title={"Commission Chart"}
+          handleclick={() => navigate(-1)}
+        />
       </div>
 
       {/* Body */}
@@ -264,7 +280,9 @@ const CommissionList = () => {
 
             <div className="mt-4 grid grid-cols-3 gap-2">
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-center">
-                <p className="text-lg font-black text-slate-900">{totalOperators}</p>
+                <p className="text-lg font-black text-slate-900">
+                  {totalOperators}
+                </p>
                 <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">
                   Operators
                 </p>
@@ -310,11 +328,13 @@ const CommissionList = () => {
             {filtered.dth.map((item) => (
               <CommissionRow key={item.id} item={item} type="percentage" />
             ))}
-            {filtered.dth.length === 0 && <EmptyState text="No DTH operators found." />}
+            {filtered.dth.length === 0 && (
+              <EmptyState text="No DTH operators found." />
+            )}
           </div>
         </Section>
 
-        <Section
+        {/* <Section
           icon={<MdElectricBolt size={20} />}
           title="Bill Payments"
           meta="Flat rate (₹)"
@@ -325,9 +345,9 @@ const CommissionList = () => {
             ))}
             {filtered.bbps.length === 0 && <EmptyState text="No bill services found." />}
           </div>
-        </Section>
+        </Section> */}
 
-        <Section
+        {/* <Section
           icon={<MdCardGiftcard size={20} />}
           title="Others"
           meta="Gift card"
@@ -345,22 +365,23 @@ const CommissionList = () => {
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-black text-slate-900">Google Play</p>
-                  <p className="text-[11px] text-slate-500 font-semibold">Gift card</p>
+                  <p className="text-sm font-black text-slate-900">
+                    Google Play
+                  </p>
+                  <p className="text-[11px] text-slate-500 font-semibold">
+                    Gift card
+                  </p>
                 </div>
 
                 <div className="shrink-0 flex items-center gap-2">
                   <div className="px-3 py-2 rounded-xl bg-emerald-600 text-white font-black text-sm">
                     {fetchGooglePlayPercent ?? 0}%
                   </div>
-                  {/* <div className="h-9 w-9 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center">
-                    <MdChevronRight className="text-slate-500" />
-                  </div> */}
                 </div>
               </div>
             </div>
           </div>
-        </Section>
+        </Section> */}
 
         {/* Info */}
         <div className="mt-5 rounded-3xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.06)]">
@@ -369,7 +390,9 @@ const CommissionList = () => {
               <MdInfo className="text-xl" />
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-black text-slate-900">Commission Info</p>
+              <p className="text-sm font-black text-slate-900">
+                Commission Info
+              </p>
               <p className="mt-1 text-xs text-slate-600 leading-relaxed">
                 Commission is credited instantly after a successful transaction.
                 Rates may vary based on operator/service and amount.

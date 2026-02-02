@@ -414,6 +414,30 @@ const HomeContent = () => {
 
   const walletBalance = ProfileData?.Data?.wallet?.balance?.toFixed(2) || "0";
 
+  // Section visibility check
+  const isRechargeEnabled = serviceList?.Data?.find(
+    (a) => a.name === "RECHARGE_SECTION",
+  )?.isShow;
+
+  const isBillPaymentEnabled = serviceList?.Data?.find(
+    (a) => a.name === "BILL_PAYMENT_SECTION",
+  )?.isShow;
+
+  // Services को filter करें based on section
+  const filteredServices = MobileServices?.filter((service) => {
+    // Individual service check
+    if (!service.isShow || !service.status) return false;
+
+    // Section wise filter
+    if (service.section === "recharge" && !isRechargeEnabled) return false;
+    if (service.section === "finance" && !isBillPaymentEnabled) return false;
+
+    return true;
+  });
+
+  // Section तभी show करें जब कोई service हो
+  const showSection = filteredServices?.length > 0;
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
       {/* Sticky Header */}
@@ -480,7 +504,7 @@ const HomeContent = () => {
         </section>
 
         {/* Quick Services */}
-        {serviceList?.Data?.find((a) => a.name === "RECHARGE_SECTION")
+        {/* {serviceList?.Data?.find((a) => a.name === "RECHARGE_SECTION")
           ?.isShow && (
           <section className="mb-6">
             <div className="flex items-end justify-between mb-3">
@@ -538,12 +562,83 @@ const HomeContent = () => {
                     >
                       <div className="h-14 w-14 rounded-2xl border border-slate-200 bg-gradient-to-br from-indigo-50 to-white shadow-sm group-hover:shadow-md transition flex items-center justify-center">
                         <MdArrowForward size={25} />
-                        {/* <img
+                        <img
                           src="https://app.billhub.in/assets/bbps-logo.png"
                           alt="Pay Bills"
                           className="h-10 w-10 object-contain"
                           loading="lazy"
-                        /> */}
+                        />
+                      </div>
+                      <p className="text-[10px] font-semibold text-slate-700">
+                        Pay Bills
+                      </p>
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </section>
+        )} */}
+        {showSection && (
+          <section className="mb-6">
+            <div className="flex items-end justify-between mb-3">
+              <div>
+                <p className="text-xs font-semibold text-slate-500">Payments</p>
+                <h2 className="text-lg font-black tracking-tight text-slate-900">
+                  Quick Services
+                </h2>
+              </div>
+
+              {isBillPaymentEnabled && (
+                <button
+                  onClick={() => navigate("/bbpslist")}
+                  className="inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 active:opacity-70"
+                >
+                  See all <MdArrowForward size={16} />
+                </button>
+              )}
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white shadow-[0_12px_30px_rgba(2,6,23,0.08)]">
+              <div className="p-4">
+                <div className="grid grid-cols-4 gap-3">
+                  {serviceLoader
+                    ? Array(8)
+                        .fill(0)
+                        .map((_, idx) => (
+                          <div key={idx} className="space-y-2">
+                            <div className="h-14 w-14 mx-auto rounded-2xl bg-slate-200 animate-pulse" />
+                            <div className="h-3 w-12 mx-auto rounded bg-slate-200 animate-pulse" />
+                          </div>
+                        ))
+                    : filteredServices?.map((item, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => handleServiceClick(item)}
+                          className="group flex flex-col items-center gap-2 active:scale-[0.98] transition"
+                        >
+                          <div className="h-14 w-14 rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white shadow-sm group-hover:shadow-md transition flex items-center justify-center">
+                            <img
+                              src={`${ImageBaseURL}${item.icon}`}
+                              alt={item.name}
+                              className="h-9 w-9 object-contain"
+                              loading="lazy"
+                            />
+                          </div>
+                          <p className="text-[10px] font-semibold text-slate-700 text-center leading-tight">
+                            {item.name}
+                          </p>
+                        </button>
+                      ))}
+
+                  {/* Pay Bills - only when bill payment enabled */}
+                  {!serviceLoader && isBillPaymentEnabled && (
+                    <button
+                      onClick={() => navigate("/bbpslist")}
+                      className="group flex flex-col items-center gap-2 active:scale-[0.98] transition"
+                    >
+                      <div className="h-14 w-14 rounded-2xl border border-slate-200 bg-gradient-to-br from-indigo-50 to-white shadow-sm group-hover:shadow-md transition flex items-center justify-center">
+                        <MdArrowForward size={25} />
                       </div>
                       <p className="text-[10px] font-semibold text-slate-700">
                         Pay Bills

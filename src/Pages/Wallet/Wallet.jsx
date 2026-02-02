@@ -1004,7 +1004,7 @@ const Wallet = () => {
                   )}
                 </div>
                 <p className="mt-2 text-xs text-slate-500">
-                  Add money to pay faster for bills & recharges.
+                  Add money to pay faster for Mobile & DTH Recharge.
                 </p>
               </div>
 
@@ -1114,18 +1114,18 @@ const Wallet = () => {
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-black text-slate-900">
-                    Instant payments
+                    Instant Recharge
                   </p>
                   <p className="mt-1 text-xs text-slate-600">
-                    Pay bills & recharge faster using wallet balance.
+                    Pay DTH & recharge faster using wallet balance.
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
-                <div className="shrink-0 h-11 w-11 rounded-2xl bg-slate-900 text-white flex items-center justify-center">
+                <divc className="shrink-0 h-11 w-11 rounded-2xl bg-slate-900 text-white flex items-center justify-center">
                   <MdSecurity size={20} />
-                </div>
+                </divc>
                 <div className="min-w-0">
                   <p className="text-sm font-black text-slate-900">Secure</p>
                   <p className="mt-1 text-xs text-slate-600">

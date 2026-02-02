@@ -39,7 +39,7 @@ const Reports = () => {
   const tabs = [
     { id: "recharges", label: "Recharges" },
     { id: "dth", label: "DTH" },
-    { id: "billPayments", label: "Bill Payments" },
+    // { id: "billPayments", label: "Bill Payments" },
     { id: "deposits", label: "Deposits" },
     { id: "referrals", label: "Referrals" },
     { id: "ledgerBook", label: "Ledger Book" },
