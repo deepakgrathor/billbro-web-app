@@ -623,8 +623,8 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
   const rightDesign = () => (
     <div className="flex items-center">
       <img
-        width={92}
-        height={34}
+        width={100}
+        height={50}
         src="https://ik.imagekit.io/isjriggan/images%20(1).png"
         alt="BBPS"
         className="object-contain"
@@ -860,7 +860,7 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
           style={{ fontSize: 13 }}
           title={title}
           handleclick={() => !isLoading && navigate(-1)}
-          // rightDesign={rightDesign}
+          rightDesign={rightDesign}
         />
       </div>
 

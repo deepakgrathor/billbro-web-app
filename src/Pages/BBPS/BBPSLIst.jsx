@@ -16,7 +16,7 @@ const BBPSList = () => {
   const dispatch = useDispatch();
 
   const { serviceList, serviceLoader } = useSelector(
-    (state) => state.ServiceSlice.service
+    (state) => state.ServiceSlice.service,
   );
 
   useEffect(() => {
@@ -74,15 +74,15 @@ const BBPSList = () => {
   };
 
   const filteredServices = serviceList.Data?.filter(
-    (a) => a.section === "finance" && a.isShow
+    (a) => a.section === "finance" && a.isShow,
   );
 
   const rightDesign = () => {
     return (
       <div className="">
         <img
-          width={70}
-          height={30}
+          width={100}
+          height={50}
           src="https://ik.imagekit.io/isjriggan/images%20(1).png"
           alt=""
         />
@@ -101,7 +101,7 @@ const BBPSList = () => {
         <CommonHeader
           title="Bill Payments"
           handleclick={() => navigate(-1)}
-          // rightDesign={rightDesign}
+          rightDesign={rightDesign}
         />
       </div>
 

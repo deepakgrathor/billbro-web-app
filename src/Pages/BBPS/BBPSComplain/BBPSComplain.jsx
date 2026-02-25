@@ -34,8 +34,8 @@ const BBPSComplain = () => {
 
   const rightDesign = () => (
     <img
-      width={70}
-      height={30}
+      width={100}
+      height={50}
       src="https://ik.imagekit.io/isjriggan/images%20(1).png"
       alt="Bharat Connect"
       // className="h-8 w-auto"
@@ -233,7 +233,7 @@ const BBPSComplain = () => {
         <CommonHeader
           title="Register Complaint"
           handleclick={() => navigate("/")}
-          // rightDesign={rightDesign}
+          rightDesign={rightDesign}
         />
       </div>
 

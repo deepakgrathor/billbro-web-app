@@ -87,8 +87,8 @@ const MainBBPS = () => {
     return (
       <div className="">
         <img
-          width={70}
-          height={30}
+          width={100}
+          height={50}
           src="https://ik.imagekit.io/isjriggan/images%20(1).png"
           alt=""
         />
@@ -140,7 +140,7 @@ const MainBBPS = () => {
             <CommonHeader
               title={"Select Biller"}
               handleclick={() => navigate(-1)}
-              // rightDesign={rightDesign}
+              rightDesign={rightDesign}
             />
           </div>
           <div className="mt-16">
@@ -169,7 +169,7 @@ const MainBBPS = () => {
                 data?.operator_name?.length > 30 ? "..." : ""
               }`}
               handleclick={() => setStep(1)}
-              // rightDesign={rightDesign}
+              rightDesign={rightDesign}
             />
           </div>
 

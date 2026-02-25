@@ -638,7 +638,15 @@ const HomeContent = () => {
                       className="group flex flex-col items-center gap-2 active:scale-[0.98] transition"
                     >
                       <div className="h-14 w-14 rounded-2xl border border-slate-200 bg-gradient-to-br from-indigo-50 to-white shadow-sm group-hover:shadow-md transition flex items-center justify-center">
-                        <MdArrowForward size={25} />
+                        {/* <MdArrowForward size={25} /> */}
+                        <div className="h-14 w-14 rounded-2xl border border-slate-200 bg-gradient-to-br from-indigo-50 to-white shadow-sm group-hover:shadow-md transition flex items-center justify-center">
+                          <img
+                            src="https://ik.imagekit.io/43tomntsa/B%20mnemonic_PNG.png"
+                            alt="Pay Bills"
+                            className="h-10 w-10 object-contain"
+                            loading="lazy"
+                          />
+                        </div>
                       </div>
                       <p className="text-[10px] font-semibold text-slate-700">
                         Pay Bills
