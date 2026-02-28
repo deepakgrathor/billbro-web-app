@@ -426,7 +426,7 @@ const HomeContent = () => {
   // Services को filter करें based on section
   const filteredServices = MobileServices?.filter((service) => {
     // Individual service check
-    if (!service.isShow || !service.status) return false;
+    if (!service.isShow) return false;
 
     // Section wise filter
     if (service.section === "recharge" && !isRechargeEnabled) return false;
@@ -745,11 +745,11 @@ const HomeContent = () => {
         {/* Refer & Earn */}
         <section className="mb-6">
           <div className="relative overflow-hidden rounded-[28px] border border-slate-200 shadow-[0_16px_60px_rgba(2,6,23,0.18)]">
-            <div className="absolute inset-0 bg-gradient-to-br from-fuchsia-600 via-indigo-600 to-sky-600" />
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 via-fuchsia-600/10 to-sky-600/10" />
             <div className="relative p-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="h-14 w-14 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center">
+                  <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-indigo-600 to-fuchsia-600 border border-white/20 flex items-center justify-center">
                     <img
                       src="https://ik.imagekit.io/43tomntsa/refer.png"
                       alt="Refer"
@@ -759,18 +759,18 @@ const HomeContent = () => {
                   </div>
 
                   <div className="leading-tight">
-                    <p className="text-[12px] font-semibold text-white/85">
+                    <p className="text-[12px] font-semibold text-black">
                       Invite friends to{" "}
-                      <span className="font-black text-white">
+                      <span className="font-black text-black">
                         {BRAND_NAME}
                       </span>
                     </p>
-                    <p className="text-[22px] font-black text-white">
+                    <p className="text-[20px] font-black text-black">
                       Earn ₹{referralAmount} instantly
                     </p>
-                    <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/15 px-2.5 py-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
-                      <span className="text-[10px] font-semibold text-white/90">
+                    <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-gray-200 border border-gray-300 px-2.5 py-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-800" />
+                      <span className="text-[10px] font-semibold text-black/90">
                         No limit on invites
                       </span>
                     </div>
@@ -779,7 +779,7 @@ const HomeContent = () => {
 
                 <button
                   onClick={() => navigate("/refer")}
-                  className="shrink-0 rounded-2xl bg-white text-indigo-700 px-4 py-3 text-sm font-extrabold shadow-lg active:scale-[0.98] transition inline-flex items-center gap-2"
+                  className="shrink-0 rounded-2xl bg-black text-white px-4 py-3 text-sm font-extrabold shadow-lg active:scale-[0.98] transition inline-flex items-center gap-2"
                 >
                   <MdOutlineShare size={18} />
                   Invite

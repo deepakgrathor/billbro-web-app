@@ -825,74 +825,98 @@ const Wallet = () => {
     }
   };
 
-  const handlePaymentCompletion = async (completedOrderId) => {
-    setLoadingStage("verifying");
+  // Cashfree flow with payment session ID
+  const handlePayment = async () => {
+    if (!amount || Number(amount) <= 0 || Number(amount) > 10000) {
+      ToastComp({
+        message: "Please enter amount between ₹1 and ₹10,000",
+        type: "error",
+      });
+      return;
+    }
+
+    setLoading(true);
+    setLoadingStage("creating");
 
     try {
-      const response = await API.post(`payment/upiintent/verify-order`, {
-        orderId: completedOrderId,
+      // 1. Create order from backend
+      const response = await API.post(`payment/cashfree/create-order`, {
+        amount: parseFloat(amount),
       });
 
-      if (response.data?.status) {
-        const status = response.data.status;
+      const data = response.data;
 
-        if (status === "SUCCESS") {
-          setLoadingStage("success");
+      if (!data?.payment_session_id || !data?.order_id) {
+        cleanupPayment();
+        ToastComp({ message: "Failed to create order", type: "error" });
+        return;
+      }
 
-          paymentTimeoutRef.current = setTimeout(() => {
-            navigate("/payment-success", {
-              state: {
-                amount: response.data.amount || amount,
-                orderId: completedOrderId,
-                transactionId: response.data.transactionId || "N/A",
-                date: new Date().toISOString(),
-              },
-            });
+      setOrderId(data.order_id);
+      setLoadingStage("opening");
 
-            setAmount("");
-            setSelectedAmount(null);
-            setOrderId(null);
-            cleanupPayment();
-          }, 1500);
-        } else if (status === "PENDING") {
-          ToastComp({ message: "Payment is being processed...", type: "info" });
-          paymentTimeoutRef.current = setTimeout(
-            () => handlePaymentCompletion(completedOrderId),
-            3000
-          );
-        } else {
-          cleanupPayment();
-          ToastComp({
-            message: "Payment Failed. Please try again.",
-            type: "error",
-          });
-        }
+      // 2. Send to React Native to trigger Cashfree SDK
+      if (window.ReactNativeWebView) {
+        window.ReactNativeWebView.postMessage(
+          JSON.stringify({
+            action: "CASHFREE_UPI_INTENT",
+            orderId: data.order_id,
+            sessionId: data.payment_session_id,
+          }),
+        );
+
+        paymentTimeoutRef.current = setTimeout(() => {
+          setLoadingStage("waiting");
+        }, 2000);
       } else {
+        console.warn("Not running in React Native WebView");
         cleanupPayment();
         ToastComp({
-          message: response.data?.message || "Error verifying payment",
+          message: "UPI payments only work in the app",
           type: "error",
         });
       }
     } catch (error) {
-      console.error("Error checking payment status:", error);
+      console.error("Payment error:", error);
       cleanupPayment();
-      ToastComp({ message: "Error verifying payment status", type: "error" });
+      ToastComp({ message: "Payment initiation failed", type: "error" });
     }
   };
-
   useEffect(() => {
     const handleMessage = (event) => {
       try {
         const message =
           typeof event.data === "string" ? JSON.parse(event.data) : event.data;
 
-        if (message.type === "PAYMENT_COMPLETED") {
-          handlePaymentCompletion(message.data.orderId);
-        } else if (message.type === "UPI_APP_NOT_FOUND") {
+        if (message.type === "PAYMENT_SUCCESS") {
+          setLoadingStage("success");
+          dispatch(getUserProfile());
+
+          paymentTimeoutRef.current = setTimeout(() => {
+            navigate("/payment-success", {
+              state: {
+                amount: message.data.amount || amount,
+                orderId: message.data.orderId,
+                transactionId: message.data.transactionId || "N/A",
+                date: new Date().toISOString(),
+              },
+            });
+            setAmount("");
+            setSelectedAmount(null);
+            setOrderId(null);
+            cleanupPayment();
+          }, 1500);
+        } else if (message.type === "PAYMENT_FAILED") {
           cleanupPayment();
           ToastComp({
-            message: "Please install a UPI app to complete payment",
+            message:
+              message.data?.message || "Payment Failed. Please try again.",
+            type: "error",
+          });
+        } else if (message.type === "NO_UPI_APP") {
+          cleanupPayment();
+          ToastComp({
+            message: "No UPI app installed on your device",
             type: "error",
           });
         }
@@ -911,61 +935,6 @@ const Wallet = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const handlePayment = async () => {
-    if (!amount || Number(amount) <= 0 || Number(amount) > 10000) {
-      ToastComp({
-        message: "Please enter amount between ₹1 and ₹10,000",
-        type: "error",
-      });
-      return;
-    }
-
-    setLoading(true);
-    setLoadingStage("creating");
-
-    try {
-      const response = await API.post(`payment/upiintent/create-order`, {
-        amount: parseFloat(amount),
-      });
-
-      if (response.data?.status) {
-        const { orderId, upiLink, zwitch_transaction_id } = response.data;
-        setOrderId(orderId);
-        setLoadingStage("opening");
-
-        if (window.ReactNativeWebView) {
-          window.ReactNativeWebView.postMessage(
-            JSON.stringify({
-              action: "OPEN_UPI_APP",
-              upiIntentUrl: upiLink,
-              orderId,
-              zwitch_transaction_id,
-              amount: parseFloat(amount),
-            })
-          );
-
-          paymentTimeoutRef.current = setTimeout(() => {
-            setLoadingStage("waiting");
-          }, 2000);
-        } else {
-          console.warn("⚠️ Not running in React Native WebView");
-          cleanupPayment();
-        }
-      } else {
-        cleanupPayment();
-        ToastComp({
-          message: response.data?.message || "Failed to create order",
-          type: "error",
-        });
-      }
-    } catch (error) {
-      console.error("Payment error:", error);
-      cleanupPayment();
-      ToastComp({ message: "Payment initiation failed", type: "error" });
-    }
-  };
-
   const canPay =
     amount && Number(amount) > 0 && Number(amount) <= 10000 && !loading;
 
