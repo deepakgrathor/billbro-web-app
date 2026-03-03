@@ -48,13 +48,17 @@ function App() {
   const isMobile = useIsMobile(768); // < 768px = mobile
   const [logged, setLogged] = useState(true);
   const [load, setLoad] = useState(false);
-  const [loading, setLoading] = useState(true);
+
+  // WebView me React Native apna splash handle karta hai, web splash skip karo
+  const isInWebView = typeof window !== "undefined" && !!window.ReactNativeWebView;
+  const [loading, setLoading] = useState(!isInWebView);
   const { appDetails } = useSelector((state) => state.PublicSlice);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000); // 3 sec splash
+    if (isInWebView) return; // WebView me splash nahi dikhana
+    const timer = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [isInWebView]);
 
   // if (!isMobile) {
   //   // Desktop / large screen

@@ -14,4 +14,20 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    // Hashed filenames — WebView + browser long-term cache karta hai
+    rollupOptions: {
+      output: {
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash][extname]',
+        // Vendor aur app code alag chunks — vendor rarely change hota hai
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          redux: ['@reduxjs/toolkit', 'react-redux'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
+  },
 })
