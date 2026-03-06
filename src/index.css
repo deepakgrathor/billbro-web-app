@@ -4,6 +4,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== Design Token System ===== */
+@theme {
+  --color-brand-50: #f0f4ff;
+  --color-brand-100: #dbe4ff;
+  --color-brand-200: #bac8ff;
+  --color-brand-300: #91a7ff;
+  --color-brand-400: #748ffc;
+  --color-brand-500: #5c7cfa;
+  --color-brand-600: #4c6ef5;
+  --color-brand-700: #192851;
+  --color-brand-800: #121e3f;
+  --color-brand-900: #0c1529;
+  --color-accent-400: #8b5cf6;
+  --color-accent-500: #6d28d9;
+  --color-accent-600: #5b21b6;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f8fafc;
+  --color-surface-subtle: #f1f5f9;
+}
+
 body {
   font-family: "Manrope", sans-serif;
   -ms-overflow-style: none; /* IE aur Edge */
@@ -125,4 +145,13 @@ body {
 
 .animate-fade-in {
   animation: fadeIn 0.2s ease-out;
+}
+
+/* Shimmer effect for skeleton loaders */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.animate-shimmer {
+  animation: shimmer 1.5s ease-in-out infinite;
 }

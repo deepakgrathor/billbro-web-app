@@ -56,17 +56,26 @@ export const handleChatWhatsapp = ({ number, registered_phone }) => {
   }
   // openExternalURL(url);
 };
-export const getSettingFunc = async () => {
+let _settingsCache = null;
+let _settingsCacheTime = null;
+const SETTINGS_TTL = 10 * 60 * 1000; // 10 minutes
+
+export const getSettingFunc = async (forceRefresh = false) => {
+  if (!forceRefresh && _settingsCache && Date.now() - _settingsCacheTime < SETTINGS_TTL) {
+    return _settingsCache;
+  }
   try {
     const res = await API.get(`setting`);
     const data = res.data.Data;
+    _settingsCache = data;
+    _settingsCacheTime = Date.now();
     if (data.customerPhone)
       localStorage.setItem("customerPhone", data.customerPhone);
     if (data.isCashfreeProduction)
       localStorage.setItem("isCashfreeProduction", data.isCashfreeProduction);
     return data;
   } catch (error) {
-    // console.error("CheckAppVersion failed:", error);
+    return _settingsCache; // Return stale data on error
   }
 };
 export const WhatsappShare = ({ ProfileData }) => {

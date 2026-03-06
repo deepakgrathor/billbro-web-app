@@ -1,16 +1,7 @@
 import React, { memo, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { BOTTOM_MENU_DATA } from "../Utils/MockData";
-
-/**
- * Expecting BOTTOM_MENU_DATA like:
- * [
- *  { name: "Home", route: "/home", icon: HomeIcon, badge: 2 },
- *  { name: "Search", route: "/search", icon: SearchIcon },
- *  ...
- * ]
- * Total: 5 items
- */
 
 const BottomNavigation = memo(function BottomNavigation() {
   const navigate = useNavigate();
@@ -19,7 +10,6 @@ const BottomNavigation = memo(function BottomNavigation() {
   const items = useMemo(() => BOTTOM_MENU_DATA?.slice(0, 5) ?? [], []);
 
   const isActive = (route) => {
-    // Exact match or nested routes ("/home" active for "/home/feed")
     return location.pathname === route || location.pathname.startsWith(route + "/");
   };
 
@@ -58,13 +48,14 @@ const BottomNavigation = memo(function BottomNavigation() {
                   `}
                   aria-current={active ? "page" : undefined}
                 >
-                  {/* Top active indicator */}
-                  <span
-                    className={`
-                      absolute top-1 h-1 w-6 rounded-full transition
-                      ${active ? "bg-blue-500" : "bg-transparent"}
-                    `}
-                  />
+                  {/* Animated active indicator */}
+                  {active && (
+                    <motion.span
+                      layoutId="bottomNavIndicator"
+                      className="absolute top-1 h-1 w-6 rounded-full bg-blue-500"
+                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    />
+                  )}
 
                   {/* Icon */}
                   <div className="relative">

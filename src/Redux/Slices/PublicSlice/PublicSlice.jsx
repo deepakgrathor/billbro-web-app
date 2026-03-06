@@ -2,6 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { decryptFunc } from "../../../Utils/CommonFunc";
 import API from "../../API";
 
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
 export const getNotification = createAsyncThunk("getNotification", async () => {
   try {
     const res = await API.get(`/notification/list`);
@@ -31,13 +33,20 @@ export const getBannerList = createAsyncThunk(
       };
     } catch (error) {
       if (error.response && error.response.status === 400) {
-        // Dispatch a custom action or handle the 400 error here
-        // You can access the error response using `error.response.data`
         return error.response.data;
       } else {
         throw error;
       }
     }
+  },
+  {
+    condition: (arg, { getState }) => {
+      if (arg?.forceRefresh) return true;
+      const { lastFetched } = getState().PublicSlice.bannerList;
+      if (lastFetched && Date.now() - lastFetched < CACHE_TTL) {
+        return false;
+      }
+    },
   }
 );
 
@@ -51,6 +60,7 @@ const PublicSlice = createSlice({
     bannerList: {
       bannerData: "",
       bannerLoader: false,
+      lastFetched: null,
     },
   },
   reducers: {},
@@ -81,6 +91,7 @@ const PublicSlice = createSlice({
     builder.addCase(getBannerList.fulfilled, (state, action) => {
       state.bannerList.bannerData = action.payload;
       state.bannerList.bannerLoader = false;
+      state.bannerList.lastFetched = Date.now();
     });
     builder.addCase(getBannerList.rejected, (state, action) => {
       state.bannerList.bannerLoader = false;

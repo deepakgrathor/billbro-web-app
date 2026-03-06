@@ -1,9 +1,8 @@
 import React from "react";
 import { MdOutlineArrowBack } from "react-icons/md";
-import { primaryColor } from "../Utils/Style";
 import { useNavigate } from "react-router-dom";
 
-const CommonHeader = ({ title, handleclick, rightDesign, style }) => {
+const CommonHeader = React.memo(({ title, handleclick, rightDesign, style }) => {
   const navigate = useNavigate();
 
   return (
@@ -43,6 +42,8 @@ const CommonHeader = ({ title, handleclick, rightDesign, style }) => {
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
     </div>
   );
-};
+});
+
+CommonHeader.displayName = "CommonHeader";
 
 export default CommonHeader;
