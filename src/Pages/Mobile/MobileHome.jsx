@@ -67,7 +67,10 @@ const MobileHome = () => {
 
   useEffect(() => {
     dispatch(setRechargeData({ ...rechargeData, plans: "" }));
-    if (rechargeData.mobileNumber.length === 10 && /^\d{10}$/.test(rechargeData.mobileNumber)) {
+    if (
+      rechargeData.mobileNumber.length === 10 &&
+      /^\d{10}$/.test(rechargeData.mobileNumber)
+    ) {
       const timer = setTimeout(() => {
         dispatch(
           getOperatorandCirclebyPhone({ phone: rechargeData.mobileNumber }),
@@ -196,7 +199,9 @@ const MobileHome = () => {
                   />
                 )}
                 <div>
-                  <p className="text-sm text-theme-secondary font-medium">Operator</p>
+                  <p className="text-sm text-theme-secondary font-medium">
+                    Operator
+                  </p>
                   <p className="text-base font-bold text-theme-primary">
                     {rechargeData.operator.OperatorName}
                   </p>
@@ -204,7 +209,9 @@ const MobileHome = () => {
               </div>
               {rechargeData.circle && (
                 <div className="text-right">
-                  <p className="text-sm text-theme-secondary font-medium">Circle</p>
+                  <p className="text-sm text-theme-secondary font-medium">
+                    Circle
+                  </p>
                   <p className="text-base font-bold text-theme-primary">
                     {rechargeData.circle.circlename}
                   </p>
@@ -228,7 +235,7 @@ const MobileHome = () => {
         )}
 
         {/* Quick Tips */}
-        <div className="bg-gradient-to-r from-purple-100 to-blue-100 rounded-3xl p-5 border border-purple-200">
+        <div className="border border-theme bg-theme-card shadow-theme-card rounded-3xl p-5 border-purple-200">
           <h4 className="font-bold text-theme-primary mb-3 flex items-center">
             <span className="mr-2">💡</span>
             Quick Tips

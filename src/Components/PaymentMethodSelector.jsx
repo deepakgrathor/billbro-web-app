@@ -26,8 +26,8 @@ const PaymentMethodSelector = ({
   const isUPIEnabled = PaymentService.isUPIEnabled;
 
   return (
-    <div className="mb-6">
-      <h3 className="text-lg font-bold text-gray-800 mb-4 px-1">
+    <div className="mb-4">
+      <h3 className="text-sm font-bold text-theme-primary mb-3 px-1">
         Select Payment Method
       </h3>
 
@@ -35,44 +35,44 @@ const PaymentMethodSelector = ({
       <div
         onClick={() => !isLoading && dispatch(setWalletSelect(true))}
         className={`
-          bg-white rounded-2xl shadow-md mb-3 overflow-hidden cursor-pointer
-          transition-all duration-300 transform hover:scale-[1.01] active:scale-[0.99]
+          bg-theme-card rounded-2xl mb-3 overflow-hidden cursor-pointer
+          transition-all duration-300 active:scale-[0.99]
           ${
             walletSelect
-              ? "ring-2 ring-purple-500 shadow-lg shadow-purple-200"
-              : "border border-gray-200"
+              ? "ring-2 ring-purple-500 shadow-lg shadow-purple-200/30 border border-transparent"
+              : "border border-theme"
           }
           ${isLoading ? "opacity-70 cursor-not-allowed" : ""}
         `}
       >
-        <div className="p-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="p-3.5 flex items-center justify-between">
+          <div className="flex items-center gap-3">
             <div
               className={`
-                w-12 h-12 rounded-xl flex items-center justify-center
+                w-10 h-10 rounded-xl flex items-center justify-center shrink-0
                 ${
                   walletSelect
                     ? "bg-gradient-to-br from-purple-500 to-blue-600"
-                    : "bg-gray-100"
+                    : "bg-theme-card-2"
                 }
               `}
             >
               <MdAccountBalanceWallet
-                size={24}
-                className={walletSelect ? "text-white" : "text-gray-600"}
+                size={20}
+                className={walletSelect ? "text-white" : "text-theme-secondary"}
               />
             </div>
             <div>
-              <p className="text-xs text-gray-500 font-medium mb-1">
+              <p className="text-xs text-theme-muted font-medium mb-0.5">
                 Wallet Balance
               </p>
               <div className="flex items-center gap-2">
-                <p className="text-lg font-black text-gray-800">
+                <p className="text-base font-black text-theme-primary">
                   ₹{PaymentService.formatAmount(walletBalance)}
                 </p>
                 {!isWalletSufficient && (
                   <span className="text-[9px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold">
-                    Low Balance
+                    Low
                   </span>
                 )}
               </div>
@@ -85,19 +85,19 @@ const PaymentMethodSelector = ({
               if (!isLoading) navigate("/wallet");
             }}
             disabled={isLoading}
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all active:scale-95 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-slate-900 text-white px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <MdOutlineAddCircleOutline size={18} />
-            <span className="text-xs font-bold">Add Money</span>
+            <MdOutlineAddCircleOutline size={16} />
+            <span className="text-xs font-bold">Add</span>
           </button>
         </div>
 
         {walletSelect && (
-          <div className="bg-purple-50 px-4 py-2 border-t border-purple-100">
+          <div className="bg-purple-50 px-4 py-1.5 border-t border-purple-100">
             <div className="flex items-center gap-2">
-              <MdCheckCircle className="text-purple-600" size={16} />
+              <MdCheckCircle className="text-purple-600" size={14} />
               <p className="text-xs text-purple-700 font-medium">
-                Selected Payment Method
+                Selected
               </p>
             </div>
           </div>
@@ -109,48 +109,46 @@ const PaymentMethodSelector = ({
         <div
           onClick={() => !isLoading && dispatch(setWalletSelect(false))}
           className={`
-            bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer
-            transition-all duration-300 transform hover:scale-[1.01] active:scale-[0.99]
+            bg-theme-card rounded-2xl overflow-hidden cursor-pointer
+            transition-all duration-300 active:scale-[0.99]
             ${
               !walletSelect
-                ? "ring-2 ring-purple-500 shadow-lg shadow-purple-200"
-                : "border border-gray-200"
+                ? "ring-2 ring-purple-500 shadow-lg shadow-purple-200/30 border border-transparent"
+                : "border border-theme"
             }
             ${isLoading ? "opacity-70 cursor-not-allowed" : ""}
           `}
         >
-          <div className="p-4 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div
-                className={`
-                  w-12 h-12 rounded-xl flex items-center justify-center
-                  ${
-                    !walletSelect
-                      ? "bg-gradient-to-br from-purple-500 to-blue-600"
-                      : "bg-gray-100"
-                  }
-                `}
-              >
-                <MdCreditCard
-                  size={24}
-                  className={!walletSelect ? "text-white" : "text-gray-600"}
-                />
-              </div>
-              <div>
-                <p className="text-xs text-gray-500 font-medium mb-1">
-                  Pay with UPI
-                </p>
-                <p className="text-lg font-black text-gray-800">UPI Payment</p>
-              </div>
+          <div className="p-3.5 flex items-center gap-3">
+            <div
+              className={`
+                w-10 h-10 rounded-xl flex items-center justify-center shrink-0
+                ${
+                  !walletSelect
+                    ? "bg-gradient-to-br from-purple-500 to-blue-600"
+                    : "bg-theme-card-2"
+                }
+              `}
+            >
+              <MdCreditCard
+                size={20}
+                className={!walletSelect ? "text-white" : "text-theme-secondary"}
+              />
+            </div>
+            <div>
+              <p className="text-xs text-theme-muted font-medium mb-0.5">
+                Pay with UPI
+              </p>
+              <p className="text-base font-black text-theme-primary">UPI Payment</p>
             </div>
           </div>
 
           {!walletSelect && (
-            <div className="bg-purple-50 px-4 py-2 border-t border-purple-100">
+            <div className="bg-purple-50 px-4 py-1.5 border-t border-purple-100">
               <div className="flex items-center gap-2">
-                <MdCheckCircle className="text-purple-600" size={16} />
+                <MdCheckCircle className="text-purple-600" size={14} />
                 <p className="text-xs text-purple-700 font-medium">
-                  Selected Payment Method
+                  Selected
                 </p>
               </div>
             </div>

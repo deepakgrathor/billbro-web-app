@@ -206,7 +206,7 @@ const TransactionCard = ({ transaction, onClick }) => {
     }
 
     return {
-      color: "text-gray-900",
+      color: "text-theme-primary",
       symbol: "",
       value: amount,
     };
@@ -215,7 +215,7 @@ const TransactionCard = ({ transaction, onClick }) => {
   return (
     <div
       onClick={() => onClick(transaction)}
-      className="bg-white/90 backdrop-blur-sm rounded-2xl border border-gray-200 hover:border-purple-300 p-4 transition-all duration-300 cursor-pointer hover:shadow-xl active:scale-[0.99] group"
+      className="backdrop-blur-sm rounded-2xl border-gray-200 hover:border-purple-300 p-4 transition-all duration-300 cursor-pointer hover:shadow-xl active:scale-[0.99] group border border-theme bg-theme-card shadow-theme-card"
     >
       <div className="flex items-center gap-4">
         {/* Logo */}
@@ -237,10 +237,10 @@ const TransactionCard = ({ transaction, onClick }) => {
 
         {/* Details */}
         <div className="flex-1 min-w-0">
-          <h3 className="font-bold text-gray-900 text-base mb-1 truncate">
+          <h3 className="font-bold text-theme-primary text-base mb-1 truncate">
             {transaction.type}
           </h3>
-          <p className="text-gray-600 text-sm truncate mb-1 font-medium">
+          <p className="text-theme-secondary text-sm truncate mb-1 font-medium">
             {transaction.number}
           </p>
           <p className="text-xs text-gray-400 font-semibold">
@@ -303,17 +303,17 @@ const LedgerCard = ({ transaction, onClick }) => {
 
   const amountColor = useMemo(
     () => (isCredit ? "text-green-600" : "text-red-600"),
-    [isCredit]
+    [isCredit],
   );
 
   return (
     <div
       onClick={handleClick}
       className="
-        group relative bg-white rounded-2xl border border-gray-200
+        group relative rounded-2xl border-gray-200
         p-4 cursor-pointer
         transition-all duration-200
-        hover:shadow-md active:scale-[0.99]
+        hover:shadow-md active:scale-[0.99] border border-theme bg-theme-card shadow-theme-card
       "
     >
       {/* Left Accent Bar */}
@@ -363,7 +363,7 @@ const LedgerCard = ({ transaction, onClick }) => {
       </div>
 
       {/* Type */}
-      <p className="mt-3 pl-3 text-[12px] font-medium text-gray-800 capitalize truncate">
+      <p className="mt-3 pl-3 text-[12px] font-medium text-theme-primary capitalize truncate">
         {transaction.type}
       </p>
 
@@ -371,13 +371,13 @@ const LedgerCard = ({ transaction, onClick }) => {
       <div className="mt-3 pt-3 pl-3 border-t border-gray-100 flex justify-between text-xs">
         <div className="flex gap-1">
           <span className="text-gray-500">Opening:</span>
-          <span className="font-semibold text-gray-800">
+          <span className="font-semibold text-theme-secondary">
             ₹{transaction.openingBalance}
           </span>
         </div>
         <div className="flex gap-1">
           <span className="text-gray-500">Closing:</span>
-          <span className="font-semibold text-gray-800">
+          <span className="font-semibold text-theme-secondary">
             ₹{transaction.closingBalance}
           </span>
         </div>

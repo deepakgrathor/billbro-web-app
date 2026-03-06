@@ -83,7 +83,7 @@ const BBPSList = () => {
         <img
           width={100}
           height={50}
-          src="https://ik.imagekit.io/isjriggan/images%20(1).png"
+          src="https://ik.imagekit.io/43tomntsa/images__1_-removebg-preview.png"
           alt=""
         />
       </div>
@@ -389,7 +389,7 @@ const BBPSList = () => {
             </span>
           </div>
           <img
-            src="https://ik.imagekit.io/isjriggan/images%20(1).png"
+            src="https://ik.imagekit.io/43tomntsa/images__1_-removebg-preview.png"
             alt="BBPS"
             className="h-5 object-contain"
           />

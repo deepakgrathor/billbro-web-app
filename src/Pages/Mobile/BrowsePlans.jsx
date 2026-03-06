@@ -431,18 +431,18 @@ const CardDesign = ({ item, rechargeData, handleProcess }) => {
 
   return (
     <div className="mb-3 px-3 animate-card-appear">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-purple-200">
+      <div className="border-theme bg-theme-card shadow-theme-card rounded-2xl shadow-sm border overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-purple-200">
         {/* Main Content */}
         <div
           onClick={() => handleProcess({ plans: item })}
           className="p-5 cursor-pointer active:scale-[0.98] transition-transform"
         >
           {/* Top Section - Amount & Key Info */}
-          <div className="flex items-start justify-between mb-4 pb-4 border-b border-gray-100">
+          <div className="flex items-start justify-between mb-4 pb-4 border-b border-theme">
             {/* Amount */}
             <div className="flex-shrink-0">
-              <div className="inline-flex items-baseline bg-gradient-to-br from-purple-600 to-blue-600 text-white px-4 py-2 rounded-xl shadow-md">
-                <span className="text-2xl font-black">₹{amount}</span>
+              <div className="inline-flex  items-baseline bg-gradient-to-br from-purple-600 to-blue-600 text-white px-4 py-2 rounded-xl shadow-md bg-theme-card-2">
+                <span className="text-2xl font-black ">₹{amount}</span>
               </div>
             </div>
 
@@ -450,18 +450,20 @@ const CardDesign = ({ item, rechargeData, handleProcess }) => {
             <div className="flex gap-4 ml-4">
               {/* Data */}
               <div className="text-right">
-                <p className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold mb-1">
+                <p className="text-[10px] text-theme-muted uppercase tracking-wider font-semibold mb-1">
                   Data
                 </p>
-                <p className="text-base font-bold text-gray-800">{data}</p>
+                <p className="text-base font-bold text-theme-primary">{data}</p>
               </div>
 
               {/* Validity */}
               <div className="text-right">
-                <p className="text-[10px] text-gray-500 uppercase tracking-wider font-semibold mb-1">
+                <p className="text-[10px] text-theme-muted uppercase tracking-wider font-semibold mb-1">
                   Validity
                 </p>
-                <p className="text-base font-bold text-gray-800">{validity}</p>
+                <p className="text-base font-bold text-theme-primary">
+                  {validity}
+                </p>
               </div>
             </div>
           </div>
@@ -477,7 +479,7 @@ const CardDesign = ({ item, rechargeData, handleProcess }) => {
                     .map((benefit, index) => (
                       <div
                         key={index}
-                        className="w-8 h-8 rounded-full bg-white border-2 border-gray-200 p-1 shadow-sm"
+                        className="w-8 h-8 rounded-full bg-theme-card border-2 border-theme p-1 shadow-sm"
                       >
                         <img
                           src={benefit.logoUrl || COMPANY_LOGO}
@@ -487,7 +489,7 @@ const CardDesign = ({ item, rechargeData, handleProcess }) => {
                       </div>
                     ))}
                   {item.planBenefitItemList.length > 4 && (
-                    <div className="w-8 h-8 rounded-full bg-purple-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-purple-700">
+                    <div className="w-8 h-8 rounded-full bg-purple-100 border-2 border-theme flex items-center justify-center text-[10px] font-bold text-purple-700">
                       +{item.planBenefitItemList.length - 4}
                     </div>
                   )}
@@ -525,13 +527,13 @@ const CardDesign = ({ item, rechargeData, handleProcess }) => {
 
         {/* Expandable Details */}
         {showDesc.status && showDesc.id === item.rs && (
-          <div className="px-5 pb-5 pt-0 border-t border-gray-100 bg-gray-50/50 animate-expand">
+          <div className="px-5 pb-5 pt-0 border-t border-theme bg-theme-card shadow-theme-card animate-expand">
             {/* Description */}
             <div className="mt-4 mb-4">
-              <p className="text-xs font-semibold text-gray-700 mb-2">
+              <p className="text-xs font-semibold text-theme-secondary mb-2">
                 Plan Details:
               </p>
-              <p className="text-xs text-gray-600 leading-relaxed">
+              <p className="text-xs text-theme-secondary leading-relaxed">
                 {description}
               </p>
             </div>
@@ -539,24 +541,24 @@ const CardDesign = ({ item, rechargeData, handleProcess }) => {
             {/* Additional Benefits */}
             {item.planBenefitItemList &&
               item.planBenefitItemList.length > 0 && (
-                <div className="pt-3 border-t border-gray-200">
-                  <p className="text-xs font-semibold text-gray-700 mb-3">
+                <div className="pt-3 border-t border-theme">
+                  <p className="text-xs font-semibold text-theme-secondary mb-3">
                     Additional Benefits:
                   </p>
                   <div className="space-y-2">
                     {item.planBenefitItemList.map((benefit, index) => (
                       <div
                         key={index}
-                        className="flex items-center gap-3 bg-white p-2 rounded-lg"
+                        className="flex items-center gap-3 border border-theme bg-theme-card shadow-theme-card p-2 rounded-lg"
                       >
-                        <div className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-200 p-1 flex-shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-theme-card-2 border border-theme p-1 flex-shrink-0">
                           <img
                             src={benefit.logoUrl || COMPANY_LOGO}
                             alt={benefit.displayName}
                             className="w-full h-full object-contain"
                           />
                         </div>
-                        <p className="text-xs text-gray-700 font-medium flex-1">
+                        <p className="text-xs text-theme-secondary font-medium flex-1">
                           {benefit.displayName}
                         </p>
                         <MdCheckCircle
@@ -591,7 +593,7 @@ const BrowsePlans = () => {
   const handleTypeChange = (type) => {
     setSelectedType(type);
     setFilteredPlans(
-      plans.filter((plan) => (plan.planTab || plan.Type) === type)
+      plans.filter((plan) => (plan.planTab || plan.Type) === type),
     );
   };
 
@@ -611,7 +613,7 @@ const BrowsePlans = () => {
 
     try {
       const res = await dispatch(
-        getMobileRechargePlan({ Circle_Code, Operator_Code, MobileNumber })
+        getMobileRechargePlan({ Circle_Code, Operator_Code, MobileNumber }),
       );
 
       if (res.payload && res.payload.Data?.length > 0) {
@@ -622,7 +624,7 @@ const BrowsePlans = () => {
         setTypes(typ);
         setSelectedType(typ[0]);
         const filtPlan = res.payload.Data.filter(
-          (plan) => (plan.planTab || plan.Type) === typ[0]
+          (plan) => (plan.planTab || plan.Type) === typ[0],
         );
         setFilteredPlans(filtPlan);
       } else {
@@ -714,9 +716,9 @@ const BrowsePlans = () => {
   }, [search, plans]);
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50">
+    <div className="flex bg-theme-base flex-col h-screen">
       {/* Fixed Header */}
-      <div className="fixed top-0 w-full bg-white shadow-md z-50 border-b border-gray-100">
+      <div className="fixed top-0 w-full shadow-md z-50 bg-theme-header backdrop-blur-xl border-b border-theme">
         <div className="px-4 py-3">
           {/* Top Row - Back Button & Change */}
           <div className="flex items-center justify-between mb-3">
@@ -742,9 +744,9 @@ const BrowsePlans = () => {
           </div>
 
           {/* Operator Info Card */}
-          <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-3 border border-purple-100">
+          <div className="rounded-2xl p-3 border border-theme bg-theme-card">
             <div className="flex items-center gap-3">
-              <div className="bg-white p-2 rounded-xl shadow-sm">
+              <div className="bg-theme-card-2 p-2 rounded-xl shadow-sm">
                 <img
                   src={rechargeData.operator.img}
                   alt="operator"
@@ -753,15 +755,15 @@ const BrowsePlans = () => {
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <p className="text-sm font-bold text-gray-800">
+                  <p className="text-sm font-bold text-theme-primary">
                     {rechargeData.mobileNumber}
                   </p>
-                  <span className="text-gray-400">•</span>
-                  <p className="text-xs font-semibold text-gray-600">
+                  <span className="text-theme-muted">•</span>
+                  <p className="text-xs font-semibold text-theme-primary">
                     {rechargeData.operator.OperatorName}
                   </p>
                 </div>
-                <p className="text-[10px] text-gray-500 font-medium">
+                <p className="text-[10px] text-theme-secondary font-medium">
                   {rechargeData.circle.circlename}
                 </p>
               </div>
@@ -789,11 +791,11 @@ const BrowsePlans = () => {
                 onClick={() => handleTypeChange(item)}
                 className={`
                   flex-shrink-0 px-3 py-2 rounded-xl font-semibold text-[10px] uppercase tracking-wide
-                  transition-all duration-300 active:scale-95
+                  transition-all duration-300 active:scale-95 border border-theme bg-theme-card
                   ${
                     selectedType === item
-                      ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-200"
-                      : "bg-white text-gray-600 border-2 border-gray-200 hover:border-purple-300"
+                      ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg "
+                      : "bg-theme-card text-theme-secondary border-2 border-theme hover:border-purple-300"
                   }
                 `}
               >
@@ -816,11 +818,11 @@ const BrowsePlans = () => {
             ))
           ) : (
             <div className="flex flex-col items-center justify-center py-16 px-4">
-              <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+              <div className="w-24 h-24 bg-theme-card-2 rounded-full flex items-center justify-center mb-4">
                 <span className="text-4xl">🔍</span>
               </div>
-              <p className="text-gray-600 font-semibold mb-2">No plans found</p>
-              <p className="text-sm text-gray-500 text-center">
+              <p className="text-theme-secondary font-semibold mb-2">No plans found</p>
+              <p className="text-sm text-theme-muted text-center">
                 Try adjusting your search or select a different plan type
               </p>
             </div>

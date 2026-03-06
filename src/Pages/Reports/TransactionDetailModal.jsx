@@ -101,8 +101,8 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
     type === "deposits"
       ? "Wallet Deposit"
       : type === "ledger"
-      ? transaction.type
-      : transaction.type || "Bill Payment";
+        ? transaction.type
+        : transaction.type || "Bill Payment";
 
   const txnId = transaction.transactionId || transaction.id;
 
@@ -111,7 +111,7 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={onClick}
-      className="shrink-0 inline-flex items-center justify-center h-9 w-9 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition"
+      className="shrink-0 inline-flex items-center justify-center h-9 w-9 rounded-xl border border-theme bg-theme-card hover:bg-theme-card-2 transition"
       aria-label="Copy"
     >
       {copied === field ? (
@@ -125,12 +125,12 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
   const InfoRow = ({ label, value, mono, right }) => (
     <div className="flex items-start justify-between gap-3 py-3">
       <div className="min-w-0">
-        <p className="text-[12px] font-bold tracking-wider text-gray-900 uppercase">
+        <p className="text-[12px] font-bold tracking-wider text-theme-primary uppercase">
           {label}
         </p>
         <p
           className={[
-            "mt-1 text-sm font-semibold text-slate-500 break-all",
+            "mt-1 text-sm font-semibold text-theme-secondary break-all",
             mono ? "font-mono" : "",
           ].join(" ")}
         >
@@ -163,7 +163,7 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
             className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-3 sm:p-6"
           >
             <div className="w-full max-w-lg">
-              <div className="relative rounded-3xl bg-white border border-slate-200 shadow-[0_25px_80px_rgba(2,6,23,0.18)] overflow-hidden">
+              <div className="relative rounded-3xl bg-theme-card border border-theme shadow-[0_25px_80px_rgba(2,6,23,0.18)] overflow-hidden">
                 {/* Top gradient hairline */}
                 <div className="h-1 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500" />
 
@@ -171,10 +171,10 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                 <div className="px-5 sm:px-6 pt-5 sm:pt-6">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                      <h2 className="text-xl sm:text-2xl font-black text-theme-primary tracking-tight">
                         Payment Receipt
                       </h2>
-                      <p className="mt-1 text-sm text-slate-600">
+                      <p className="mt-1 text-sm text-theme-secondary">
                         Review status & references
                       </p>
                     </div>
@@ -183,11 +183,11 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                       whileHover={{ scale: 1.06, rotate: 90 }}
                       whileTap={{ scale: 0.94 }}
                       onClick={onClose}
-                      className="h-10 w-10 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 flex items-center justify-center"
+                      className="h-10 w-10 rounded-2xl border border-theme bg-theme-card hover:bg-theme-card-2 flex items-center justify-center"
                       aria-label="Close"
                     >
                       <svg
-                        className="w-5 h-5 text-slate-700"
+                        className="w-5 h-5 text-theme-primary"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -276,13 +276,13 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
 
                 {/* Body */}
                 <div className="px-5 sm:px-6 pt-5 pb-5">
-                  <div className="rounded-3xl border border-slate-200 bg-white">
+                  <div className="rounded-3xl border border-theme bg-theme-card">
                     <div className="px-4">
                       <InfoRow label="Transaction Type" value={txnTypeLabel} />
                     </div>
                     {isBBPSTransaction && transaction.OPR_REF && (
                       <>
-                        <div className="h-px bg-slate-200" />
+                        <div className="h-px bg-theme-card-2" />
                         <div className="px-4">
                           <InfoRow
                             label="B-Connect Txn ID"
@@ -294,7 +294,7 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                                 onClick={() =>
                                   handleCopyWithFeedback(
                                     transaction.OPR_REF,
-                                    "bharatConnect"
+                                    "bharatConnect",
                                   )
                                 }
                                 colorClass="text-blue-600"
@@ -306,7 +306,7 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                     )}
                     {isBBPSTransaction && transaction.OPR_REF && (
                       <>
-                        <div className="h-px bg-slate-200" />
+                        <div className="h-px bg-theme-card-2" />
                         <div className="px-4">
                           <InfoRow
                             label="CCF (Customer Convenience Fee)"
@@ -341,7 +341,7 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                       type !== "ledgerBook" &&
                       transaction.number && (
                         <>
-                          <div className="h-px bg-slate-200" />
+                          <div className="h-px bg-theme-card-2" />
                           <div className="px-4">
                             <InfoRow
                               label="Consumer Number"
@@ -355,7 +355,7 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                                     onClick={() =>
                                       handleCopyWithFeedback(
                                         transaction.number,
-                                        "number"
+                                        "number",
                                       )
                                     }
                                     colorClass="text-purple-600"
@@ -369,7 +369,7 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
 
                     {transaction.OP_REF && (
                       <>
-                        <div className="h-px bg-slate-200" />
+                        <div className="h-px bg-theme-card-2" />
                         <div className="px-4">
                           <InfoRow
                             label="Operator Reference"
@@ -381,7 +381,7 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                                 onClick={() =>
                                   handleCopyWithFeedback(
                                     transaction.OP_REF,
-                                    "opRef"
+                                    "opRef",
                                   )
                                 }
                                 colorClass="text-orange-600"
@@ -406,7 +406,7 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                           whileHover={{ scale: 1.01 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={handleRaiseComplaint}
-                          className="flex-[1.4] min-w-0 text-xs py-4 px-3 rounded-2xl bg-black hover:bg-rose-700 text-white font-black shadow-lg shadow-rose-200/40 transition text-center"
+                          className="flex-[1.4] min-w-0 text-xs py-4 px-3 rounded-2xl bg-black hover:bg-rose-700 text-white font-black  transition text-center"
                         >
                           Raise Complaint
                         </motion.button>
@@ -415,7 +415,7 @@ const TransactionDetailModal = ({ isOpen, onClose, transaction, type }) => {
                         whileHover={{ scale: 1.01 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={handleNeedSupport}
-                        className="flex-1 min-w-0 py-4 px-3 rounded-2xl text-xs bg-black hover:bg-amber-600 text-white font-black shadow-lg shadow-amber-200/40 transition"
+                        className="flex-1 min-w-0 py-4 px-3 rounded-2xl text-xs bg-black hover:bg-amber-600 text-white font-black transition"
                       >
                         💭 Support
                       </motion.button>

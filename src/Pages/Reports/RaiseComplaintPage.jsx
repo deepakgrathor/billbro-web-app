@@ -36,7 +36,7 @@ const RaiseComplaintPage = () => {
       const response = await API.get(
         `/cyrus/recharge-complain-billhub?order_id=${
           transaction.id
-        }&message=${encodeURIComponent(message)}`
+        }&message=${encodeURIComponent(message)}`,
       );
 
       setLoading(false);
@@ -82,7 +82,7 @@ const RaiseComplaintPage = () => {
             className="p-2 hover:bg-theme-card-2 rounded-lg transition-colors"
           >
             <svg
-              className="w-6 h-6"
+              className="w-6 h-6 text-theme-primary"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -95,7 +95,9 @@ const RaiseComplaintPage = () => {
               />
             </svg>
           </button>
-          <h1 className="text-xl font-bold text-theme-primary">Raise a complaint</h1>
+          <h1 className="text-xl font-bold text-theme-primary">
+            Raise a complaint
+          </h1>
         </div>
       </div>
 
@@ -118,7 +120,9 @@ const RaiseComplaintPage = () => {
           </div>
 
           <div className="bg-theme-card-2 rounded-xl p-4">
-            <p className="text-sm text-theme-secondary mb-1">Transaction Amount</p>
+            <p className="text-sm text-theme-secondary mb-1">
+              Transaction Amount
+            </p>
             <p className="text-base font-semibold text-theme-primary">
               {transaction.amount}
             </p>
@@ -137,7 +141,7 @@ const RaiseComplaintPage = () => {
                 key={index}
                 className={`flex items-center gap-3 p-4 rounded-xl cursor-pointer transition-all ${
                   selectedReason === reason
-                    ? "bg-blue-50 border-2 border-blue-500"
+                    ? "bg-blue-50 border-2 bg-theme-card-2 border-blue-500"
                     : "bg-theme-card-2 border-2 border-transparent hover:bg-theme-card-2"
                 }`}
               >
@@ -180,7 +184,7 @@ const RaiseComplaintPage = () => {
             className={`w-full py-4 rounded-xl font-semibold text-white transition-all ${
               selectedReason && !loading
                 ? "bg-blue-600 hover:bg-blue-700 active:scale-95"
-                : "bg-gray-300 cursor-not-allowed"
+                : "bg-theme-card-2 text-theme-muted cursor-not-allowed"
             }`}
           >
             {loading ? (

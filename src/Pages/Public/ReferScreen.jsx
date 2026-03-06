@@ -31,7 +31,7 @@ const ReferScreen = () => {
 
 🎁 EXCLUSIVE OFFER FOR YOU:
 Use Referral Code: *${referralCode}*
-Get ₹15 Bonus on ₹100+ wallet recharge!
+Get ₹10 Bonus on ₹100+ wallet recharge!
 
 📲 Download Now:
 https://play.google.com/store/apps/details?id=com.billbro.app
@@ -243,7 +243,7 @@ https://play.google.com/store/apps/details?id=com.billbro.app
               />
               <Step
                 no="03"
-                title="You get ₹15"
+                title="You get ₹10"
                 desc="When your friend adds ₹100 or more to wallet."
               />
             </div>

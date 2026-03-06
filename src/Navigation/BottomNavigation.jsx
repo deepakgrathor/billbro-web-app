@@ -44,7 +44,7 @@ const BottomNavigation = memo(function BottomNavigation() {
                     rounded-2xl px-2 py-2
                     focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60
                     active:scale-[0.98] transition
-                    ${active ? "bg-violet-50/80" : "hover:bg-theme-card-2"}
+                    ${active ? "bg-theme-card-2" : "hover:bg-theme-card-2"}
                   `}
                   aria-current={active ? "page" : undefined}
                 >

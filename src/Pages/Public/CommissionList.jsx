@@ -183,7 +183,9 @@ const CommissionList = () => {
               {title}
             </p>
             {meta && (
-              <p className="text-[11px] text-theme-secondary font-semibold">{meta}</p>
+              <p className="text-[11px] text-theme-secondary font-semibold">
+                {meta}
+              </p>
             )}
           </div>
         </div>
@@ -244,7 +246,7 @@ const CommissionList = () => {
       </div>
 
       {/* Body */}
-      <div className="pt-16 pb-8 px-3 sm:px-4 max-w-xl mx-auto">
+      <div className="pt-16 pb-8 px-3 sm:px-4 max-w-xl mt-3 mx-auto">
         {/* Hero */}
         <div className="rounded-3xl border border-theme bg-theme-card shadow-[0_18px_55px_rgba(2,6,23,0.08)] overflow-hidden">
           <div className="p-5 bg-slate-900 text-white">

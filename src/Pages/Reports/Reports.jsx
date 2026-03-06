@@ -38,8 +38,8 @@ const Reports = () => {
 
   const tabs = [
     { id: "recharges", label: "Recharges" },
-    // { id: "dth", label: "DTH" },
-    // { id: "billPayments", label: "Bill Payments" },
+    { id: "dth", label: "DTH" },
+    { id: "billPayments", label: "Bill Payments" },
     { id: "deposits", label: "Deposits" },
     { id: "referrals", label: "Referrals" },
     { id: "ledgerBook", label: "Ledger Book" },
@@ -125,7 +125,7 @@ const Reports = () => {
         <img
           width={100}
           height={40}
-          src="https://ik.imagekit.io/isjriggan/images%20(1).png"
+          src="https://ik.imagekit.io/43tomntsa/images__1_-removebg-preview.png"
           alt=""
         />
       </div>
@@ -187,7 +187,7 @@ const Reports = () => {
                   value={searchMobile}
                   onChange={(e) => setSearchMobile(e.target.value)}
                   maxLength={10}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-theme rounded-lg bg-theme-card text-theme-primary placeholder:text-theme-muted focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
                 <DateRangePicker
                   dateRange={dateRange}
@@ -202,7 +202,7 @@ const Reports = () => {
                   placeholder="Enter Transaction ID (e.g., BC20251226123456)"
                   value={searchTxnId}
                   onChange={(e) => setSearchTxnId(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-theme rounded-lg bg-theme-card text-theme-primary placeholder:text-theme-muted focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
                 <button
                   onClick={handleSearch}

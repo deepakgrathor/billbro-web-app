@@ -24,7 +24,7 @@ const SelectBBPSOperator = ({ data, setStep, setData }) => {
   const filteredData = useMemo(() => {
     if (!search) return data;
     return data?.filter((a) =>
-      a.operator_name?.toLowerCase().includes(search.toLowerCase())
+      a.operator_name?.toLowerCase().includes(search.toLowerCase()),
     );
   }, [data, search]);
 
@@ -52,17 +52,17 @@ const SelectBBPSOperator = ({ data, setStep, setData }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white relative">
+    <div className="min-h-screen  bg-gradient-to-b from-white via-slate-50 to-white relative">
       {/* soft background */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-24 right-[-80px] h-72 w-72 rounded-full bg-sky-400/10 blur-3xl" />
         <div className="absolute bottom-[-120px] left-[-80px] h-80 w-80 rounded-full bg-fuchsia-400/10 blur-3xl" />
       </div>
 
-      <div className="px-3 sm:px-4 pt-4 pb-8 max-w-xl mx-auto">
+      <div className="px-3 sm:px-4 pt-4 pb-8 max-w-xl mx-auto bg-theme-base">
         {/* Header Card */}
         <motion.div
-          className="rounded-3xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.06)] overflow-hidden"
+          className="rounded-3xl border border-slate-700 bg-slate-900  shadow-[0_18px_55px_rgba(2,6,23,0.06)] overflow-hidden"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
         >
@@ -79,10 +79,10 @@ const SelectBBPSOperator = ({ data, setStep, setData }) => {
           </div>
 
           {/* Search */}
-          <div className="p-4 bg-white border-t border-slate-200">
-            <div className="rounded-3xl border border-slate-200 bg-slate-50 p-3">
+          <div className="p-4  border-t border-slate-700">
+            <div className="rounded-3xl border border-slate-700  p-3">
               <div className="flex items-center gap-3">
-                <div className="h-11 w-11 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shrink-0">
+                <div className="h-11 w-11 rounded-2xl  border border-slate-700 flex items-center justify-center shrink-0">
                   <IoSearchOutline className="text-xl text-slate-500" />
                 </div>
 
@@ -91,7 +91,7 @@ const SelectBBPSOperator = ({ data, setStep, setData }) => {
                   placeholder="Search your biller..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="flex-1 bg-transparent outline-none text-base font-bold text-slate-900 placeholder:text-slate-400 min-w-0"
+                  className="flex-1 bg-transparent outline-none text-base font-bold text-slate-400 placeholder:text-slate-400 min-w-0"
                 />
 
                 {search?.length > 0 && (
@@ -150,7 +150,7 @@ const SelectBBPSOperator = ({ data, setStep, setData }) => {
                       <button
                         type="button"
                         onClick={() => handleClick({ item })}
-                        className={`w-full text-left rounded-3xl border bg-white shadow-[0_10px_30px_rgba(2,6,23,0.06)] overflow-hidden transition
+                        className={`w-full text-left rounded-3xl border border-theme bg-theme-card shadow-theme-card bg-white shadow-[0_10px_30px_rgba(2,6,23,0.06)] overflow-hidden transition
                           ${
                             isSelected
                               ? "border-slate-900"
@@ -182,7 +182,7 @@ const SelectBBPSOperator = ({ data, setStep, setData }) => {
 
                           {/* text */}
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm sm:text-base font-black text-slate-900 leading-snug line-clamp-2">
+                            <p className="text-sm sm:text-base font-black text-theme-primary leading-snug line-clamp-2">
                               {item.operator_name}
                             </p>
                             {/* <p className="text-[11px] font-semibold text-slate-500 mt-1">
@@ -229,9 +229,7 @@ const SelectBBPSOperator = ({ data, setStep, setData }) => {
                   </h3>
                   <p className="mt-1 text-sm text-slate-500">
                     We couldn’t find any biller matching{" "}
-                    <span className="font-bold text-slate-700">
-                      “{search}”
-                    </span>
+                    <span className="font-bold text-slate-700">“{search}”</span>
                     .
                   </p>
 

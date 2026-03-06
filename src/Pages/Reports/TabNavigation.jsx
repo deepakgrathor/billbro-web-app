@@ -44,7 +44,7 @@ const TabNavigation = ({ tabs, activeTab, onTabChange }) => {
     <div
       className={`sticky top-18 z-30 pb-2 mb-2 transition-shadow duration-200 `}
     >
-      <div className="relative bg-gray-100 rounded-full p-1">
+      <div className="relative bg-theme-card-2 rounded-full p-1 border border-theme bg-theme-card shadow-theme-card">
         {/* Scrollable container */}
         <div
           ref={scrollContainerRef}
@@ -52,7 +52,7 @@ const TabNavigation = ({ tabs, activeTab, onTabChange }) => {
         >
           {/* Animated indicator */}
           <div
-            className="absolute top-0.5 py-3.5 bg-white rounded-full shadow-sm transition-all duration-300 ease-out pointer-events-none"
+            className="absolute top-0.5 py-3.5 bg-theme-card rounded-full shadow-sm transition-all duration-300 ease-out pointer-events-none"
             style={indicatorStyle}
           />
 
@@ -63,7 +63,7 @@ const TabNavigation = ({ tabs, activeTab, onTabChange }) => {
               ref={(el) => (tabsRef.current[index] = el)}
               onClick={() => onTabChange(tab.id)}
               className={`flex-shrink-0 px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-colors duration-300 relative z-10 whitespace-nowrap ${
-                activeTab === tab.id ? "text-gray-900" : "text-gray-600"
+                activeTab === tab.id ? "text-theme-primary" : "text-theme-secondary"
               }`}
             >
               {tab.label}

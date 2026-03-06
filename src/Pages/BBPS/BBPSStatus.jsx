@@ -466,7 +466,7 @@ const BBPSStatus = () => {
     <img
       width={70}
       height={30}
-      src="https://ik.imagekit.io/isjriggan/images%20(1).png"
+      src="https://ik.imagekit.io/43tomntsa/images__1_-removebg-preview.png"
       alt="Bharat Connect"
       // className="h-8 w-auto"
     />

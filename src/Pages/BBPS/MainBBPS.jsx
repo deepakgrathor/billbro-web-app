@@ -89,7 +89,7 @@ const MainBBPS = () => {
         <img
           width={100}
           height={50}
-          src="https://ik.imagekit.io/isjriggan/images%20(1).png"
+          src="https://ik.imagekit.io/43tomntsa/images__1_-removebg-preview.png"
           alt=""
         />
       </div>
@@ -154,7 +154,7 @@ const MainBBPS = () => {
       )}
 
       {step === 2 && (
-        <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white relative">
+        <div className="min-h-screen  bg-gradient-to-b from-white via-slate-50 to-white relative">
           {/* subtle background */}
           <div className="pointer-events-none absolute inset-0 -z-10">
             <div className="absolute -top-24 right-[-80px] h-72 w-72 rounded-full bg-sky-400/10 blur-3xl" />
@@ -175,7 +175,7 @@ const MainBBPS = () => {
 
           {/* Content */}
           <motion.div
-            className="pt-16 pb-28 px-3 sm:px-4 max-w-xl mx-auto"
+            className="pt-16  pb-28 px-3 sm:px-4 max-w-xl mx-auto"
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25 }}

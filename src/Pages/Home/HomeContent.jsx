@@ -583,7 +583,9 @@ const HomeContent = () => {
           <section className="mb-6">
             <div className="flex items-end justify-between mb-3">
               <div>
-                <p className="text-xs font-semibold text-theme-secondary">Payments</p>
+                <p className="text-xs font-semibold text-theme-secondary">
+                  Payments
+                </p>
                 <h2 className="text-lg font-black tracking-tight text-theme-primary">
                   Quick Services
                 </h2>
@@ -748,7 +750,7 @@ const HomeContent = () => {
             <div className="relative p-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-indigo-600 to-fuchsia-600 border border-white/20 flex items-center justify-center">
+                  <div className="h-14 w-14 rounded-2xl bg-gradient-to-br  from-indigo-600 to-fuchsia-600 border border-white/20 flex items-center justify-center">
                     <img
                       src="https://ik.imagekit.io/43tomntsa/refer.png"
                       alt="Refer"
@@ -758,13 +760,13 @@ const HomeContent = () => {
                   </div>
 
                   <div className="leading-tight">
-                    <p className="text-[12px] font-semibold text-black">
+                    <p className="text-[12px] font-semibold text-slate-500">
                       Invite friends to{" "}
-                      <span className="font-black text-black">
+                      <span className="font-black text-slate-500">
                         {BRAND_NAME}
                       </span>
                     </p>
-                    <p className="text-[20px] font-black text-black">
+                    <p className="text-[20px] font-black text-theme-primary">
                       Earn ₹{referralAmount} instantly
                     </p>
                     <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-gray-200 border border-gray-300 px-2.5 py-1">
@@ -778,7 +780,7 @@ const HomeContent = () => {
 
                 <button
                   onClick={() => navigate("/refer")}
-                  className="shrink-0 rounded-2xl bg-black text-white px-4 py-3 text-sm font-extrabold shadow-lg active:scale-[0.98] transition inline-flex items-center gap-2"
+                  className="shrink-0 rounded-2xl  bg-black text-white px-4 py-3 text-sm font-extrabold shadow-lg active:scale-[0.98] transition inline-flex items-center gap-2"
                 >
                   <MdOutlineShare size={18} />
                   Invite
@@ -798,7 +800,9 @@ const HomeContent = () => {
               <MdWhatsapp size={26} className="text-white" />
             </div>
             <div className="flex-1 text-left">
-              <p className="text-sm font-black text-theme-primary">Need help?</p>
+              <p className="text-sm font-black text-theme-primary">
+                Need help?
+              </p>
               <p className="text-xs text-theme-secondary">
                 Chat with our support team
               </p>

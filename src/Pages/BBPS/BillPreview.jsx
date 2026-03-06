@@ -60,7 +60,7 @@
 //       <img
 //         width={92}
 //         height={34}
-//         src="https://ik.imagekit.io/isjriggan/images%20(1).png"
+//         src="https://ik.imagekit.io/43tomntsa/images__1_-removebg-preview.png"
 //         alt="BBPS"
 //         className="object-contain"
 //       />
@@ -625,7 +625,7 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
       <img
         width={100}
         height={50}
-        src="https://ik.imagekit.io/isjriggan/images%20(1).png"
+        src="https://ik.imagekit.io/43tomntsa/images__1_-removebg-preview.png"
         alt="BBPS"
         className="object-contain"
       />
@@ -681,7 +681,7 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
       throw new Error(
         payload.Remarks ||
           payload.message ||
-          "Transaction failed. Please try again."
+          "Transaction failed. Please try again.",
       );
     }
 
@@ -710,7 +710,7 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
     throw new Error(
       payload.Remarks ||
         payload.message ||
-        "Transaction failed. Please try again."
+        "Transaction failed. Please try again.",
     );
   };
 
@@ -724,7 +724,7 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
 
     let message = error?.message || "Something went wrong. Please try again.";
     const errorKey = Object.keys(errorMessages).find((key) =>
-      message.toLowerCase().includes(key.toLowerCase())
+      message.toLowerCase().includes(key.toLowerCase()),
     );
     if (errorKey) message = errorMessages[errorKey];
 
@@ -795,11 +795,11 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
       } catch (error) {
         console.error("❌ Post-UPI Bill Payment Error:", error);
         showError(
-          `Payment successful but bill payment failed. Contact support with Order ID: ${upiOrderId}`
+          `Payment successful but bill payment failed. Contact support with Order ID: ${upiOrderId}`,
         );
       }
     },
-    [amount, number, operatorData, dispatch, navigate, showError]
+    [amount, number, operatorData, dispatch, navigate, showError],
   );
 
   // UPI Payment Hook
@@ -808,7 +808,7 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
     initiatePayment,
     getLoadingMessage,
   } = useUPIPayment(performBillPaymentAfterUPI, (error) =>
-    console.error("UPI Payment Error:", error)
+    console.error("UPI Payment Error:", error),
   );
 
   // Main Payment Handler
@@ -849,13 +849,13 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
       ? "Processing Bill Payment..."
       : getLoadingMessage()
     : walletSelect && !isWalletSufficient(numericAmount)
-    ? "💰 Insufficient Wallet Balance"
-    : `Pay ₹${numericAmount || 0}`;
+      ? "💰 Insufficient Wallet Balance"
+      : `Pay ₹${numericAmount || 0}`;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white">
+    <div className="min-h-screen bg-theme-base">
       {/* Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-theme-header backdrop-blur-xl border-b border-theme">
         <CommonHeader
           style={{ fontSize: 13 }}
           title={title}
@@ -866,18 +866,18 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
 
       {/* Content */}
       <motion.div
-        className="pt-16 pb-28 px-3 sm:px-4 max-w-xl mx-auto"
+        className="pt-14 pb-24 px-3 sm:px-4 max-w-xl mx-auto"
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25 }}
       >
         {/* Top Summary Card */}
-        <div className="mt-4 rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.08)]">
+        <div className="mt-5 rounded-2xl overflow-hidden border border-theme bg-theme-card shadow-theme-card">
           {/* Header strip */}
-          <div className="p-5 bg-slate-900 text-white">
+          <div className="p-4 bg-slate-900 text-white">
             <div className="flex items-center gap-3">
               <div className="relative shrink-0">
-                <div className="h-12 w-12 rounded-2xl bg-white/10 border border-white/15 overflow-hidden">
+                <div className="h-10 w-10 rounded-xl bg-white/10 border border-white/15 overflow-hidden">
                   <img
                     src={DummyAvatarForPassbook}
                     className="h-full w-full object-cover"
@@ -889,57 +889,58 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
               </div>
 
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-black truncate">
+                <p className="text-sm font-bold truncate">
                   {data?.userName || "Customer"}
                 </p>
-                <p className="text-xs text-white/75 font-semibold truncate">
+                <p className="text-xs text-white/75 font-medium truncate">
                   {data?.cellNumber ? `📱 ${data.cellNumber}` : "—"}
                 </p>
               </div>
 
-              <div className="h-11 w-11 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
+              <div className="h-9 w-9 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
                 <MdCheckCircle className="text-2xl" />
               </div>
             </div>
           </div>
 
           {/* Details */}
-          <div className="p-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="p-3 sm:p-4">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               <InfoPill
-                icon={<MdCalendarToday className="text-slate-700" />}
+                icon={<MdCalendarToday className="text-theme-secondary" />}
                 label="Bill Date"
                 value={data?.billdate || "N/A"}
               />
               <InfoPill
-                danger
-                icon={<MdCalendarToday className="text-rose-700" />}
+                icon={<MdCalendarToday className="text-theme-secondary" />}
                 label="Due Date"
                 value={data?.dueDate || "N/A"}
               />
             </div>
 
             {/* Amount input */}
-            <div className="mt-4">
+            <div className="mt-3">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-[11px] font-black text-slate-700 tracking-wide uppercase">
+                <p className="text-[10px] font-bold text-theme-secondary tracking-wide uppercase">
                   Amount
                 </p>
                 {data?.acceptPartPay ? (
-                  <span className="text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-1 rounded-full">
-                    Part Pay Enabled
+                  <span className="text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full">
+                    Part Pay
                   </span>
                 ) : (
-                  <span className="text-[10px] font-black bg-slate-100 text-slate-700 border border-slate-200 px-2 py-1 rounded-full">
-                    Fixed Amount
+                  <span className="text-[10px] font-bold bg-theme-card-2 text-theme-secondary border border-theme px-2 py-0.5 rounded-full">
+                    Fixed
                   </span>
                 )}
               </div>
 
-              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-3">
-                <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shrink-0">
-                    <span className="text-xl font-black text-slate-900">₹</span>
+              <div className="rounded-2xl border border-theme bg-theme-card-2 p-3">
+                <div className="flex items-center gap-2">
+                  <div className="h-10 w-10 rounded-xl bg-theme-card border border-theme flex items-center justify-center shrink-0">
+                    <span className="text-base font-black text-theme-primary">
+                      ₹
+                    </span>
                   </div>
 
                   <input
@@ -952,13 +953,13 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
                     }}
                     inputMode="numeric"
                     placeholder="Enter Amount"
-                    className="w-full bg-transparent outline-none text-3xl font-black text-slate-900 placeholder:text-slate-300 disabled:opacity-50"
+                    className="w-full bg-transparent outline-none text-2xl sm:text-3xl font-black text-theme-primary placeholder:text-theme-muted disabled:opacity-50"
                   />
                 </div>
 
                 {/* Quick add */}
                 {data?.acceptPartPay && (
-                  <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+                  <div className="mt-2 flex gap-1.5 overflow-x-auto pb-1">
                     {QUICK_ADD.map((v) => {
                       const active = selectedQuick === v;
                       return (
@@ -967,11 +968,11 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
                           type="button"
                           onClick={() => !isLoading && handleQuickAdd(v)}
                           disabled={isLoading}
-                          className={`shrink-0 px-3 py-2 rounded-2xl border text-xs font-black active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed
+                          className={`shrink-0 px-2.5 py-1.5 rounded-xl border text-xs font-bold active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed
                             ${
                               active
                                 ? "bg-slate-900 text-white border-slate-900"
-                                : "bg-white text-slate-800 border-slate-200"
+                                : "bg-theme-card text-theme-primary border-theme"
                             }`}
                         >
                           +₹{v}
@@ -984,7 +985,7 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
             </div>
 
             {/* Payment Method Selector - REUSABLE COMPONENT */}
-            <div className="mt-5">
+            <div className="mt-3">
               <PaymentMethodSelector
                 walletBalance={walletBalance}
                 payableAmount={numericAmount}
@@ -993,19 +994,18 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
             </div>
 
             {/* Note */}
-            <div className="mt-5 rounded-3xl border border-slate-200 bg-slate-50 p-4">
-              <div className="flex gap-3">
-                <div className="h-10 w-10 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shrink-0">
-                  <MdInfo className="text-xl text-slate-700" />
+            <div className="mt-4 rounded-2xl border border-theme bg-theme-card-2 p-3">
+              <div className="flex gap-2.5">
+                <div className="h-8 w-8 rounded-xl bg-theme-card border border-theme flex items-center justify-center shrink-0">
+                  <MdInfo className="text-base text-theme-secondary" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-black text-slate-900">
+                  <p className="text-xs font-bold text-theme-primary">
                     Important note
                   </p>
-                  <p className="mt-1 text-xs text-slate-600 leading-relaxed">
-                    The service provider may occasionally take up to 72 hours to
-                    process your bill payment. You will be notified once the
-                    payment is confirmed.
+                  <p className="mt-0.5 text-xs text-theme-secondary leading-relaxed">
+                    The service provider may take up to 72 hours to process your
+                    bill payment. You will be notified once confirmed.
                   </p>
                 </div>
               </div>
@@ -1015,29 +1015,31 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
       </motion.div>
 
       {/* Bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-t border-slate-200 p-3 sm:p-4 safe-area-bottom">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-theme-header backdrop-blur-xl border-t border-theme p-3 sm:p-4">
         <div className="max-w-xl mx-auto">
           <button
             onClick={handlePayment}
             disabled={isButtonDisabled}
-            className={`w-full rounded-2xl px-4 py-4 font-black text-base flex items-center justify-center gap-2 transition active:scale-[0.99]
+            className={`w-full rounded-2xl px-4 py-3.5 sm:py-4 font-black text-sm sm:text-base flex items-center justify-center gap-2 transition active:scale-[0.99]
               ${
                 isButtonDisabled
-                  ? "bg-slate-200 text-slate-500 cursor-not-allowed"
-                  : "bg-slate-900 text-white shadow-[0_18px_55px_rgba(2,6,23,0.18)]"
+                  ? "bg-theme-card-2 text-theme-muted cursor-not-allowed"
+                  : "bg-slate-900 text-white shadow-[0_8px_30px_rgba(2,6,23,0.18)]"
               }`}
           >
             {buttonTitle}
-            {!isButtonDisabled && <IoFlashSharp className="text-xl" />}
+            {!isButtonDisabled && (
+              <IoFlashSharp className="text-base sm:text-xl" />
+            )}
           </button>
 
           {/* Balance helper */}
           {walletSelect &&
             isWalletSufficient(numericAmount) &&
             numericAmount > 0 && (
-              <p className="mt-2 text-center text-[11px] text-slate-500 font-semibold">
+              <p className="mt-1.5 text-center text-[11px] text-theme-muted font-semibold">
                 Paying from wallet • Balance after pay:{" "}
-                <span className="font-black text-slate-700">
+                <span className="font-black text-theme-secondary">
                   ₹{(walletBalance - numericAmount).toFixed(2)}
                 </span>
               </p>
@@ -1053,32 +1055,32 @@ const BillPreview = ({ data, operatorData, number, ButtonName }) => {
 const InfoPill = ({ icon, label, value, danger }) => {
   return (
     <div
-      className={`rounded-3xl border p-4 flex items-center justify-between gap-3
+      className={`rounded-2xl border p-3 flex items-center gap-2
         ${
-          danger ? "bg-rose-50 border-rose-200" : "bg-slate-50 border-slate-200"
+          danger ? "bg-rose-50 border-rose-200" : "bg-theme-card-2 border-theme"
         }`}
     >
-      <div className="flex items-center gap-3 min-w-0">
-        <div
-          className={`h-10 w-10 rounded-2xl border flex items-center justify-center shrink-0
-            ${
-              danger ? "bg-white border-rose-200" : "bg-white border-slate-200"
-            }`}
+      <div
+        className={`h-8 w-8 rounded-xl border flex items-center justify-center shrink-0
+          ${
+            danger
+              ? "bg-rose-50 border-rose-200"
+              : "bg-theme-card-2 border-theme"
+          }`}
+      >
+        {icon}
+      </div>
+      <div className="min-w-0">
+        <p className="text-[10px] font-bold text-theme-secondary uppercase tracking-wide">
+          {label}
+        </p>
+        <p
+          className={`text-xs sm:text-sm font-bold truncate ${
+            danger ? "text-rose-700" : "text-theme-primary"
+          }`}
         >
-          {icon}
-        </div>
-        <div className="min-w-0">
-          <p className="text-[11px] font-black text-slate-700 uppercase tracking-wide">
-            {label}
-          </p>
-          <p
-            className={`text-sm font-black truncate ${
-              danger ? "text-rose-700" : "text-slate-900"
-            }`}
-          >
-            {value}
-          </p>
-        </div>
+          {value}
+        </p>
       </div>
     </div>
   );
