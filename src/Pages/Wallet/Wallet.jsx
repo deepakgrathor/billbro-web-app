@@ -941,25 +941,25 @@ const Wallet = () => {
   return (
     <div
       ref={mountRef}
-      className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white"
+      className="min-h-screen bg-theme-base"
     >
       {/* Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-theme-header backdrop-blur-xl border-b border-theme">
         <CommonHeader title={"Add Money"} handleclick={() => navigate("/")} />
       </div>
 
       {/* Content */}
       <div className="pt-20 pb-[150px] px-3 sm:px-4 max-w-xl mx-auto">
         {/* Balance Card */}
-        <div className="rounded-3xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.08)] overflow-hidden">
+        <div className="rounded-3xl border border-theme bg-theme-card shadow-[0_18px_55px_rgba(2,6,23,0.08)] overflow-hidden">
           <div className="p-4 sm:p-5">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
-                <p className="text-[11px] font-semibold tracking-widest text-slate-500 uppercase">
+                <p className="text-[11px] font-semibold tracking-widest text-theme-secondary uppercase">
                   Available Balance
                 </p>
                 <div className="mt-2 flex items-baseline gap-2 flex-wrap">
-                  <p className="text-3xl sm:text-4xl font-black text-slate-900 truncate">
+                  <p className="text-3xl sm:text-4xl font-black text-theme-primary truncate">
                     ₹
                     {walletBalance.toLocaleString("en-IN", {
                       minimumFractionDigits: 2,
@@ -972,7 +972,7 @@ const Wallet = () => {
                     </span>
                   )}
                 </div>
-                <p className="mt-2 text-xs text-slate-500">
+                <p className="mt-2 text-xs text-theme-secondary">
                   Add money to pay faster for Mobile & DTH Recharge.
                 </p>
               </div>
@@ -982,14 +982,14 @@ const Wallet = () => {
               </div>
             </div>
           </div>
-          <div className="h-px bg-slate-200" />
-          <div className="px-4 sm:px-5 py-3 bg-slate-50 flex items-center justify-between gap-2">
-            <p className="text-xs font-semibold text-slate-600">
+          <div className="h-px bg-theme-card-2" />
+          <div className="px-4 sm:px-5 py-3 bg-theme-card-2 flex items-center justify-between gap-2">
+            <p className="text-xs font-semibold text-theme-secondary">
               Limits: ₹1 – ₹10,000
             </p>
-            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1">
+            <div className="inline-flex items-center gap-2 rounded-full border border-theme bg-theme-card px-3 py-1">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[11px] font-bold text-slate-700">
+              <span className="text-[11px] font-bold text-theme-secondary">
                 UPI Intent
               </span>
             </div>
@@ -997,23 +997,23 @@ const Wallet = () => {
         </div>
 
         {/* Amount input */}
-        <div className="mt-4 rounded-3xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.06)] overflow-hidden">
+        <div className="mt-4 rounded-3xl border border-theme bg-theme-card shadow-[0_18px_55px_rgba(2,6,23,0.06)] overflow-hidden">
           <div className="p-4 sm:p-5">
             <div className="flex items-center gap-2">
-              <div className="h-5 w-1 rounded-full bg-slate-900" />
-              <h3 className="text-base font-black text-slate-900">
+              <div className="h-5 w-1 rounded-full bg-theme-primary" />
+              <h3 className="text-base font-black text-theme-primary">
                 Enter amount
               </h3>
             </div>
 
-            <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 flex items-center gap-3">
-              <span className="text-2xl sm:text-3xl font-black text-slate-900">
+            <div className="mt-4 rounded-2xl border border-theme bg-theme-card-2 px-4 py-4 flex items-center gap-3">
+              <span className="text-2xl sm:text-3xl font-black text-theme-primary">
                 ₹
               </span>
               <input
                 value={amount}
                 onChange={handleChange}
-                className="min-w-0 flex-1 bg-transparent outline-none text-2xl sm:text-3xl font-black text-slate-900 placeholder-slate-400"
+                className="min-w-0 flex-1 bg-transparent outline-none text-2xl sm:text-3xl font-black text-theme-primary placeholder-theme-muted"
                 maxLength={5}
                 placeholder="0"
                 type="text"
@@ -1028,7 +1028,7 @@ const Wallet = () => {
               )}
             </div>
 
-            <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
+            <div className="mt-3 flex items-center justify-between text-xs text-theme-secondary">
               <span className="font-semibold">Min: ₹1</span>
               <span className="font-semibold">Max: ₹10,000</span>
             </div>
@@ -1036,7 +1036,7 @@ const Wallet = () => {
 
           {/* Quick chips (responsive for fold) */}
           <div className="px-4 sm:px-5 pb-4 sm:pb-5">
-            <p className="text-[11px] font-semibold tracking-widest text-slate-500 uppercase">
+            <p className="text-[11px] font-semibold tracking-widest text-theme-secondary uppercase">
               Quick select
             </p>
 
@@ -1054,7 +1054,7 @@ const Wallet = () => {
                       "px-3 py-2 text-[11px] sm:px-4 sm:text-xs",
                       active
                         ? "bg-slate-900 text-white border-slate-900"
-                        : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50",
+                        : "bg-theme-card text-theme-secondary border-theme hover:bg-theme-card-2",
                       loading ? "opacity-60 cursor-not-allowed" : "",
                     ].join(" ")}
                   >
@@ -1067,11 +1067,11 @@ const Wallet = () => {
         </div>
 
         {/* Why add money */}
-        <div className="mt-4 rounded-3xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.06)]">
+        <div className="mt-4 rounded-3xl border border-theme bg-theme-card shadow-[0_18px_55px_rgba(2,6,23,0.06)]">
           <div className="p-4 sm:p-5">
             <div className="flex items-center gap-2">
-              <MdInfo className="text-slate-900" size={18} />
-              <h3 className="text-base font-black text-slate-900">
+              <MdInfo className="text-theme-primary" size={18} />
+              <h3 className="text-base font-black text-theme-primary">
                 Why add money?
               </h3>
             </div>
@@ -1082,10 +1082,10 @@ const Wallet = () => {
                   <MdSpeed size={20} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-black text-slate-900">
+                  <p className="text-sm font-black text-theme-primary">
                     Instant Recharge
                   </p>
-                  <p className="mt-1 text-xs text-slate-600">
+                  <p className="mt-1 text-xs text-theme-secondary">
                     Pay DTH & recharge faster using wallet balance.
                   </p>
                 </div>
@@ -1096,8 +1096,8 @@ const Wallet = () => {
                   <MdSecurity size={20} />
                 </divc>
                 <div className="min-w-0">
-                  <p className="text-sm font-black text-slate-900">Secure</p>
-                  <p className="mt-1 text-xs text-slate-600">
+                  <p className="text-sm font-black text-theme-primary">Secure</p>
+                  <p className="mt-1 text-xs text-theme-secondary">
                     Bank-grade encryption for all transactions.
                   </p>
                 </div>
@@ -1108,8 +1108,8 @@ const Wallet = () => {
                   <MdVerifiedUser size={20} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-black text-slate-900">Verified</p>
-                  <p className="mt-1 text-xs text-slate-600">
+                  <p className="text-sm font-black text-theme-primary">Verified</p>
+                  <p className="mt-1 text-xs text-theme-secondary">
                     Every payment is verified & authenticated.
                   </p>
                 </div>
@@ -1117,11 +1117,11 @@ const Wallet = () => {
             </div>
 
             {/* Payment info */}
-            <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-              <p className="text-xs font-black text-slate-900">
+            <div className="mt-5 rounded-2xl border border-theme bg-theme-card-2 p-4">
+              <p className="text-xs font-black text-theme-primary">
                 Payment methods
               </p>
-              <p className="mt-1 text-xs text-slate-600 leading-relaxed">
+              <p className="mt-1 text-xs text-theme-secondary leading-relaxed">
                 We accept UPI payments via GPay, PhonePe, Paytm, BHIM & more.
               </p>
             </div>
@@ -1130,7 +1130,7 @@ const Wallet = () => {
       </div>
 
       {/* Bottom CTA (safe-area responsive) */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/92 backdrop-blur-xl border-t border-slate-200">
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-theme-header backdrop-blur-xl border-t border-theme">
         <div className="max-w-xl mx-auto px-3 sm:px-4 py-3 pb-[calc(env(safe-area-inset-bottom,0px)+12px)]">
           <button
             onClick={handlePayment}
@@ -1170,7 +1170,7 @@ const Wallet = () => {
       {/* Full screen loader overlay (same logic, cleaner UI) */}
       {loading && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
-          <div className="w-full max-w-sm rounded-3xl bg-white border border-slate-200 shadow-2xl p-6">
+          <div className="w-full max-w-sm rounded-3xl bg-theme-card border border-theme shadow-2xl p-6">
             {loadingStage === "creating" && (
               <Stage
                 title="Creating order"
@@ -1204,16 +1204,16 @@ const Wallet = () => {
                 <div className="mx-auto mb-4 h-16 w-16 rounded-2xl bg-emerald-100 flex items-center justify-center">
                   <MdCheckCircle className="text-emerald-600" size={34} />
                 </div>
-                <h3 className="text-xl font-black text-slate-900">
+                <h3 className="text-xl font-black text-theme-primary">
                   Payment successful
                 </h3>
-                <p className="mt-1 text-sm text-slate-600">Redirecting...</p>
+                <p className="mt-1 text-sm text-theme-secondary">Redirecting...</p>
               </div>
             )}
 
             {/* Optional orderId info */}
             {orderId ? (
-              <p className="mt-5 text-[11px] text-center text-slate-500 font-semibold break-all">
+              <p className="mt-5 text-[11px] text-center text-theme-secondary font-semibold break-all">
                 Order ID: {orderId}
               </p>
             ) : null}
@@ -1227,17 +1227,17 @@ const Wallet = () => {
 const Stage = ({ title, desc, icon }) => {
   return (
     <div className="text-center">
-      <div className="mx-auto mb-4 h-16 w-16 rounded-2xl bg-slate-100 flex items-center justify-center">
+      <div className="mx-auto mb-4 h-16 w-16 rounded-2xl bg-theme-card-2 flex items-center justify-center">
         {icon === "spinner" ? (
-          <span className="h-7 w-7 rounded-full border-2 border-slate-900 border-t-transparent animate-spin" />
+          <span className="h-7 w-7 rounded-full border-2 border-violet-600 border-t-transparent animate-spin" />
         ) : icon === "phone" ? (
           <span className="text-3xl">📱</span>
         ) : (
           <span className="text-3xl">⏳</span>
         )}
       </div>
-      <h3 className="text-xl font-black text-slate-900">{title}</h3>
-      <p className="mt-1 text-sm text-slate-600">{desc}</p>
+      <h3 className="text-xl font-black text-theme-primary">{title}</h3>
+      <p className="mt-1 text-sm text-theme-secondary">{desc}</p>
     </div>
   );
 };

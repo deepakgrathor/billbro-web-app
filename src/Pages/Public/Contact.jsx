@@ -106,12 +106,12 @@ const Contact = () => {
   const rightDesign = useCallback(() => (
     <div className="flex items-center gap-2">
       <BsHeadphones className="text-purple-600" size={18} />
-      <p className="text-xs text-gray-700 font-bold">11AM to 7PM Support</p>
+      <p className="text-xs text-theme-secondary font-bold">11AM to 7PM Support</p>
     </div>
   ), []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-theme-base flex flex-col relative overflow-hidden">
       {/* Animated Background Blobs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
         <div className="absolute top-0 right-0 w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
@@ -120,7 +120,7 @@ const Contact = () => {
       </div>
 
       {/* Fixed Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl shadow-lg border-b border-white/20">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-theme-header backdrop-blur-xl border-b border-theme">
         <CommonHeader
           title={"Live Support"}
           handleclick={() => navigate("/")}
@@ -146,10 +146,10 @@ const Contact = () => {
 
           {/* Heading */}
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-black text-gray-900 mb-3 tracking-tight">
+            <h2 className="text-3xl font-black text-theme-primary mb-3 tracking-tight">
               We're Always Here for You
             </h2>
-            <p className="text-sm text-gray-600 font-medium max-w-md mx-auto">
+            <p className="text-sm text-theme-secondary font-medium max-w-md mx-auto">
               Our support team is available 11AM to 7PM, Mon to Fri to assist you with any questions or concerns
             </p>
           </div>
@@ -159,17 +159,17 @@ const Contact = () => {
             {/* WhatsApp Card */}
             <div 
               onClick={handleWhatsAppClick}
-              className="bg-white/90 backdrop-blur-sm rounded-2xl p-5 border-2 border-green-200 hover:border-green-400 shadow-lg hover:shadow-xl transition-all cursor-pointer group active:scale-[0.99]"
+              className="bg-theme-card backdrop-blur-sm rounded-2xl p-5 border-2 border-green-200 hover:border-green-400 shadow-lg hover:shadow-xl transition-all cursor-pointer group active:scale-[0.99]"
             >
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                   <BsWhatsapp className="text-white text-2xl" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-base font-black text-gray-900 mb-1">
+                  <h3 className="text-base font-black text-theme-primary mb-1">
                     WhatsApp Chat
                   </h3>
-                  <p className="text-xs text-gray-600 font-medium">
+                  <p className="text-xs text-theme-secondary font-medium">
                     Instant support via WhatsApp messaging
                   </p>
                 </div>
@@ -215,14 +215,14 @@ const Contact = () => {
           </div>
 
           {/* Info Card */}
-          <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-5 border-2 border-purple-200">
+          <div className="bg-theme-card-2 rounded-2xl p-5 border-2 border-purple-200">
             <div className="flex items-start gap-3">
               <MdSupportAgent className="text-purple-600 text-2xl flex-shrink-0 mt-1" />
               <div>
-                <h4 className="text-sm font-black text-gray-900 mb-2">
+                <h4 className="text-sm font-black text-theme-primary mb-2">
                   Quick Response Guaranteed
                 </h4>
-                <p className="text-xs text-gray-700 leading-relaxed">
+                <p className="text-xs text-theme-secondary leading-relaxed">
                   Our dedicated support team typically responds within minutes. For urgent matters, 
                   we recommend using WhatsApp for the fastest response.
                 </p>

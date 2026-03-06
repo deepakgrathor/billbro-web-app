@@ -200,7 +200,7 @@
 //                   {/* glow border on focus */}
 //                   <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-fuchsia-500 rounded-3xl opacity-0 focus-within:opacity-20 blur transition-opacity" />
 
-//                   <div className="relative rounded-3xl bg-white/90 backdrop-blur-xl border border-slate-200 shadow-[0_12px_35px_rgba(2,6,23,0.10)] p-4 sm:p-5">
+//                   <div className="relative rounded-3xl bg-theme-card backdrop-blur-xl border border-theme shadow-[0_12px_35px_rgba(2,6,23,0.10)] p-4 sm:p-5">
 //                     <label className="block text-[11px] font-black text-slate-700 uppercase tracking-wider">
 //                       {data?.placeholder}
 //                     </label>
@@ -218,7 +218,7 @@
 //                         value={number}
 //                         onChange={(e) => setNumber(e.target.value)}
 //                         placeholder={`Enter ${data?.placeholder}`}
-//                         className="flex-1 bg-transparent outline-none text-base sm:text-lg font-black tracking-wider text-slate-900 placeholder:text-slate-400 min-w-0"
+//                         className="flex-1 bg-transparent outline-none text-base sm:text-lg font-black tracking-wider text-theme-primary placeholder:text-theme-muted min-w-0"
 //                       />
 //                     </div>
 
@@ -246,17 +246,17 @@
 //                   setContent(FindContentDesign);
 //                   setTitle(`How to find ${data.placeholder}`);
 //                 }}
-//                 className="mt-4 w-full rounded-3xl bg-white/80 backdrop-blur-xl border border-white/30 shadow-[0_12px_35px_rgba(2,6,23,0.06)] p-4 flex items-center justify-between hover:shadow-[0_16px_45px_rgba(2,6,23,0.10)] transition"
+//                 className="mt-4 w-full rounded-3xl bg-theme-card backdrop-blur-xl border border-theme shadow-[0_12px_35px_rgba(2,6,23,0.06)] p-4 flex items-center justify-between hover:shadow-[0_16px_45px_rgba(2,6,23,0.10)] transition"
 //               >
 //                 <div className="flex items-center gap-3 min-w-0">
 //                   <div className="h-11 w-11 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center shrink-0">
 //                     <AiOutlineInfoCircle className="text-indigo-600 text-xl" />
 //                   </div>
 //                   <div className="min-w-0 text-left">
-//                     <p className="text-sm font-black text-slate-900 truncate">
+//                     <p className="text-sm font-black text-theme-primary truncate">
 //                       How to find {data.placeholder}
 //                     </p>
-//                     <p className="text-[11px] font-semibold text-slate-500 truncate">
+//                     <p className="text-[11px] font-semibold text-theme-secondary truncate">
 //                       Tap to view step-by-step guide
 //                     </p>
 //                   </div>
@@ -269,7 +269,7 @@
 //             </div>
 
 //             {/* Bottom CTA */}
-//             <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/85 backdrop-blur-xl border-t border-white/40 shadow-[0_-10px_30px_rgba(2,6,23,0.08)] p-3 sm:p-4">
+//             <div className="fixed bottom-0 left-0 right-0 z-40 bg-theme-header backdrop-blur-xl border-t border-theme shadow-[0_-10px_30px_rgba(2,6,23,0.08)] p-3 sm:p-4">
 //               <div className="max-w-xl mx-auto">
 //                 <ButtonComp handleClick={() => setStep(3)} title={"Continue"} />
 //               </div>
@@ -333,13 +333,13 @@
 //               <div className="mt-4">
 //                 <div className="relative">
 //                   <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-fuchsia-500 rounded-3xl opacity-0 focus-within:opacity-20 blur transition-opacity" />
-//                   <div className="relative rounded-3xl bg-white/90 backdrop-blur-xl border border-slate-200 shadow-[0_12px_35px_rgba(2,6,23,0.10)] p-4 sm:p-5">
+//                   <div className="relative rounded-3xl bg-theme-card backdrop-blur-xl border border-theme shadow-[0_12px_35px_rgba(2,6,23,0.10)] p-4 sm:p-5">
 //                     <div className="flex items-center justify-between">
 //                       <div>
-//                         <p className="text-[11px] font-black uppercase tracking-wider text-slate-600">
+//                         <p className="text-[11px] font-black uppercase tracking-wider text-theme-secondary">
 //                           Amount
 //                         </p>
-//                         <p className="text-xs text-slate-500 mt-0.5">
+//                         <p className="text-xs text-theme-secondary mt-0.5">
 //                           Enter recharge amount
 //                         </p>
 //                       </div>
@@ -376,7 +376,7 @@
 
 //                     {/* Quick picks */}
 //                     <div className="mt-4">
-//                       <p className="text-[11px] font-bold text-slate-600 mb-2">
+//                       <p className="text-[11px] font-bold text-theme-secondary mb-2">
 //                         Quick Add
 //                       </p>
 //                       <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
@@ -431,7 +431,7 @@
 //                       </div>
 
 //                       <div className="min-w-0">
-//                         <p className="text-[11px] font-black uppercase tracking-wider text-slate-600">
+//                         <p className="text-[11px] font-black uppercase tracking-wider text-theme-secondary">
 //                           Wallet Balance
 //                         </p>
 
@@ -677,7 +677,7 @@
 //             </div>
 
 //             {/* Bottom CTA */}
-//             <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/85 backdrop-blur-xl border-t border-white/40 shadow-[0_-10px_30px_rgba(2,6,23,0.08)] p-3 sm:p-4">
+//             <div className="fixed bottom-0 left-0 right-0 z-40 bg-theme-header backdrop-blur-xl border-t border-theme shadow-[0_-10px_30px_rgba(2,6,23,0.08)] p-3 sm:p-4">
 //               <div className="max-w-xl mx-auto">
 //                 <ButtonComp
 //                   disabled={
@@ -770,7 +770,7 @@ const DTHHome = () => {
   };
 
   const FindContentDesign = () => {
-    return <p className="text-xs text-gray-500">{data.findContent}</p>;
+    return <p className="text-xs text-theme-secondary">{data.findContent}</p>;
   };
 
   // Wallet DTH Recharge
@@ -984,13 +984,13 @@ const DTHHome = () => {
         )}
 
         {step === 2 && (
-          <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 relative overflow-hidden">
+          <div className="min-h-screen bg-theme-base relative overflow-hidden">
             <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
               <div className="absolute -top-24 right-[-80px] h-72 w-72 rounded-full bg-indigo-400/15 blur-3xl" />
               <div className="absolute bottom-[-120px] left-[-80px] h-80 w-80 rounded-full bg-fuchsia-400/15 blur-3xl" />
             </div>
 
-            <div className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-white/30 shadow-sm">
+            <div className="fixed top-0 w-full z-50 bg-theme-header backdrop-blur-xl border-b border-theme shadow-sm">
               <CommonHeader
                 style={{ fontSize: 12 }}
                 title={`${data?.title}`}
@@ -1019,13 +1019,13 @@ const DTHHome = () => {
                 <div className="relative">
                   <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-fuchsia-500 rounded-3xl opacity-0 focus-within:opacity-20 blur transition-opacity" />
 
-                  <div className="relative rounded-3xl bg-white/90 backdrop-blur-xl border border-slate-200 shadow-[0_12px_35px_rgba(2,6,23,0.10)] p-4 sm:p-5">
-                    <label className="block text-[11px] font-black text-slate-700 uppercase tracking-wider">
+                  <div className="relative rounded-3xl bg-theme-card backdrop-blur-xl border border-theme shadow-[0_12px_35px_rgba(2,6,23,0.10)] p-4 sm:p-5">
+                    <label className="block text-[11px] font-black text-theme-secondary uppercase tracking-wider">
                       {data?.placeholder}
                     </label>
 
                     <div className="mt-3 flex items-center gap-3">
-                      <div className="h-11 w-11 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
+                      <div className="h-11 w-11 rounded-2xl bg-theme-card-2 border border-theme flex items-center justify-center shrink-0">
                         <span className="text-lg">🔢</span>
                       </div>
 
@@ -1037,12 +1037,12 @@ const DTHHome = () => {
                         value={number}
                         onChange={(e) => setNumber(e.target.value)}
                         placeholder={`Enter ${data?.placeholder}`}
-                        className="flex-1 bg-transparent outline-none text-base sm:text-lg font-black tracking-wider text-slate-900 placeholder:text-slate-400 min-w-0"
+                        className="flex-1 bg-transparent outline-none text-base sm:text-lg font-black tracking-wider text-theme-primary placeholder:text-theme-muted min-w-0"
                       />
                     </div>
 
                     <div className="mt-3 flex items-center justify-between gap-3">
-                      <p className="text-[11px] font-semibold text-slate-500">
+                      <p className="text-[11px] font-semibold text-theme-secondary">
                         Make sure it matches your bill / account details
                       </p>
 
@@ -1063,29 +1063,29 @@ const DTHHome = () => {
                   setContent(FindContentDesign);
                   setTitle(`How to find ${data.placeholder}`);
                 }}
-                className="mt-4 w-full rounded-3xl bg-white/80 backdrop-blur-xl border border-white/30 shadow-[0_12px_35px_rgba(2,6,23,0.06)] p-4 flex items-center justify-between hover:shadow-[0_16px_45px_rgba(2,6,23,0.10)] transition"
+                className="mt-4 w-full rounded-3xl bg-theme-card backdrop-blur-xl border border-theme shadow-[0_12px_35px_rgba(2,6,23,0.06)] p-4 flex items-center justify-between hover:shadow-[0_16px_45px_rgba(2,6,23,0.10)] transition"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="h-11 w-11 rounded-2xl bg-indigo-50 border border-indigo-200 flex items-center justify-center shrink-0">
                     <AiOutlineInfoCircle className="text-indigo-600 text-xl" />
                   </div>
                   <div className="min-w-0 text-left">
-                    <p className="text-sm font-black text-slate-900 truncate">
+                    <p className="text-sm font-black text-theme-primary truncate">
                       How to find {data.placeholder}
                     </p>
-                    <p className="text-[11px] font-semibold text-slate-500 truncate">
+                    <p className="text-[11px] font-semibold text-theme-secondary truncate">
                       Tap to view step-by-step guide
                     </p>
                   </div>
                 </div>
 
-                <div className="h-10 w-10 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
-                  <span className="text-slate-400 text-xl">›</span>
+                <div className="h-10 w-10 rounded-2xl bg-theme-card-2 border border-theme flex items-center justify-center shrink-0">
+                  <span className="text-theme-muted text-xl">›</span>
                 </div>
               </button>
             </div>
 
-            <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/85 backdrop-blur-xl border-t border-white/40 shadow-[0_-10px_30px_rgba(2,6,23,0.08)] p-3 sm:p-4">
+            <div className="fixed bottom-0 left-0 right-0 z-40 bg-theme-header backdrop-blur-xl border-t border-theme shadow-[0_-10px_30px_rgba(2,6,23,0.08)] p-3 sm:p-4">
               <div className="max-w-xl mx-auto">
                 <ButtonComp handleClick={() => setStep(3)} title={"Continue"} />
               </div>
@@ -1094,13 +1094,13 @@ const DTHHome = () => {
         )}
 
         {step === 3 && (
-          <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 relative overflow-hidden">
+          <div className="min-h-screen bg-theme-base relative overflow-hidden">
             <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
               <div className="absolute -top-24 right-[-90px] h-80 w-80 rounded-full bg-indigo-400/15 blur-3xl" />
               <div className="absolute bottom-[-140px] left-[-90px] h-96 w-96 rounded-full bg-fuchsia-400/15 blur-3xl" />
             </div>
 
-            <div className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-white/30 shadow-sm">
+            <div className="fixed top-0 w-full z-50 bg-theme-header backdrop-blur-xl border-b border-theme shadow-sm">
               <CommonHeader
                 title={"Review & Confirm"}
                 handleclick={() => !isLoading && setStep(2)}
@@ -1144,13 +1144,13 @@ const DTHHome = () => {
               <div className="mt-4">
                 <div className="relative">
                   <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-fuchsia-500 rounded-3xl opacity-0 focus-within:opacity-20 blur transition-opacity" />
-                  <div className="relative rounded-3xl bg-white/90 backdrop-blur-xl border border-slate-200 shadow-[0_12px_35px_rgba(2,6,23,0.10)] p-4 sm:p-5">
+                  <div className="relative rounded-3xl bg-theme-card backdrop-blur-xl border border-theme shadow-[0_12px_35px_rgba(2,6,23,0.10)] p-4 sm:p-5">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-[11px] font-black uppercase tracking-wider text-slate-600">
+                        <p className="text-[11px] font-black uppercase tracking-wider text-theme-secondary">
                           Amount
                         </p>
-                        <p className="text-xs text-slate-500 mt-0.5">
+                        <p className="text-xs text-theme-secondary mt-0.5">
                           Enter recharge amount
                         </p>
                       </div>
@@ -1163,8 +1163,8 @@ const DTHHome = () => {
                     </div>
 
                     <div className="mt-4 flex items-center gap-3">
-                      <div className="h-12 w-12 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
-                        <span className="text-xl font-black text-slate-900">
+                      <div className="h-12 w-12 rounded-2xl bg-theme-card-2 border border-theme flex items-center justify-center shrink-0">
+                        <span className="text-xl font-black text-theme-primary">
                           ₹
                         </span>
                       </div>
@@ -1182,12 +1182,12 @@ const DTHHome = () => {
                             ""
                           );
                         }}
-                        className="flex-1 bg-transparent outline-none text-lg sm:text-xl font-black tracking-wide text-slate-900 placeholder:text-slate-400 min-w-0 disabled:opacity-50"
+                        className="flex-1 bg-transparent outline-none text-lg sm:text-xl font-black tracking-wide text-theme-primary placeholder:text-theme-muted min-w-0 disabled:opacity-50"
                       />
                     </div>
 
                     <div className="mt-4">
-                      <p className="text-[11px] font-bold text-slate-600 mb-2">
+                      <p className="text-[11px] font-bold text-theme-secondary mb-2">
                         Quick Add
                       </p>
                       <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
@@ -1201,7 +1201,7 @@ const DTHHome = () => {
                               ${
                                 String(amount) === String(item)
                                   ? "bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white border-transparent shadow-md"
-                                  : "bg-white text-slate-700 border-slate-200 hover:border-indigo-200"
+                                  : "bg-theme-card text-theme-secondary border-theme hover:border-indigo-200"
                               }`}
                           >
                             +{item}
@@ -1220,7 +1220,7 @@ const DTHHome = () => {
               />
             </div>
 
-            <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/85 backdrop-blur-xl border-t border-white/40 shadow-[0_-10px_30px_rgba(2,6,23,0.08)] p-3 sm:p-4">
+            <div className="fixed bottom-0 left-0 right-0 z-40 bg-theme-header backdrop-blur-xl border-t border-theme shadow-[0_-10px_30px_rgba(2,6,23,0.08)] p-3 sm:p-4">
               <div className="max-w-xl mx-auto">
                 <ButtonComp
                   disabled={isButtonDisabled}

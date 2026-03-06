@@ -58,9 +58,9 @@ const RaiseComplaintPage = () => {
   };
   if (!transaction) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-theme-base flex items-center justify-center p-4">
         <div className="text-center">
-          <p className="text-gray-600 mb-4">No transaction data found</p>
+          <p className="text-theme-secondary mb-4">No transaction data found</p>
           <button
             onClick={() => navigate(-1)}
             className="px-6 py-2 bg-blue-600 text-white rounded-lg"
@@ -73,13 +73,13 @@ const RaiseComplaintPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-theme-base">
       {/* Header */}
-      <div className="bg-white shadow-sm sticky top-0 z-10">
+      <div className="bg-theme-header shadow-sm sticky top-0 z-10 border-b border-theme">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center gap-4">
           <button
             onClick={() => navigate(-1)}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-theme-card-2 rounded-lg transition-colors"
           >
             <svg
               className="w-6 h-6"
@@ -95,39 +95,39 @@ const RaiseComplaintPage = () => {
               />
             </svg>
           </button>
-          <h1 className="text-xl font-bold text-gray-900">Raise a complaint</h1>
+          <h1 className="text-xl font-bold text-theme-primary">Raise a complaint</h1>
         </div>
       </div>
 
       {/* Content */}
       <div className="max-w-3xl mx-auto p-4">
         {/* Transaction Info */}
-        <div className="bg-white rounded-2xl p-4 mb-4 space-y-3">
-          <div className="bg-gray-50 rounded-xl p-4">
-            <p className="text-sm text-gray-500 mb-1">Transaction ID</p>
-            <p className="text-base font-semibold text-gray-900">
+        <div className="bg-theme-card rounded-2xl p-4 mb-4 space-y-3 border border-theme">
+          <div className="bg-theme-card-2 rounded-xl p-4">
+            <p className="text-sm text-theme-secondary mb-1">Transaction ID</p>
+            <p className="text-base font-semibold text-theme-primary">
               {transaction.id}
             </p>
           </div>
 
-          <div className="bg-gray-50 rounded-xl p-4">
-            <p className="text-sm text-gray-500 mb-1">Date & Time</p>
-            <p className="text-base font-semibold text-gray-900">
+          <div className="bg-theme-card-2 rounded-xl p-4">
+            <p className="text-sm text-theme-secondary mb-1">Date & Time</p>
+            <p className="text-base font-semibold text-theme-primary">
               {transaction.date}
             </p>
           </div>
 
-          <div className="bg-gray-50 rounded-xl p-4">
-            <p className="text-sm text-gray-500 mb-1">Transaction Amount</p>
-            <p className="text-base font-semibold text-gray-900">
+          <div className="bg-theme-card-2 rounded-xl p-4">
+            <p className="text-sm text-theme-secondary mb-1">Transaction Amount</p>
+            <p className="text-base font-semibold text-theme-primary">
               {transaction.amount}
             </p>
           </div>
         </div>
 
         {/* Reason Selection */}
-        <div className="bg-white rounded-2xl p-4 mb-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-theme-card rounded-2xl p-4 mb-4 border border-theme">
+          <h3 className="text-lg font-semibold text-theme-primary mb-4">
             Select a reason
           </h3>
 
@@ -138,7 +138,7 @@ const RaiseComplaintPage = () => {
                 className={`flex items-center gap-3 p-4 rounded-xl cursor-pointer transition-all ${
                   selectedReason === reason
                     ? "bg-blue-50 border-2 border-blue-500"
-                    : "bg-gray-50 border-2 border-transparent hover:bg-gray-100"
+                    : "bg-theme-card-2 border-2 border-transparent hover:bg-theme-card-2"
                 }`}
               >
                 <input
@@ -149,7 +149,7 @@ const RaiseComplaintPage = () => {
                   onChange={(e) => setSelectedReason(e.target.value)}
                   className="w-5 h-5 text-blue-600"
                 />
-                <span className="text-base text-gray-900">{reason}</span>
+                <span className="text-base text-theme-primary">{reason}</span>
               </label>
             ))}
           </div>
@@ -157,22 +157,22 @@ const RaiseComplaintPage = () => {
 
         {/* Description (Optional) */}
         {selectedReason === "Others" && (
-          <div className="bg-white rounded-2xl p-4 mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="bg-theme-card rounded-2xl p-4 mb-4 border border-theme">
+            <h3 className="text-lg font-semibold text-theme-primary mb-4">
               Describe your issue
             </h3>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Please provide more details..."
-              className="w-full h-32 p-4 border-2 border-gray-200 rounded-xl resize-none focus:border-blue-500 focus:outline-none"
+              className="w-full h-32 p-4 border-2 border-theme rounded-xl resize-none focus:border-blue-500 focus:outline-none bg-theme-card-2 text-theme-primary"
             />
           </div>
         )}
       </div>
 
       {/* Submit Button */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
+      <div className="fixed bottom-0 left-0 right-0 bg-theme-header border-t border-theme p-4">
         <div className="max-w-3xl mx-auto">
           <button
             onClick={handleSubmit}
