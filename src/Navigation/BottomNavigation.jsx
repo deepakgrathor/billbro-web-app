@@ -21,8 +21,8 @@ const BottomNavigation = memo(function BottomNavigation() {
       <nav
         className="
           fixed bottom-0 left-0 right-0 z-50
-          bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/70
-          border-t border-gray-200
+          bg-theme-nav backdrop-blur
+          border-t border-theme
           px-2 sm:px-4
           pb-[env(safe-area-inset-bottom)]
         "
@@ -42,9 +42,9 @@ const BottomNavigation = memo(function BottomNavigation() {
                   className={`
                     group relative flex flex-col items-center justify-center
                     rounded-2xl px-2 py-2
-                    focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60
+                    focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60
                     active:scale-[0.98] transition
-                    ${active ? "bg-blue-50" : "hover:bg-gray-50"}
+                    ${active ? "bg-violet-50/80" : "hover:bg-theme-card-2"}
                   `}
                   aria-current={active ? "page" : undefined}
                 >
@@ -52,7 +52,7 @@ const BottomNavigation = memo(function BottomNavigation() {
                   {active && (
                     <motion.span
                       layoutId="bottomNavIndicator"
-                      className="absolute top-1 h-1 w-6 rounded-full bg-blue-500"
+                      className="absolute top-1 h-1 w-6 rounded-full bg-violet-500"
                       transition={{ type: "spring", stiffness: 500, damping: 30 }}
                     />
                   )}
@@ -63,7 +63,7 @@ const BottomNavigation = memo(function BottomNavigation() {
                       size={26}
                       className={`
                         transition-colors
-                        ${active ? "text-blue-600" : "text-gray-600 group-hover:text-gray-800"}
+                        ${active ? "text-violet-600" : "text-theme-secondary group-hover:text-theme-primary"}
                       `}
                     />
 
@@ -87,7 +87,7 @@ const BottomNavigation = memo(function BottomNavigation() {
                   <span
                     className={`
                       mt-1 text-[11px] leading-none
-                      ${active ? "text-blue-600 font-medium" : "text-gray-500"}
+                      ${active ? "text-violet-600 font-medium" : "text-theme-secondary"}
                     `}
                   >
                     {item.name}

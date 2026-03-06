@@ -439,9 +439,9 @@ const HomeContent = () => {
   const showSection = filteredServices?.length > 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
+    <div className="min-h-screen bg-theme-base">
       {/* Sticky Header */}
-      <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200">
+      <div className="sticky top-0 z-50 bg-theme-header backdrop-blur-xl border-b border-theme">
         <HeaderHome ProfileData={ProfileData} />
       </div>
 
@@ -451,9 +451,9 @@ const HomeContent = () => {
         {showBanner && (
           <section className="mb-5">
             {bannerLoader ? (
-              <div className="h-44 rounded-3xl bg-slate-200 animate-pulse shadow-sm" />
+              <div className="h-44 rounded-3xl bg-theme-card-2 animate-pulse shadow-sm" />
             ) : (
-              <div className="rounded-3xl overflow-hidden border border-slate-200 shadow-[0_12px_30px_rgba(2,6,23,0.10)]">
+              <div className="rounded-3xl overflow-hidden border border-theme shadow-[0_12px_30px_rgba(2,6,23,0.10)]">
                 <BannerSlider data={bannerData?.Data} />
               </div>
             )}
@@ -462,7 +462,7 @@ const HomeContent = () => {
 
         {/* Wallet Card */}
         <section className="mb-6">
-          <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_14px_40px_rgba(2,6,23,0.10)]">
+          <div className="relative overflow-hidden rounded-3xl border border-theme bg-theme-card shadow-theme-card">
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 via-fuchsia-600/10 to-sky-600/10" />
             <div className="relative p-4">
               <div className="flex items-center justify-between gap-3">
@@ -472,10 +472,10 @@ const HomeContent = () => {
                   </div>
 
                   <div className="leading-tight">
-                    <p className="text-[11px] font-semibold text-slate-500">
+                    <p className="text-[11px] font-semibold text-theme-secondary">
                       Wallet Balance
                     </p>
-                    <p className="text-2xl font-black tracking-tight text-slate-900">
+                    <p className="text-2xl font-black tracking-tight text-theme-primary">
                       ₹{walletBalance}
                     </p>
                   </div>
@@ -483,7 +483,7 @@ const HomeContent = () => {
 
                 <button
                   onClick={() => navigate("/wallet")}
-                  className="h-11 px-4 rounded-2xl bg-slate-900 text-white text-sm font-semibold shadow-lg active:scale-[0.98] transition"
+                  className="h-11 px-4 rounded-2xl bg-violet-600 hover:bg-violet-700 text-white text-sm font-semibold shadow-lg active:scale-[0.98] transition"
                 >
                   Add Money
                 </button>
@@ -583,8 +583,8 @@ const HomeContent = () => {
           <section className="mb-6">
             <div className="flex items-end justify-between mb-3">
               <div>
-                <p className="text-xs font-semibold text-slate-500">Payments</p>
-                <h2 className="text-lg font-black tracking-tight text-slate-900">
+                <p className="text-xs font-semibold text-theme-secondary">Payments</p>
+                <h2 className="text-lg font-black tracking-tight text-theme-primary">
                   Quick Services
                 </h2>
               </div>
@@ -599,7 +599,7 @@ const HomeContent = () => {
               )}
             </div>
 
-            <div className="rounded-3xl border border-slate-200 bg-white shadow-[0_12px_30px_rgba(2,6,23,0.08)]">
+            <div className="rounded-3xl border border-theme bg-theme-card shadow-theme-card">
               <div className="p-4">
                 <div className="grid grid-cols-4 gap-3">
                   {serviceLoader
@@ -607,8 +607,8 @@ const HomeContent = () => {
                         .fill(0)
                         .map((_, idx) => (
                           <div key={idx} className="space-y-2">
-                            <div className="h-14 w-14 mx-auto rounded-2xl bg-slate-200 animate-pulse" />
-                            <div className="h-3 w-12 mx-auto rounded bg-slate-200 animate-pulse" />
+                            <div className="h-14 w-14 mx-auto rounded-2xl bg-theme-card-2 animate-pulse" />
+                            <div className="h-3 w-12 mx-auto rounded bg-theme-card-2 animate-pulse" />
                           </div>
                         ))
                     : filteredServices?.map((item, idx) => (
@@ -617,7 +617,7 @@ const HomeContent = () => {
                           onClick={() => handleServiceClick(item)}
                           className="group flex flex-col items-center gap-2 active:scale-[0.98] transition"
                         >
-                          <div className="h-14 w-14 rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white shadow-sm group-hover:shadow-md transition flex items-center justify-center">
+                          <div className="h-14 w-14 rounded-2xl border border-theme bg-theme-card-2 shadow-sm group-hover:shadow-md transition flex items-center justify-center">
                             <img
                               src={`${ImageBaseURL}${item.icon}`}
                               alt={item.name}
@@ -625,7 +625,7 @@ const HomeContent = () => {
                               loading="lazy"
                             />
                           </div>
-                          <p className="text-[10px] font-semibold text-slate-700 text-center leading-tight">
+                          <p className="text-[10px] font-semibold text-theme-secondary text-center leading-tight">
                             {item.name}
                           </p>
                         </button>
@@ -637,9 +637,8 @@ const HomeContent = () => {
                       onClick={() => navigate("/bbpslist")}
                       className="group flex flex-col items-center gap-2 active:scale-[0.98] transition"
                     >
-                      <div className="h-14 w-14 rounded-2xl border border-slate-200 bg-gradient-to-br from-indigo-50 to-white shadow-sm group-hover:shadow-md transition flex items-center justify-center">
-                        {/* <MdArrowForward size={25} /> */}
-                        <div className="h-14 w-14 rounded-2xl border border-slate-200 bg-gradient-to-br from-indigo-50 to-white shadow-sm group-hover:shadow-md transition flex items-center justify-center">
+                      <div className="h-14 w-14 rounded-2xl border border-theme bg-theme-card-2 shadow-sm group-hover:shadow-md transition flex items-center justify-center">
+                        <div className="h-14 w-14 rounded-2xl border border-theme bg-theme-card-2 shadow-sm group-hover:shadow-md transition flex items-center justify-center">
                           <img
                             src="https://ik.imagekit.io/43tomntsa/B%20mnemonic_PNG.png"
                             alt="Pay Bills"
@@ -648,7 +647,7 @@ const HomeContent = () => {
                           />
                         </div>
                       </div>
-                      <p className="text-[10px] font-semibold text-slate-700">
+                      <p className="text-[10px] font-semibold text-theme-secondary">
                         Pay Bills
                       </p>
                     </button>
@@ -744,7 +743,7 @@ const HomeContent = () => {
 
         {/* Refer & Earn */}
         <section className="mb-6">
-          <div className="relative overflow-hidden rounded-[28px] border border-slate-200 shadow-[0_16px_60px_rgba(2,6,23,0.18)]">
+          <div className="relative overflow-hidden rounded-[28px] border border-theme bg-theme-card shadow-theme-card">
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 via-fuchsia-600/10 to-sky-600/10" />
             <div className="relative p-4">
               <div className="flex items-center justify-between gap-3">
@@ -793,53 +792,53 @@ const HomeContent = () => {
         <section className="mb-6">
           <button
             onClick={() => navigate("/contact")}
-            className="w-full rounded-3xl border border-emerald-200 bg-white shadow-sm p-4 flex items-center gap-4 active:scale-[0.99] transition"
+            className="w-full rounded-3xl border border-emerald-200 bg-theme-card shadow-theme-card p-4 flex items-center gap-4 active:scale-[0.99] transition"
           >
             <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-lg">
               <MdWhatsapp size={26} className="text-white" />
             </div>
             <div className="flex-1 text-left">
-              <p className="text-sm font-black text-slate-900">Need help?</p>
-              <p className="text-xs text-slate-500">
+              <p className="text-sm font-black text-theme-primary">Need help?</p>
+              <p className="text-xs text-theme-secondary">
                 Chat with our support team
               </p>
             </div>
-            <MdArrowForward size={20} className="text-slate-400" />
+            <MdArrowForward size={20} className="text-theme-muted" />
           </button>
         </section>
 
         {/* Why Choose Us */}
         <section className="mb-8">
           <div className="mb-3">
-            <p className="text-xs font-semibold text-slate-500">Trust</p>
-            <h2 className="text-lg font-black tracking-tight text-slate-900">
+            <p className="text-xs font-semibold text-theme-secondary">Trust</p>
+            <h2 className="text-lg font-black tracking-tight text-theme-primary">
               Why choose us
             </h2>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="h-11 w-11 rounded-2xl bg-indigo-600/10 border border-slate-200 flex items-center justify-center mb-3">
+            <div className="rounded-3xl border border-theme bg-theme-card p-4 shadow-theme-card">
+              <div className="h-11 w-11 rounded-2xl bg-indigo-600/10 border border-theme flex items-center justify-center mb-3">
                 <MdTrendingUp size={24} className="text-indigo-700" />
               </div>
-              <p className="text-sm font-black text-slate-900">Instant</p>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-sm font-black text-theme-primary">Instant</p>
+              <p className="text-xs text-theme-secondary mt-1">
                 Fast transactions, minimal steps
               </p>
             </div>
 
-            <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="h-11 w-11 rounded-2xl bg-fuchsia-600/10 border border-slate-200 flex items-center justify-center mb-3">
+            <div className="rounded-3xl border border-theme bg-theme-card p-4 shadow-theme-card">
+              <div className="h-11 w-11 rounded-2xl bg-fuchsia-600/10 border border-theme flex items-center justify-center mb-3">
                 <MdStar size={24} className="text-fuchsia-700" />
               </div>
-              <p className="text-sm font-black text-slate-900">Rewards</p>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-sm font-black text-theme-primary">Rewards</p>
+              <p className="text-xs text-theme-secondary mt-1">
                 Benefits on recharges & bills
               </p>
             </div>
 
-            <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="h-11 w-11 rounded-2xl bg-emerald-600/10 border border-slate-200 flex items-center justify-center mb-3">
+            <div className="rounded-3xl border border-theme bg-theme-card p-4 shadow-theme-card">
+              <div className="h-11 w-11 rounded-2xl bg-emerald-600/10 border border-theme flex items-center justify-center mb-3">
                 <svg
                   className="w-6 h-6 text-emerald-700"
                   fill="currentColor"
@@ -852,14 +851,14 @@ const HomeContent = () => {
                   />
                 </svg>
               </div>
-              <p className="text-sm font-black text-slate-900">Secure</p>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-sm font-black text-theme-primary">Secure</p>
+              <p className="text-xs text-theme-secondary mt-1">
                 Encrypted & protected payments
               </p>
             </div>
 
-            <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="h-11 w-11 rounded-2xl bg-amber-500/10 border border-slate-200 flex items-center justify-center mb-3">
+            <div className="rounded-3xl border border-theme bg-theme-card p-4 shadow-theme-card">
+              <div className="h-11 w-11 rounded-2xl bg-amber-500/10 border border-theme flex items-center justify-center mb-3">
                 <svg
                   className="w-6 h-6 text-amber-700"
                   fill="currentColor"
@@ -868,8 +867,8 @@ const HomeContent = () => {
                   <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
                 </svg>
               </div>
-              <p className="text-sm font-black text-slate-900">Trusted</p>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-sm font-black text-theme-primary">Trusted</p>
+              <p className="text-xs text-theme-secondary mt-1">
                 Loved by growing users
               </p>
             </div>
@@ -877,12 +876,12 @@ const HomeContent = () => {
         </section>
 
         {/* Footer */}
-        <footer className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <footer className="rounded-3xl border border-theme bg-theme-card p-6 shadow-theme-card">
           <div className="text-center">
-            <p className="text-3xl font-black tracking-tight text-slate-300">
+            <p className="text-3xl font-black tracking-tight text-theme-muted">
               {BRAND_NAME}
             </p>
-            <p className="text-xs text-slate-500 mt-2 font-semibold">
+            <p className="text-xs text-theme-secondary mt-2 font-semibold">
               MADE WITH ❤️ IN INDIA
             </p>
           </div>

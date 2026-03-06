@@ -1,5 +1,6 @@
 import React, { Suspense, useEffect, useRef } from "react";
 import { AuthProvider } from "./AuthContext";
+import { ThemeProvider } from "./ThemeContext";
 import PrivateRoute from "./PrivateRoute";
 import {
   BrowserRouter,
@@ -67,6 +68,7 @@ const AppNavigate = () => {
   return (
     <div className="">
       <ErrorBoundary level="app">
+        <ThemeProvider>
         <AuthProvider>
           <BrowserRouter>
             <ScrollToTop />
@@ -126,6 +128,7 @@ const AppNavigate = () => {
             </Suspense>
           </BrowserRouter>
         </AuthProvider>
+        </ThemeProvider>
       </ErrorBoundary>
     </div>
   );
