@@ -72,12 +72,12 @@ const PaymentSuccess = () => {
   const DetailRow = ({ label, value, mono = false, action = null }) => (
     <div className="flex items-start justify-between gap-4 py-3">
       <div>
-        <p className="text-[11px] font-semibold tracking-widest text-slate-500 uppercase">
+        <p className="text-[11px] font-semibold tracking-widest text-theme-secondary uppercase">
           {label}
         </p>
         <p
           className={[
-            "mt-1 text-sm font-semibold text-slate-900 break-all",
+            "mt-1 text-sm font-semibold text-theme-primary break-all",
             mono ? "font-mono" : "",
           ].join(" ")}
         >
@@ -128,7 +128,7 @@ const PaymentSuccess = () => {
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           {/* Card */}
-          <div className="bg-white rounded-3xl border border-slate-200/70 shadow-[0_20px_60px_rgba(2,6,23,0.10)] overflow-hidden">
+          <div className="bg-theme-card rounded-3xl border border-theme shadow-[0_20px_60px_rgba(2,6,23,0.10)] overflow-hidden">
             {/* Top strip */}
             <div className="relative px-6 pt-7 pb-5">
               <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500" />
@@ -144,10 +144,10 @@ const PaymentSuccess = () => {
                 </div>
 
                 <div className="flex-1">
-                  <h1 className="text-xl font-extrabold text-slate-900">
+                  <h1 className="text-xl font-extrabold text-theme-primary">
                     Payment Successful
                   </h1>
-                  <p className="mt-1 text-sm text-slate-600">
+                  <p className="mt-1 text-sm text-theme-secondary">
                     Wallet credited successfully
                   </p>
 
@@ -163,14 +163,14 @@ const PaymentSuccess = () => {
 
             {/* Amount block */}
             <div className="px-6 pb-6">
-              <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-emerald-50/60 p-5">
+              <div className="rounded-2xl border border-theme bg-theme-card-2 p-5">
                 <div className="flex items-end justify-between gap-3">
                   <div>
-                    <p className="text-[11px] font-semibold tracking-widest text-slate-500 uppercase">
+                    <p className="text-[11px] font-semibold tracking-widest text-theme-secondary uppercase">
                       Amount Added
                     </p>
                     <div className="mt-2 flex items-baseline gap-2">
-                      <span className="text-4xl font-black text-slate-900">
+                      <span className="text-4xl font-black text-theme-primary">
                         ₹{formattedAmount}
                       </span>
                       <span className="text-sm font-semibold text-emerald-700">
@@ -180,26 +180,26 @@ const PaymentSuccess = () => {
                   </div>
 
                   <div className="text-right">
-                    <p className="text-[11px] font-semibold tracking-widest text-slate-500 uppercase">
+                    <p className="text-[11px] font-semibold tracking-widest text-theme-secondary uppercase">
                       Date & Time
                     </p>
-                    <p className="mt-2 text-sm font-semibold text-slate-800">
+                    <p className="mt-2 text-sm font-semibold text-theme-primary">
                       {formatDate(date)}
                     </p>
                   </div>
                 </div>
 
-                <div className="mt-4 h-px bg-slate-200" />
+                <div className="mt-4 h-px" style={{ backgroundColor: "var(--border-color)" }} />
 
                 <div className="mt-4 flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-2xl bg-white border border-slate-200 flex items-center justify-center shadow-sm">
+                  <div className="h-10 w-10 rounded-2xl bg-theme-card border border-theme flex items-center justify-center shadow-sm">
                     <span className="text-lg">💳</span>
                   </div>
                   <div>
-                    <p className="text-[11px] font-semibold tracking-widest text-slate-500 uppercase">
+                    <p className="text-[11px] font-semibold tracking-widest text-theme-secondary uppercase">
                       Payment Method
                     </p>
-                    <p className="mt-1 text-sm font-bold text-slate-900">
+                    <p className="mt-1 text-sm font-bold text-theme-primary">
                       UPI Payment
                     </p>
                   </div>
@@ -209,7 +209,7 @@ const PaymentSuccess = () => {
 
             {/* Details list */}
             <div className="px-6 pb-2">
-              <div className="rounded-2xl border border-slate-200 bg-white">
+              <div className="rounded-2xl border border-theme bg-theme-card">
                 <div className="px-4">
                   <DetailRow
                     label="Order ID"
@@ -218,7 +218,7 @@ const PaymentSuccess = () => {
                     action={
                       <button
                         onClick={handleCopyOrderId}
-                        className="shrink-0 inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 active:scale-[0.98] transition"
+                        className="shrink-0 inline-flex items-center gap-1.5 rounded-xl border border-theme bg-theme-card-2 px-3 py-2 text-xs font-bold text-theme-secondary hover:bg-theme-card active:scale-[0.98] transition"
                       >
                         <MdContentCopy className="w-4 h-4" />
                         {copied ? "Copied" : "Copy"}
@@ -227,7 +227,7 @@ const PaymentSuccess = () => {
                   />
                 </div>
 
-                <div className="h-px bg-slate-200" />
+                <div className="h-px border-theme" style={{ backgroundColor: "var(--border-color)" }} />
 
                 {transactionId !== "N/A" ? (
                   <>
@@ -238,7 +238,7 @@ const PaymentSuccess = () => {
                         mono
                       />
                     </div>
-                    <div className="h-px bg-slate-200" />
+                    <div className="h-px border-theme" style={{ backgroundColor: "var(--border-color)" }} />
                   </>
                 ) : null}
 
@@ -255,7 +255,7 @@ const PaymentSuccess = () => {
             <div className="px-6 pb-6 pt-5 space-y-3">
               <button
                 onClick={() => navigate("/wallet")}
-                className="w-full rounded-2xl bg-slate-900 text-white font-extrabold py-4 shadow-lg hover:bg-slate-800 active:scale-[0.99] transition flex items-center justify-center gap-2"
+                className="w-full rounded-2xl bg-violet-600 hover:bg-violet-700 text-white font-extrabold py-4 shadow-lg active:scale-[0.99] transition flex items-center justify-center gap-2"
               >
                 View Wallet
                 <svg
@@ -275,7 +275,7 @@ const PaymentSuccess = () => {
 
               <button
                 onClick={() => navigate("/")}
-                className="w-full rounded-2xl bg-white border border-slate-200 text-slate-800 font-extrabold py-4 shadow-sm hover:bg-slate-50 active:scale-[0.99] transition flex items-center justify-center gap-2"
+                className="w-full rounded-2xl bg-theme-card border border-theme text-theme-primary font-extrabold py-4 shadow-sm hover:bg-theme-card-2 active:scale-[0.99] transition flex items-center justify-center gap-2"
               >
                 <MdHome className="w-5 h-5" />
                 Go to Home
@@ -283,8 +283,8 @@ const PaymentSuccess = () => {
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-4 border-t border-slate-200 bg-slate-50/60">
-              <p className="text-xs text-slate-600 text-center font-medium">
+            <div className="px-6 py-4 border-t border-theme bg-theme-card-2">
+              <p className="text-xs text-theme-secondary text-center font-medium">
                 🔒 Your payment is secure and encrypted •{" "}
                 <a
                   href="/contact"

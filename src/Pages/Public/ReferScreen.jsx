@@ -69,9 +69,9 @@ https://play.google.com/store/apps/details?id=com.billbro.app
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white">
+    <div className="min-h-screen bg-theme-base">
       {/* Header */}
-      <div className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200">
+      <div className="fixed top-0 w-full z-50 bg-theme-header backdrop-blur-xl border-b border-theme">
         <CommonHeader
           title={"Refer & Earn"}
           handleclick={() => navigate("/")}
@@ -81,7 +81,7 @@ https://play.google.com/store/apps/details?id=com.billbro.app
       {/* Content */}
       <div className="pt-20 pb-[140px] px-3 sm:px-4 max-w-xl mx-auto">
         {/* Hero (White modern, clean) */}
-        <div className="rounded-3xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.08)] overflow-hidden">
+        <div className="rounded-3xl border border-theme bg-theme-card shadow-[0_18px_55px_rgba(2,6,23,0.08)] overflow-hidden">
           {/* Top strip */}
           <div className="px-5 py-5 bg-slate-900 text-white">
             <div className="flex items-center justify-between gap-4">
@@ -104,7 +104,7 @@ https://play.google.com/store/apps/details?id=com.billbro.app
           </div>
 
           {/* Reward strip */}
-          <div className="px-5 py-5 bg-white">
+          <div className="px-5 py-5 bg-theme-card">
             <div className="rounded-xl border-l-4 border-emerald-500 bg-emerald-50 p-4 shadow-sm">
               <div className="flex items-center justify-between">
                 <div>
@@ -115,7 +115,7 @@ https://play.google.com/store/apps/details?id=com.billbro.app
                     <p className="text-4xl font-black text-emerald-900">₹{referralAmount}</p>
                     <MdTrendingUp className="text-emerald-600 text-2xl" />
                   </div>
-                  <p className="mt-2 text-xs text-slate-700 font-semibold">
+                  <p className="mt-2 text-xs text-theme-secondary font-semibold">
                     Per referral on ₹100+ add
                   </p>
                 </div>
@@ -124,16 +124,16 @@ https://play.google.com/store/apps/details?id=com.billbro.app
             </div>
 
             {/* Small note */}
-            <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-4">
+            <div className="mt-4 rounded-2xl border border-theme bg-theme-card-2 p-4">
               <div className="flex items-start gap-3">
                 <div className="h-10 w-10 rounded-2xl bg-slate-900 text-white flex items-center justify-center shrink-0">
                   <MdPeople className="text-xl" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-black text-slate-900">
+                  <p className="text-sm font-black text-theme-primary">
                     Unlimited referrals
                   </p>
-                  <p className="mt-1 text-xs text-slate-600 leading-relaxed">
+                  <p className="mt-1 text-xs text-theme-secondary leading-relaxed">
                     Refer as many friends as you want — rewards keep adding up.
                   </p>
                 </div>
@@ -143,21 +143,21 @@ https://play.google.com/store/apps/details?id=com.billbro.app
         </div>
 
         {/* Referral Code Card */}
-        <div className="mt-4 rounded-3xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.06)]">
+        <div className="mt-4 rounded-3xl border border-theme bg-theme-card shadow-[0_18px_55px_rgba(2,6,23,0.06)]">
           <div className="p-5">
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-[11px] font-semibold tracking-widest text-slate-500 uppercase">
+                <p className="text-[11px] font-semibold tracking-widest text-theme-secondary uppercase">
                   Your referral code
                 </p>
-                <p className="mt-1 text-sm font-black text-slate-900">
+                <p className="mt-1 text-sm font-black text-theme-primary">
                   Tap to copy
                 </p>
               </div>
 
-              <div className="shrink-0 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5">
-                <p className="text-[11px] font-bold text-slate-700 flex items-center gap-1.5">
-                  <MdPeople className="text-slate-600" />0 friends
+              <div className="shrink-0 rounded-full border border-theme bg-theme-card-2 px-3 py-1.5">
+                <p className="text-[11px] font-bold text-theme-secondary flex items-center gap-1.5">
+                  <MdPeople className="text-theme-secondary" />0 friends
                 </p>
               </div>
             </div>
@@ -167,7 +167,7 @@ https://play.google.com/store/apps/details?id=com.billbro.app
               disabled={isLoading}
               className={[
                 "mt-4 w-full rounded-2xl border border-dashed p-5 transition",
-                "bg-slate-50 border-slate-300 hover:bg-slate-100 active:scale-[0.99]",
+                "bg-theme-card-2 border-theme hover:bg-theme-card active:scale-[0.99]",
                 isLoading ? "opacity-60 cursor-not-allowed" : "",
               ].join(" ")}
             >
@@ -177,7 +177,7 @@ https://play.google.com/store/apps/details?id=com.billbro.app
                     className={[
                       "text-center font-black tracking-[0.3em] sm:tracking-[0.35em] font-mono",
                       "text-2xl sm:text-3xl",
-                      isLoading ? "text-slate-400" : "text-slate-900",
+                      isLoading ? "text-theme-muted" : "text-theme-primary",
                     ].join(" ")}
                   >
                     {referralCode}
@@ -186,7 +186,7 @@ https://play.google.com/store/apps/details?id=com.billbro.app
                   <p
                     className={[
                       "mt-3 text-center text-xs font-semibold",
-                      copied ? "text-emerald-700" : "text-slate-600",
+                      copied ? "text-emerald-700" : "text-theme-secondary",
                     ].join(" ")}
                   >
                     {copied
@@ -221,12 +221,12 @@ https://play.google.com/store/apps/details?id=com.billbro.app
         </div>
 
         {/* How it works */}
-        <div className="mt-4 rounded-3xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.06)]">
+        <div className="mt-4 rounded-3xl border border-theme bg-theme-card shadow-[0_18px_55px_rgba(2,6,23,0.06)]">
           <div className="p-5">
-            <p className="text-[11px] font-semibold tracking-widest text-slate-500 uppercase">
+            <p className="text-[11px] font-semibold tracking-widest text-theme-secondary uppercase">
               How it works
             </p>
-            <h3 className="mt-1 text-base font-black text-slate-900">
+            <h3 className="mt-1 text-base font-black text-theme-primary">
               3 simple steps
             </h3>
 
@@ -251,12 +251,12 @@ https://play.google.com/store/apps/details?id=com.billbro.app
         </div>
 
         {/* Benefits (responsive grid) */}
-        <div className="mt-4 rounded-3xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.06)]">
+        <div className="mt-4 rounded-3xl border border-theme bg-theme-card shadow-[0_18px_55px_rgba(2,6,23,0.06)]">
           <div className="p-5">
-            <p className="text-[11px] font-semibold tracking-widest text-slate-500 uppercase text-center">
+            <p className="text-[11px] font-semibold tracking-widest text-theme-secondary uppercase text-center">
               Benefits
             </p>
-            <h3 className="mt-1 text-base font-black text-slate-900 text-center">
+            <h3 className="mt-1 text-base font-black text-theme-primary text-center">
               Why refer?
             </h3>
 
@@ -271,7 +271,7 @@ https://play.google.com/store/apps/details?id=com.billbro.app
       </div>
 
       {/* Bottom CTA (safe-area ready + responsive) */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/92 backdrop-blur-xl border-t border-slate-200">
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-theme-header backdrop-blur-xl border-t border-theme">
         <div className="max-w-xl mx-auto px-3 sm:px-4 py-3 pb-[calc(env(safe-area-inset-bottom,0px)+12px)]">
           <button
             onClick={handleWhatsAppShare}
@@ -295,7 +295,7 @@ https://play.google.com/store/apps/details?id=com.billbro.app
               "mt-2 w-full rounded-2xl py-3 font-black flex items-center justify-center gap-2 transition border",
               isLoading
                 ? "border-slate-200 text-slate-400 cursor-not-allowed"
-                : "border-slate-200 text-slate-900 hover:bg-slate-50 active:scale-[0.99]",
+                : "border-theme text-theme-primary hover:bg-theme-card-2 active:scale-[0.99]",
             ].join(" ")}
           >
             {copied ? <MdCheck size={20} /> : <MdContentCopy size={20} />}
@@ -309,13 +309,13 @@ https://play.google.com/store/apps/details?id=com.billbro.app
 
 const Step = ({ no, title, desc }) => {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 flex items-start gap-3">
+    <div className="rounded-2xl border border-theme bg-theme-card-2 p-4 flex items-start gap-3">
       <div className="shrink-0 h-11 w-11 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-black">
         {no}
       </div>
       <div className="min-w-0">
-        <p className="text-sm font-black text-slate-900">{title}</p>
-        <p className="mt-1 text-xs text-slate-600 leading-relaxed">{desc}</p>
+        <p className="text-sm font-black text-theme-primary">{title}</p>
+        <p className="mt-1 text-xs text-theme-secondary leading-relaxed">{desc}</p>
       </div>
     </div>
   );
@@ -323,9 +323,9 @@ const Step = ({ no, title, desc }) => {
 
 const MiniCard = ({ emoji, title }) => {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 text-center">
+    <div className="rounded-2xl border border-theme bg-theme-card p-4 text-center">
       <div className="text-2xl">{emoji}</div>
-      <p className="mt-2 text-xs font-black text-slate-800">{title}</p>
+      <p className="mt-2 text-xs font-black text-theme-primary">{title}</p>
     </div>
   );
 };

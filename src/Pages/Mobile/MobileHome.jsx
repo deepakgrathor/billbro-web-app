@@ -88,9 +88,9 @@ const MobileHome = () => {
     /^\d{10}$/.test(rechargeData.mobileNumber);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
+    <div className="min-h-screen bg-theme-base">
       {/* Header */}
-      <div className="fixed top-0 w-full z-50 bg-white shadow-sm">
+      <div className="fixed top-0 w-full z-50 bg-theme-card shadow-theme-card">
         <CommonHeader
           title={"Mobile Recharge"}
           handleclick={() => navigate("/")}
@@ -104,25 +104,25 @@ const MobileHome = () => {
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-600 rounded-3xl mb-4 shadow-lg">
             <MdPhone className="text-white text-4xl" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          <h2 className="text-2xl font-bold text-theme-primary mb-2">
             Quick Recharge
           </h2>
-          <p className="text-gray-600 text-sm">
+          <p className="text-theme-secondary text-sm">
             Instant mobile recharge in just a few taps
           </p>
         </div>
 
         {/* Phone Input Card */}
-        <div className="bg-white rounded-3xl shadow-xl p-6 mb-6 transform transition-all duration-300 hover:shadow-2xl">
-          <label className="block text-sm font-semibold text-gray-700 mb-3">
+        <div className="bg-theme-card rounded-3xl shadow-xl p-6 mb-6 transform transition-all duration-300 hover:shadow-2xl">
+          <label className="block text-sm font-semibold text-theme-secondary mb-3">
             Mobile Number
           </label>
 
           <div
-            className={`relative flex items-center bg-gray-50 border-2 rounded-2xl px-3 py-3 transition-all duration-300 ${
+            className={`relative flex items-center bg-theme-card-2 border-2 rounded-2xl px-3 py-3 transition-all duration-300 ${
               isFocused
                 ? "border-purple-500 bg-purple-50/50 shadow-lg"
-                : "border-gray-200 hover:border-gray-300"
+                : "border-theme hover:border-theme"
             }`}
           >
             {/* Country Code Badge */}
@@ -148,7 +148,7 @@ const MobileHome = () => {
               maxLength={10}
               pattern="^[6-9]\d{9}$"
               placeholder="Enter 10 digit number"
-              className="flex-1 font-semibold outline-none placeholder-gray-400 bg-transparent text-gray-800"
+              className="flex-1 font-semibold outline-none placeholder-gray-400 bg-transparent text-theme-primary"
               onInput={(e) => {
                 e.target.value = e.target.value.replace(/[^0-9]/g, "");
               }}
@@ -185,27 +185,27 @@ const MobileHome = () => {
 
         {/* Operator & Circle Info */}
         {rechargeData.operator && (
-          <div className="bg-white rounded-3xl shadow-lg p-5 mb-6 animate-slide-up">
+          <div className="bg-theme-card rounded-3xl shadow-lg p-5 mb-6 animate-slide-up">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 {rechargeData.operator.img && (
                   <img
                     src={rechargeData.operator.img}
                     alt={rechargeData.operator.OperatorName}
-                    className="w-12 h-12 object-contain rounded-xl bg-gray-50 p-2"
+                    className="w-12 h-12 object-contain rounded-xl bg-theme-card-2 p-2"
                   />
                 )}
                 <div>
-                  <p className="text-sm text-gray-500 font-medium">Operator</p>
-                  <p className="text-base font-bold text-gray-800">
+                  <p className="text-sm text-theme-secondary font-medium">Operator</p>
+                  <p className="text-base font-bold text-theme-primary">
                     {rechargeData.operator.OperatorName}
                   </p>
                 </div>
               </div>
               {rechargeData.circle && (
                 <div className="text-right">
-                  <p className="text-sm text-gray-500 font-medium">Circle</p>
-                  <p className="text-base font-bold text-gray-800">
+                  <p className="text-sm text-theme-secondary font-medium">Circle</p>
+                  <p className="text-base font-bold text-theme-primary">
                     {rechargeData.circle.circlename}
                   </p>
                 </div>
@@ -218,7 +218,7 @@ const MobileHome = () => {
         {serviceList.Data?.find((a) => a.name == "MOBILE_HOME_BANNER")
           ?.isShow && (
           <div className="mb-6 animate-fade-in">
-            <h3 className="text-lg font-bold text-gray-800 mb-3 px-1">
+            <h3 className="text-lg font-bold text-theme-primary mb-3 px-1">
               Special Offers
             </h3>
             <div className="rounded-3xl overflow-hidden shadow-lg">
@@ -229,11 +229,11 @@ const MobileHome = () => {
 
         {/* Quick Tips */}
         <div className="bg-gradient-to-r from-purple-100 to-blue-100 rounded-3xl p-5 border border-purple-200">
-          <h4 className="font-bold text-gray-800 mb-3 flex items-center">
+          <h4 className="font-bold text-theme-primary mb-3 flex items-center">
             <span className="mr-2">💡</span>
             Quick Tips
           </h4>
-          <ul className="space-y-2 text-sm text-gray-700">
+          <ul className="space-y-2 text-sm text-theme-secondary">
             <li className="flex items-start">
               <span className="text-purple-600 mr-2">•</span>
               <span>Enter your 10-digit mobile number to continue</span>

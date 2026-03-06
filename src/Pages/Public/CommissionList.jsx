@@ -179,15 +179,15 @@ const CommissionList = () => {
             {icon}
           </div>
           <div className="min-w-0">
-            <p className="text-base font-black text-slate-900 leading-tight">
+            <p className="text-base font-black text-theme-primary leading-tight">
               {title}
             </p>
             {meta && (
-              <p className="text-[11px] text-slate-500 font-semibold">{meta}</p>
+              <p className="text-[11px] text-theme-secondary font-semibold">{meta}</p>
             )}
           </div>
         </div>
-        <div className="text-[11px] font-bold text-slate-700 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-full shrink-0">
+        <div className="text-[11px] font-bold text-theme-secondary bg-theme-card-2 border border-theme px-3 py-1.5 rounded-full shrink-0">
           View
         </div>
       </div>
@@ -200,9 +200,9 @@ const CommissionList = () => {
       type === "bbps" ? `₹${item.margin ?? 0}` : `${item.margin ?? 0}%`;
 
     return (
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-[0_10px_30px_rgba(2,6,23,0.06)] overflow-hidden">
+      <div className="bg-theme-card border border-theme rounded-2xl shadow-[0_10px_30px_rgba(2,6,23,0.06)] overflow-hidden">
         <div className="p-4 flex items-center gap-3">
-          <div className="h-12 w-12 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
+          <div className="h-12 w-12 rounded-2xl bg-theme-card-2 border border-theme flex items-center justify-center shrink-0">
             <img
               src={type === "bbps" ? `${ImageBaseURL}${item.img}` : item.img}
               alt={item.title}
@@ -212,10 +212,10 @@ const CommissionList = () => {
           </div>
 
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-black text-slate-900 truncate">
+            <p className="text-sm font-black text-theme-primary truncate">
               {item.title}
             </p>
-            <p className="text-[11px] text-slate-500 font-semibold">
+            <p className="text-[11px] text-theme-secondary font-semibold">
               Commission rate
             </p>
           </div>
@@ -234,9 +234,9 @@ const CommissionList = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white">
+    <div className="min-h-screen bg-theme-base">
       {/* Header */}
-      <div className="fixed top-0 w-full z-50 bg-white/92 backdrop-blur-xl border-b border-slate-200">
+      <div className="fixed top-0 w-full z-50 bg-theme-header backdrop-blur-xl border-b border-theme">
         <CommonHeader
           title={"Commission Chart"}
           handleclick={() => navigate(-1)}
@@ -246,7 +246,7 @@ const CommissionList = () => {
       {/* Body */}
       <div className="pt-16 pb-8 px-3 sm:px-4 max-w-xl mx-auto">
         {/* Hero */}
-        <div className="rounded-3xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.08)] overflow-hidden">
+        <div className="rounded-3xl border border-theme bg-theme-card shadow-[0_18px_55px_rgba(2,6,23,0.08)] overflow-hidden">
           <div className="p-5 bg-slate-900 text-white">
             <div className="flex items-center justify-between gap-4">
               <div className="min-w-0">
@@ -268,34 +268,34 @@ const CommissionList = () => {
 
           {/* Search + Stats */}
           <div className="p-5">
-            <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3">
-              <MdSearch className="text-slate-500 text-xl shrink-0" />
+            <div className="flex items-center gap-2 bg-theme-card-2 border border-theme rounded-2xl px-4 py-3">
+              <MdSearch className="text-theme-secondary text-xl shrink-0" />
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search operator or service..."
-                className="w-full bg-transparent outline-none text-sm font-semibold text-slate-900 placeholder:text-slate-400"
+                className="w-full bg-transparent outline-none text-sm font-semibold text-theme-primary placeholder:text-theme-muted"
               />
             </div>
 
             <div className="mt-4 grid grid-cols-3 gap-2">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-center">
-                <p className="text-lg font-black text-slate-900">
+              <div className="rounded-2xl border border-theme bg-theme-card-2 p-3 text-center">
+                <p className="text-lg font-black text-theme-primary">
                   {totalOperators}
                 </p>
-                <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">
+                <p className="text-[10px] font-semibold text-theme-secondary uppercase tracking-widest">
                   Operators
                 </p>
               </div>
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-center">
+              <div className="rounded-2xl border border-theme bg-theme-card-2 p-3 text-center">
                 <p className="text-lg font-black text-emerald-700">Instant</p>
-                <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">
+                <p className="text-[10px] font-semibold text-theme-secondary uppercase tracking-widest">
                   Credit
                 </p>
               </div>
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-center">
-                <p className="text-lg font-black text-slate-900">24/7</p>
-                <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">
+              <div className="rounded-2xl border border-theme bg-theme-card-2 p-3 text-center">
+                <p className="text-lg font-black text-theme-primary">24/7</p>
+                <p className="text-[10px] font-semibold text-theme-secondary uppercase tracking-widest">
                   Live
                 </p>
               </div>
@@ -384,16 +384,16 @@ const CommissionList = () => {
         </Section> */}
 
         {/* Info */}
-        <div className="mt-5 rounded-3xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.06)]">
+        <div className="mt-5 rounded-3xl border border-theme bg-theme-card shadow-[0_18px_55px_rgba(2,6,23,0.06)]">
           <div className="p-5 flex items-start gap-3">
             <div className="h-10 w-10 rounded-2xl bg-slate-900 text-white flex items-center justify-center shrink-0">
               <MdInfo className="text-xl" />
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-black text-slate-900">
+              <p className="text-sm font-black text-theme-primary">
                 Commission Info
               </p>
-              <p className="mt-1 text-xs text-slate-600 leading-relaxed">
+              <p className="mt-1 text-xs text-theme-secondary leading-relaxed">
                 Commission is credited instantly after a successful transaction.
                 Rates may vary based on operator/service and amount.
               </p>
@@ -409,9 +409,9 @@ const CommissionList = () => {
 
 const EmptyState = ({ text }) => {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-center">
-      <p className="text-sm font-bold text-slate-700">{text}</p>
-      <p className="mt-1 text-xs text-slate-500">Try a different search.</p>
+    <div className="rounded-2xl border border-theme bg-theme-card-2 p-4 text-center">
+      <p className="text-sm font-bold text-theme-secondary">{text}</p>
+      <p className="mt-1 text-xs text-theme-muted">Try a different search.</p>
     </div>
   );
 };

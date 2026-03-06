@@ -92,9 +92,9 @@ const ModernNotificationList = () => {
   }, [list, query]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-white">
+    <div className="min-h-screen bg-theme-base">
       {/* Header */}
-      <div className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200">
+      <div className="fixed top-0 w-full z-50 bg-theme-header backdrop-blur-xl border-b border-theme">
         <CommonHeader
           title={"Notifications"}
           handleclick={() => navigate("/")}
@@ -104,7 +104,7 @@ const ModernNotificationList = () => {
       {/* Content */}
       <div className="pt-20 pb-10 px-3 sm:px-4 max-w-xl mx-auto">
         {/* Hero + Search */}
-        <div className="rounded-3xl border border-slate-200 bg-white shadow-[0_18px_55px_rgba(2,6,23,0.08)] overflow-hidden">
+        <div className="rounded-3xl border border-theme bg-theme-card shadow-[0_18px_55px_rgba(2,6,23,0.08)] overflow-hidden">
           <div className="p-5 bg-slate-900 text-white">
             <div className="flex items-center justify-between gap-4">
               <div className="min-w-0">
@@ -129,29 +129,29 @@ const ModernNotificationList = () => {
 
           <div className="p-5">
             <div className="flex items-center gap-2">
-              <div className="flex-1 flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3">
-                <IoSearchOutline className="text-slate-500 text-xl shrink-0" />
+              <div className="flex-1 flex items-center gap-2 bg-theme-card-2 border border-theme rounded-2xl px-4 py-3">
+                <IoSearchOutline className="text-theme-secondary text-xl shrink-0" />
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search title or message…"
-                  className="w-full bg-transparent outline-none text-sm font-semibold text-slate-900 placeholder:text-slate-400"
+                  className="w-full bg-transparent outline-none text-sm font-semibold text-theme-primary placeholder:text-theme-muted"
                 />
               </div>
               <button
                 type="button"
-                className="h-12 w-12 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center active:scale-95 transition"
+                className="h-12 w-12 rounded-2xl bg-theme-card-2 border border-theme flex items-center justify-center active:scale-95 transition"
                 title="Filters (UI only)"
               >
-                <MdFilterList className="text-slate-600 text-xl" />
+                <MdFilterList className="text-theme-secondary text-xl" />
               </button>
             </div>
 
             {/* Small hint row */}
             <div className="mt-3 flex items-center justify-between">
-              <p className="text-[11px] text-slate-500 font-semibold">
+              <p className="text-[11px] text-theme-secondary font-semibold">
                 Showing{" "}
-                <span className="text-slate-900 font-black">
+                <span className="text-theme-primary font-black">
                   {filtered.length}
                 </span>{" "}
                 result{filtered.length === 1 ? "" : "s"}
@@ -159,7 +159,7 @@ const ModernNotificationList = () => {
               <button
                 type="button"
                 onClick={getNotify}
-                className="text-[11px] font-black text-slate-900 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-full active:scale-95 transition"
+                className="text-[11px] font-black text-theme-primary bg-theme-card-2 border border-theme px-3 py-1.5 rounded-full active:scale-95 transition"
               >
                 Refresh
               </button>
@@ -202,14 +202,14 @@ const ModernNotificationList = () => {
                     whileTap={{ scale: 0.99 }}
                     className="cursor-pointer"
                   >
-                    <div className="bg-white border border-slate-200 rounded-3xl shadow-[0_12px_40px_rgba(2,6,23,0.06)] overflow-hidden">
+                    <div className="bg-theme-card border border-theme rounded-3xl shadow-[0_12px_40px_rgba(2,6,23,0.06)] overflow-hidden">
                       {/* Accent line */}
                       <div className={`h-1 bg-gradient-to-r ${t.line}`} />
 
                       <div className="p-4 flex gap-3">
                         {/* Avatar */}
                         <div className="relative shrink-0">
-                          <div className="h-12 w-12 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center overflow-hidden">
+                          <div className="h-12 w-12 rounded-2xl bg-theme-card-2 border border-theme flex items-center justify-center overflow-hidden">
                             <img
                               src={getNotificationIcon(item)}
                               alt="icon"
@@ -226,16 +226,16 @@ const ModernNotificationList = () => {
                         {/* Text */}
                         <div className="min-w-0 flex-1">
                           <div className="flex items-start justify-between gap-2">
-                            <p className="text-sm font-black text-slate-900 truncate">
+                            <p className="text-sm font-black text-theme-primary truncate">
                               {item?.title || "Notification"}
                             </p>
 
-                            <span className="shrink-0 text-[10px] font-bold text-slate-600 bg-slate-100 border border-slate-200 px-2 py-1 rounded-full">
+                            <span className="shrink-0 text-[10px] font-bold text-theme-secondary bg-theme-card-2 border border-theme px-2 py-1 rounded-full">
                               {moment(item?.createdAt).fromNow()}
                             </span>
                           </div>
 
-                          <p className="mt-1 text-xs text-slate-600 leading-relaxed line-clamp-2">
+                          <p className="mt-1 text-xs text-theme-secondary leading-relaxed line-clamp-2">
                             {item?.body || ""}
                           </p>
 
@@ -249,7 +249,7 @@ const ModernNotificationList = () => {
 
                             <button
                               type="button"
-                              className="text-[10px] font-black text-slate-900 bg-slate-100 border border-slate-200 px-3 py-2 rounded-2xl active:scale-95 transition flex items-center gap-1.5"
+                              className="text-[10px] font-black text-theme-primary bg-theme-card-2 border border-theme px-3 py-2 rounded-2xl active:scale-95 transition flex items-center gap-1.5"
                             >
                               <IoCheckmarkCircle className="text-base text-emerald-600" />
                               Mark as read
@@ -272,22 +272,22 @@ const ModernNotificationList = () => {
 const EmptyState = ({ title, desc }) => {
   return (
     <motion.div
-      className="bg-white border border-slate-200 rounded-3xl shadow-[0_18px_55px_rgba(2,6,23,0.06)] p-8 text-center"
+      className="bg-theme-card border border-theme rounded-3xl shadow-[0_18px_55px_rgba(2,6,23,0.06)] p-8 text-center"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
     >
-      <div className="mx-auto h-20 w-20 rounded-3xl bg-slate-50 border border-slate-200 flex items-center justify-center">
-        <MdInbox className="text-4xl text-slate-400" />
+      <div className="mx-auto h-20 w-20 rounded-3xl bg-theme-card-2 border border-theme flex items-center justify-center">
+        <MdInbox className="text-4xl text-theme-muted" />
       </div>
-      <p className="mt-4 text-lg font-black text-slate-900">{title}</p>
-      <p className="mt-1 text-sm text-slate-600 font-semibold">{desc}</p>
+      <p className="mt-4 text-lg font-black text-theme-primary">{title}</p>
+      <p className="mt-1 text-sm text-theme-secondary font-semibold">{desc}</p>
 
       <div className="mt-5 flex items-center justify-center gap-2">
         {[0, 1, 2].map((i) => (
           <span
             key={i}
-            className="h-2.5 w-2.5 rounded-full bg-slate-300 animate-pulse"
+            className="h-2.5 w-2.5 rounded-full bg-theme-card-2 animate-pulse"
             style={{ animationDelay: `${i * 120}ms` }}
           />
         ))}

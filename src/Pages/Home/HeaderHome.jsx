@@ -83,7 +83,7 @@ const HeaderHome = ({ ProfileData }) => {
   return (
     <div className="sticky top-0 z-50">
       {/* Glass background */}
-      <div className="bg-white/75 backdrop-blur-xl border-b border-slate-200">
+      <div className="bg-theme-header backdrop-blur-xl border-b border-theme">
         <div className="mx-auto w-full max-w-[520px] px-4 py-3">
           <div className="flex items-center justify-between gap-3">
             {/* Left: Avatar + Welcome */}
@@ -93,7 +93,7 @@ const HeaderHome = ({ ProfileData }) => {
                 className="relative shrink-0 active:scale-[0.98] transition"
                 aria-label="Open Profile"
               >
-                <div className="h-12 w-12 rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white shadow-sm flex items-center justify-center overflow-hidden">
+                <div className="h-12 w-12 rounded-2xl border border-theme bg-gradient-to-br from-slate-50 to-white shadow-sm flex items-center justify-center overflow-hidden">
                   <img
                     src={DummyAvatarForPassbook}
                     alt="Profile"
@@ -105,10 +105,10 @@ const HeaderHome = ({ ProfileData }) => {
               </button>
 
               <div className="min-w-0">
-                <p className="text-[10px] font-semibold text-slate-500">
+                <p className="text-[10px] font-semibold text-theme-secondary">
                   Welcome back
                 </p>
-                <p className="truncate text-base font-black tracking-tight text-slate-900">
+                <p className="truncate text-base font-black tracking-tight text-theme-primary">
                   Hi, {firstName} 👋
                 </p>
               </div>
@@ -118,10 +118,10 @@ const HeaderHome = ({ ProfileData }) => {
             <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={() => navigate("/commission")}
-                className="relative h-11 w-11 rounded-2xl border border-slate-200 bg-white shadow-sm hover:bg-slate-50 active:scale-[0.98] transition flex items-center justify-center"
+                className="relative h-11 w-11 rounded-2xl border border-theme bg-theme-card shadow-sm hover:bg-theme-card-2 active:scale-[0.98] transition flex items-center justify-center"
                 aria-label="Offers"
               >
-                <RiDiscountPercentLine size={22} className="text-slate-800" />
+                <RiDiscountPercentLine size={22} className="text-theme-primary" />
                 {/* badge */}
                 <span className="absolute -top-1 -right-1 h-4 min-w-[16px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-extrabold flex items-center justify-center">
                   {/* put count here if you have */}
@@ -130,10 +130,10 @@ const HeaderHome = ({ ProfileData }) => {
 
               <button
                 onClick={() => navigate("/notification")}
-                className="relative h-11 w-11 rounded-2xl border border-slate-200 bg-white shadow-sm hover:bg-slate-50 active:scale-[0.98] transition flex items-center justify-center"
+                className="relative h-11 w-11 rounded-2xl border border-theme bg-theme-card shadow-sm hover:bg-theme-card-2 active:scale-[0.98] transition flex items-center justify-center"
                 aria-label="Notifications"
               >
-                <MdNotificationsNone size={24} className="text-slate-800" />
+                <MdNotificationsNone size={24} className="text-theme-primary" />
                 {/* badge pulse */}
                 <span className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-white animate-pulse" />
               </button>
