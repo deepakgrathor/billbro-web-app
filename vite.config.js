@@ -25,6 +25,8 @@ export default defineConfig({
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
           redux: ['@reduxjs/toolkit', 'react-redux'],
+          animation: ['framer-motion'],
+          slider: ['swiper'],
         },
       },
     },

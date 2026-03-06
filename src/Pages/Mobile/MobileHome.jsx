@@ -67,12 +67,13 @@ const MobileHome = () => {
 
   useEffect(() => {
     dispatch(setRechargeData({ ...rechargeData, plans: "" }));
-    if (rechargeData.mobileNumber.length === 10) {
-      if (/^\d{10}$/.test(rechargeData.mobileNumber)) {
+    if (rechargeData.mobileNumber.length === 10 && /^\d{10}$/.test(rechargeData.mobileNumber)) {
+      const timer = setTimeout(() => {
         dispatch(
           getOperatorandCirclebyPhone({ phone: rechargeData.mobileNumber }),
         );
-      }
+      }, 300);
+      return () => clearTimeout(timer);
     }
   }, [rechargeData.mobileNumber]);
 

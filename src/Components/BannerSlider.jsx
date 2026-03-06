@@ -6,26 +6,24 @@ import { ImageBaseURL } from "../Utils/Constant";
 import { useNavigate } from "react-router-dom";
 import { openExternalURL } from "../Utils/CommonFunc";
 
-const BannerSlider = ({ style, data }) => {
+const BannerSlider = React.memo(({ style, data }) => {
   const navigate = useNavigate();
-  const slides = [
-    "https://app.billhub.in/_next/image?url=https%3A%2F%2Fapi.billhub.in%2FQ7AhYIDEGwOVl2EeaMnv%2F%2Fuploads%2Fbanners%2F2025083050280.png&w=640&q=75",
-    "https://app.billhub.in/_next/image?url=https%3A%2F%2Fapi.billhub.in%2FQ7AhYIDEGwOVl2EeaMnv%2F%2Fuploads%2Fbanners%2F2025083029381.png&w=640&q=75",
-    "https://app.billhub.in/_next/image?url=https%3A%2F%2Fapi.billhub.in%2FQ7AhYIDEGwOVl2EeaMnv%2F%2Fuploads%2Fbanners%2F2025083064991.png&w=640&q=75",
-  ];
+
+  if (!data || data.length === 0) {
+    return null;
+  }
 
   return (
-    <div className="w-full overflow-hidden ">
+    <div className="w-full overflow-hidden">
       <Swiper
-        modules={[Autoplay]} // 👈 enable autoplay module
-        autoplay={{ delay: 2500 }} // 2 sec delay
+        modules={[Autoplay]}
+        autoplay={{ delay: 2500, disableOnInteraction: false }}
         slidesPerView={1}
-        loop={true}
+        loop={data.length > 1}
         spaceBetween={5}
-        s
       >
         {data.map((item, idx) => (
-          <SwiperSlide key={idx}>
+          <SwiperSlide key={item._id || idx}>
             <img
               onClick={() => {
                 item.type === "https"
@@ -33,15 +31,22 @@ const BannerSlider = ({ style, data }) => {
                   : navigate(item.link);
               }}
               style={style}
-              className="w-full h-52 bg-center bg-cover"
+              className="w-full h-52 bg-center bg-cover bg-slate-100"
               src={`${ImageBaseURL}${item.image}`}
-              alt=""
+              alt={item.title || `Banner ${idx + 1}`}
+              loading="lazy"
+              decoding="async"
+              onError={(e) => {
+                e.target.style.display = "none";
+              }}
             />
           </SwiperSlide>
         ))}
       </Swiper>
     </div>
   );
-};
+});
+
+BannerSlider.displayName = "BannerSlider";
 
 export default BannerSlider;

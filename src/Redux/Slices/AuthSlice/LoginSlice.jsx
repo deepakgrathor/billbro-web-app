@@ -32,23 +32,35 @@ export const newUserRegister = createAsyncThunk(
     }
   }
 );
-export const getUserProfile = createAsyncThunk("getUserProfile", async () => {
-  try {
-    const res = await API.get(`/user/profile`);
-    return {
-      ...res.data,
-      Data: decryptFunc(res.data.Data),
-    };
-  } catch (error) {
-    if (error.response && error.response.status === 400) {
-      // Dispatch a custom action or handle the 400 error here
-      // You can access the error response using `error.response.data`
-      return error.response.data;
-    } else {
-      throw error;
+const PROFILE_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+export const getUserProfile = createAsyncThunk(
+  "getUserProfile",
+  async () => {
+    try {
+      const res = await API.get(`/user/profile`);
+      return {
+        ...res.data,
+        Data: decryptFunc(res.data.Data),
+      };
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        return error.response.data;
+      } else {
+        throw error;
+      }
     }
+  },
+  {
+    condition: (arg, { getState }) => {
+      if (arg?.forceRefresh) return true;
+      const { lastFetched } = getState().LoginSlice.profile;
+      if (lastFetched && Date.now() - lastFetched < PROFILE_CACHE_TTL) {
+        return false;
+      }
+    },
   }
-});
+);
 
 const LoginSlice = createSlice({
   name: "LoginSlice",
@@ -60,6 +72,7 @@ const LoginSlice = createSlice({
       ProfileData: "",
       profileLoader: false,
       profileError: "",
+      lastFetched: null,
     },
     newRegister: {
       newRegisterLoader: false,
@@ -92,6 +105,7 @@ const LoginSlice = createSlice({
       state.profile.ProfileData = action.payload;
       state.profile.profileLoader = false;
       state.profile.profileError = null;
+      state.profile.lastFetched = Date.now();
     });
     builder.addCase(getUserProfile.rejected, (state, action) => {
       state.profile.profileLoader = false;

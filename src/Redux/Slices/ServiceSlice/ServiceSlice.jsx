@@ -2,6 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { decryptFunc } from "../../../Utils/CommonFunc";
 import API from "../../API";
 
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
 export const fetchServiceList = createAsyncThunk(
   "fetchServiceList",
   async () => {
@@ -18,6 +20,15 @@ export const fetchServiceList = createAsyncThunk(
         throw error;
       }
     }
+  },
+  {
+    condition: (arg, { getState }) => {
+      if (arg?.forceRefresh) return true;
+      const { lastFetched } = getState().ServiceSlice.service;
+      if (lastFetched && Date.now() - lastFetched < CACHE_TTL) {
+        return false;
+      }
+    },
   }
 );
 export const Fetch_BPPS_Operator_List = createAsyncThunk(
@@ -91,6 +102,7 @@ const ServiceSlice = createSlice({
     service: {
       serviceList: "",
       serviceLoader: false,
+      lastFetched: null,
     },
     bbpsOperatorList: "",
     fetchBBPSBill: "",
@@ -105,6 +117,7 @@ const ServiceSlice = createSlice({
     builder.addCase(fetchServiceList.fulfilled, (state, action) => {
       state.service.serviceList = action.payload;
       state.service.serviceLoader = false;
+      state.service.lastFetched = Date.now();
     });
     builder.addCase(fetchServiceList.rejected, (state) => {
       state.service.serviceLoader = false;
