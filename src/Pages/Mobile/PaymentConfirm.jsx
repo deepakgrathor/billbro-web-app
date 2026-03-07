@@ -807,7 +807,7 @@ const PaymentConfirm = () => {
       </div>
 
       {/* Main Content */}
-      <div className="pt-20 pb-32 px-3 bg-theme-base sm:px-4 max-w-2xl mx-auto">
+      <div className="pt-20 pb-96 px-3 bg-theme-base sm:px-4 max-w-2xl mx-auto">
         {/* ── Plan Details Card ── */}
         <div className="bg-white border-theme bg-theme-card shadow-theme-card rounded-3xl border border-slate-200 shadow-[0_18px_55px_rgba(2,6,23,0.08)] overflow-hidden">
           {/* Header */}

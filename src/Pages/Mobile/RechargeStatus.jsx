@@ -99,7 +99,7 @@
 //           </div>
 //         </div>
 //       </div>
-     
+
 //     </>
 //   );
 // };
@@ -115,32 +115,31 @@ import { BRAND_NAME } from "../../Utils/Constant";
 import dayjs from "dayjs";
 import BottomSheet from "../../Components/BottomSheet";
 import PlayStoreRating from "../../Components/PlayStoreRating";
-import { 
-  FaHome, 
-  FaCheckCircle, 
-  FaClock, 
+import {
+  FaHome,
+  FaCheckCircle,
+  FaClock,
   FaReceipt,
   FaDownload,
-  FaShare
+  FaShare,
 } from "react-icons/fa";
-import { 
-  MdContentCopy, 
-  MdCheck,
-  MdInfo
-} from "react-icons/md";
+import { MdContentCopy, MdCheck, MdInfo } from "react-icons/md";
 import { handleCopy } from "../../Utils/CommonFunc";
+import { getUserProfile } from "../../Redux/Slices/AuthSlice/LoginSlice";
+import { useDispatch } from "react-redux";
 
 const RechargeStatus = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState("");
   const data = location.state;
 
   // ✅ OPTIMIZATION: Memoized status check
-  const isSuccess = useMemo(() => 
-    data?.status?.toUpperCase() === "SUCCESS", 
-    [data?.status]
+  const isSuccess = useMemo(
+    () => data?.status?.toUpperCase() === "SUCCESS",
+    [data?.status],
   );
 
   // ✅ OPTIMIZATION: Memoized status config
@@ -156,7 +155,7 @@ const RechargeStatus = () => {
         subtitle: "Your recharge has been completed successfully",
       };
     }
-    
+
     return {
       lottie: PendingLottie,
       icon: FaClock,
@@ -177,42 +176,45 @@ const RechargeStatus = () => {
   }, []);
 
   // ✅ OPTIMIZATION: Memoized transaction details
-  const transactionDetails = useMemo(() => [
-    {
-      label: "Amount",
-      value: `₹${data?.amount || 0}`,
-      icon: "💰",
-      highlight: true,
-      copyable: false,
-    },
-    {
-      label: "Operator Ref. No.",
-      value: data?.OP_REF || "N/A",
-      icon: "🔖",
-      copyable: true,
-      field: "opRef",
-    },
-    {
-      label: "Transaction ID",
-      value: data?.transactionId || "N/A",
-      icon: "📝",
-      copyable: true,
-      field: "txnId",
-    },
-    {
-      label: "Mobile Number",
-      value: data?.MobileNumber || "N/A",
-      icon: "📱",
-      copyable: true,
-      field: "mobile",
-    },
-    {
-      label: "Payment Method",
-      value: "WALLET",
-      icon: "💳",
-      copyable: false,
-    },
-  ], [data]);
+  const transactionDetails = useMemo(
+    () => [
+      {
+        label: "Amount",
+        value: `₹${data?.amount || 0}`,
+        icon: "💰",
+        highlight: true,
+        copyable: false,
+      },
+      {
+        label: "Operator Ref. No.",
+        value: data?.OP_REF || "N/A",
+        icon: "🔖",
+        copyable: true,
+        field: "opRef",
+      },
+      {
+        label: "Transaction ID",
+        value: data?.transactionId || "N/A",
+        icon: "📝",
+        copyable: true,
+        field: "txnId",
+      },
+      {
+        label: "Mobile Number",
+        value: data?.MobileNumber || "N/A",
+        icon: "📱",
+        copyable: true,
+        field: "mobile",
+      },
+      {
+        label: "Payment Method",
+        value: "WALLET",
+        icon: "💳",
+        copyable: false,
+      },
+    ],
+    [data],
+  );
 
   // Show rating after success
   useEffect(() => {
@@ -257,13 +259,18 @@ const RechargeStatus = () => {
       <div className="pt-20 pb-32 px-4 max-w-2xl mx-auto">
         {/* Status Card */}
         <div className="mb-6 animate-slideUp">
-          <div className={`bg-gradient-to-br ${statusConfig.bg} rounded-3xl p-6 border-2 ${
-            isSuccess ? "border-green-200" : "border-amber-200"
-          } shadow-2xl relative overflow-hidden`}>
+          <div
+            className={`bg-gradient-to-br ${statusConfig.bg} rounded-3xl p-6 border-2 ${
+              isSuccess ? "border-green-200" : "border-amber-200"
+            } shadow-2xl relative overflow-hidden`}
+          >
             {/* Pattern Overlay */}
-            <div className="absolute inset-0 opacity-5" style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-            }}></div>
+            <div
+              className="absolute inset-0 opacity-5"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+              }}
+            ></div>
 
             <div className="relative flex flex-col items-center text-center">
               {/* Lottie Animation */}
@@ -276,7 +283,9 @@ const RechargeStatus = () => {
               </div>
 
               {/* Status Badge */}
-              <div className={`inline-flex items-center gap-2 bg-gradient-to-r ${statusConfig.color} px-5 py-2 rounded-full shadow-lg mb-3`}>
+              <div
+                className={`inline-flex items-center gap-2 bg-gradient-to-r ${statusConfig.color} px-5 py-2 rounded-full shadow-lg mb-3`}
+              >
                 <StatusIcon className="text-white text-lg" />
                 <span className="text-white font-black text-sm uppercase">
                   {data.status}
@@ -284,7 +293,9 @@ const RechargeStatus = () => {
               </div>
 
               {/* Title & Subtitle */}
-              <h2 className={`text-2xl font-black ${statusConfig.textColor} mb-2`}>
+              <h2
+                className={`text-2xl font-black ${statusConfig.textColor} mb-2`}
+              >
                 {statusConfig.title}
               </h2>
               <p className="text-sm text-gray-600 font-medium mb-3">
@@ -326,18 +337,24 @@ const RechargeStatus = () => {
                   }`}
                 >
                   <div className="flex items-center gap-3 flex-1">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl ${
-                      detail.highlight ? "bg-purple-100" : "bg-gray-200"
-                    }`}>
+                    <div
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl ${
+                        detail.highlight ? "bg-purple-100" : "bg-gray-200"
+                      }`}
+                    >
                       {detail.icon}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs text-gray-600 font-semibold mb-1">
                         {detail.label}
                       </p>
-                      <p className={`font-bold break-all ${
-                        detail.highlight ? "text-2xl text-purple-700" : "text-sm text-gray-900"
-                      }`}>
+                      <p
+                        className={`font-bold break-all ${
+                          detail.highlight
+                            ? "text-2xl text-purple-700"
+                            : "text-sm text-gray-900"
+                        }`}
+                      >
                         {detail.value}
                       </p>
                     </div>
@@ -374,8 +391,8 @@ const RechargeStatus = () => {
                     Processing Your Request
                   </h4>
                   <p className="text-xs text-gray-700 leading-relaxed">
-                    Your recharge is being processed. This usually takes a few moments. 
-                    You'll receive a confirmation once it's complete.
+                    Your recharge is being processed. This usually takes a few
+                    moments. You'll receive a confirmation once it's complete.
                   </p>
                 </div>
               </div>
@@ -435,9 +452,16 @@ const RechargeStatus = () => {
           }
         }
         @keyframes blob {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(30px, -50px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.9); }
+          0%,
+          100% {
+            transform: translate(0, 0) scale(1);
+          }
+          33% {
+            transform: translate(30px, -50px) scale(1.1);
+          }
+          66% {
+            transform: translate(-20px, 20px) scale(0.9);
+          }
         }
         .animate-slideUp {
           animation: slideUp 0.5s ease-out;

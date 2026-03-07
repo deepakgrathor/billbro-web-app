@@ -345,7 +345,7 @@ const HomeContent = () => {
   useEffect(() => {
     dispatch(fetchServiceList());
     dispatch(getBannerList({ type: "service" }));
-    dispatch(getUserProfile());
+    dispatch(getUserProfile({ forceRefresh: true }));
   }, [dispatch]);
 
   const handleGetReferAmount = async () => {

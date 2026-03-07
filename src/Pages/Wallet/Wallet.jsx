@@ -890,7 +890,7 @@ const Wallet = () => {
 
         if (message.type === "PAYMENT_SUCCESS") {
           setLoadingStage("success");
-          dispatch(getUserProfile());
+          dispatch(getUserProfile({ forceRefresh: true }));
 
           paymentTimeoutRef.current = setTimeout(() => {
             navigate("/payment-success", {
@@ -939,10 +939,7 @@ const Wallet = () => {
     amount && Number(amount) > 0 && Number(amount) <= 10000 && !loading;
 
   return (
-    <div
-      ref={mountRef}
-      className="min-h-screen bg-theme-base"
-    >
+    <div ref={mountRef} className="min-h-screen bg-theme-base">
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-theme-header backdrop-blur-xl border-b border-theme">
         <CommonHeader title={"Add Money"} handleclick={() => navigate("/")} />
@@ -1096,7 +1093,9 @@ const Wallet = () => {
                   <MdSecurity size={20} />
                 </divc>
                 <div className="min-w-0">
-                  <p className="text-sm font-black text-theme-primary">Secure</p>
+                  <p className="text-sm font-black text-theme-primary">
+                    Secure
+                  </p>
                   <p className="mt-1 text-xs text-theme-secondary">
                     Bank-grade encryption for all transactions.
                   </p>
@@ -1108,7 +1107,9 @@ const Wallet = () => {
                   <MdVerifiedUser size={20} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-black text-theme-primary">Verified</p>
+                  <p className="text-sm font-black text-theme-primary">
+                    Verified
+                  </p>
                   <p className="mt-1 text-xs text-theme-secondary">
                     Every payment is verified & authenticated.
                   </p>
@@ -1207,7 +1208,9 @@ const Wallet = () => {
                 <h3 className="text-xl font-black text-theme-primary">
                   Payment successful
                 </h3>
-                <p className="mt-1 text-sm text-theme-secondary">Redirecting...</p>
+                <p className="mt-1 text-sm text-theme-secondary">
+                  Redirecting...
+                </p>
               </div>
             )}
 
